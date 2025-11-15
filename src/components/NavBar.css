@@ -26,8 +26,8 @@
     text-decoration: none;
     color: #333;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color 0.2s ease;
 }
 
 .nav-links a:hover {
@@ -35,6 +35,22 @@
 }
 
 .nav-links a.active {
-    background-color: #007bff;
-    color: white;
+    border-bottom-color: #007bff;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: none;
+    padding: 0;
+}
+
+.logout-btn:hover {
+    text-decoration: underline;
 }

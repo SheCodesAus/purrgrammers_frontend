@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
                 localStorage.setItem("token", data.access || data.token);
                 setAuth({
                     token: data.access || data.token,
-                    user: { username } // You might want to fetch user details separately
+                    user: { username } 
                 });
                 return { success: true };
             } else {
@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ auth, login, logout }}>
+        <AuthContext.Provider value={{ auth, setAuth, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
