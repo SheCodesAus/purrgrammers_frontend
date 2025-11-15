@@ -1,14 +1,25 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
+import { useAuth } from '../hooks/use-auth';
 import './NavBar.css';
 
 function NavBar() {
+    const { logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+        // Token is automatically cleared from localStorage
+        // User state is reset to null
+    };
+
     return (
         <nav className='nav-container'> {/* semantic HTML for accessibility and SEO benefits*/}    
             <div className='nav-bar'>
                 <ul className='nav-links'>
                     <li><NavLink to="/">Home</NavLink></li>
                     <li><NavLink to="/login">Login</NavLink></li>
+                    <li><NavLink to="/dashboard">Dashboard</NavLink></li>
+                    <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
                 </ul>
             </div>
         </nav>
