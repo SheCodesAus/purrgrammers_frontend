@@ -1,139 +1,138 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../hooks/use-auth';
-import postLogin from '../api/post-login';
-import './LoginForm.css';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../hooks/use-auth";
+import postLogin from "../api/post-login";
+import "./LoginForm.css";
 
 function LoginForm() {
-    const navigate = useNavigate();
-    const { setAuth } = useAuth();
-    const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { setAuth } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-    const [formState, setFormState] = useState({
-        fields: {
-            username: "",
-            password: "",
-        },
-        errors: {
-            username: "",
-            password: "",
-            submit: "",
-        }
-    });
+  const [formState, setFormState] = useState({
+    fields: {
+      username: "",
+      password: "",
+    },
+    errors: {
+      username: "",
+      password: "",
+      submit: "",
+    },
+  });
 
-    const validateForm = () => {
-        let isValid = true;
-        const newErrors = {
-            username: "",
-            password: "",
-        };
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      username: "",
+      password: "",
+    };
 
-        // username validation
-        if (!formState.fields.username) {
-            newErrors.username = "Username or Email is required";
-            isValid = false;
-        }
+    // username validation
+    if (!formState.fields.username) {
+      newErrors.username = "Username or Email is required";
+      isValid = false;
+    }
 
-        // password validation
-        if (!formState.fields.password) {
-            newErrors.password = "Password is required";
-            isValid = false;
-        }
+    // password validation
+    if (!formState.fields.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
 
-        setFormState(prev => ({
-            ...prev,
-            errors: newErrors
+    setFormState((prev) => ({
+      ...prev,
+      errors: newErrors,
+    }));
+    return isValid;
+  };
+
+  const handleChange = (event) => {
+    const { id, value } = event.target;
+    setFormState((prev) => ({
+      ...prev,
+      fields: { ...prev.fields, [id]: value },
+      errors: { ...prev.errors, [id]: "" },
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (validateForm()) {
+      setIsLoading(true);
+
+      try {
+        const response = await postLogin(
+          formState.fields.username,
+          formState.fields.password
+        );
+
+        const token = `Token ${response.token}`;
+        window.localStorage.setItem("token", token);
+
+        const user = response.user;
+
+        window.localStorage.setItem("user", JSON.stringify(user));
+
+        setAuth({ token, user });
+        navigate("/dashboard");
+      } catch (error) {
+        setFormState((prev) => ({
+          ...prev,
+          errors: {
+            ...prev.errors,
+            submit: "Invalid Username/Email or password",
+          },
         }));
-        return isValid;
-    };
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
-    const handleChange = (event) => {
-        const { id, value } = event.target;
-        setFormState(prev => ({
-            ...prev,
-            fields: {...prev.fields, [id]: value },
-            errors: {...prev.errors, [id]: "" }
-        }));
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (validateForm()) {
-            setIsLoading(true);
-
-            try {
-                const response = await postLogin(
-                    formState.fields.username,
-                    formState.fields.password,
-                );
-
-                const token = `Token ${response.token}`;
-                window.localStorage.setItem("token", token);
-
-                const user = response.user;
-                
-                window.localStorage.setItem("user", JSON.stringify(user));
-
-                setAuth({ token, user });
-                navigate("/dashboard");
-            } catch (error) {
-                setFormState(prev => ({
-                    ...prev,
-                    errors: {
-                        ...prev.errors,
-                        submit: "Invalid Username/Email or password"
-                    }
-                }));
-            } finally {
-                setIsLoading(false);
-            }
-        }
-    };
-
-    return (
-        <div className="login-form-container">
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="username">Username/Email:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        value={formState.fields.username}
-                        onChange={handleChange}
-                        disabled={isLoading}
-                    />
-                    {formState.errors.username && (
-                        <span className="error">{formState.errors.username}</span>
-                    )}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={formState.fields.password}
-                        onChange={handleChange}
-                        disabled={isLoading}
-                    />
-                    {formState.errors.password && (
-                        <span className="error">{formState.errors.password}</span>
-                    )}
-                </div>
-
-                {formState.errors.submit && (
-                    <div className="error">{formState.errors.submit}</div>
-                )}
-
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Logging in..." : "Login"}
-                </button>
-            </form>
+  return (
+    <div className="login-form-container">
+      <h2 className="login-form-h2">Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="username">Username/Email:</label>
+          <input
+            type="text"
+            id="username"
+            value={formState.fields.username}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          {formState.errors.username && (
+            <span className="error">{formState.errors.username}</span>
+          )}
         </div>
-    ); 
-    
+
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={formState.fields.password}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+          {formState.errors.password && (
+            <span className="error">{formState.errors.password}</span>
+          )}
+        </div>
+
+        {formState.errors.submit && (
+          <div className="error">{formState.errors.submit}</div>
+        )}
+
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+    </div>
+  );
 }
 
 export default LoginForm;

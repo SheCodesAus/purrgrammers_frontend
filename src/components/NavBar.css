@@ -1,56 +1,57 @@
 .nav-container {
-    background-color: #fff;
-    border-bottom: 1px solid #e0e0e0;
-    padding: 0 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 2rem;
 }
 
 .nav-bar {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
 }
 
 .nav-links {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 1rem;
-    margin-left: auto;
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1rem;
+  margin-left: auto;
 }
 
 .nav-links a {
-    text-decoration: none;
-    color: #333;
-    padding: 0.5rem 1rem;
-    border-bottom: 2px solid transparent;
-    transition: border-bottom-color 0.2s ease;
+  text-decoration: none;
+  color: #333;
+  padding: 0.5rem 1rem;
+  transition: border-bottom-color 0.2s ease;
 }
 
 .nav-links a:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .nav-links a.active {
-    border-bottom-color: #007bff;
-    color: #007bff;
-    font-weight: 500;
+  border-bottom-color: #007bff;
+  color: #007bff;
+  font-weight: 500;
 }
 
 .logout-btn {
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    text-decoration: none;
-    padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: none;
+  padding: 0;
 }
 
 .logout-btn:hover {
-    text-decoration: underline;
+  background-color: #f5f5f5;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
 }
