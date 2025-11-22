@@ -6,45 +6,21 @@ export const AuthContext = createContext();
 // component to wrap our app
 export function AuthProvider({ children }) {
     const [auth, setAuth] = useState({
-        token: localStorage.getItem("token"),
-        user: null
+        token: window.localStorage.getItem("token"),
+        user: JSON.parse(window.localStorage.getItem("user")) || null
     });
 
-    const login = async (username, password) => {
-        try {
-            const url = `${import.meta.env.VITE_API_URL}/api/token/`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, password }),
-            });
+    const isLoggedIn = !!auth.token; // true if token exists
 
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem("token", data.access || data.token);
-                setAuth({
-                    token: data.access || data.token,
-                    user: { username } 
-                });
-                return { success: true };
-            } else {
-                const errorData = await response.json();
-                return { success: false, error: errorData.detail || "Login failed" };
-            }
-        } catch (error) {
-            return { success: false, error: "Network error" };
-        }
-    };
-
+    // Move login function out of AuthProvider - handle it in LoginForm
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setAuth({ token: null, user: null });
     };
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth, login, logout }}>
+        <AuthContext.Provider value={{ auth, setAuth, isLoggedIn, logout }}>
             {children}
         </AuthContext.Provider>
     );

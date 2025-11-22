@@ -72,7 +72,6 @@ function LoginForm() {
         window.localStorage.setItem("token", token);
 
         const user = response.user;
-
         window.localStorage.setItem("user", JSON.stringify(user));
 
         setAuth({ token, user });
