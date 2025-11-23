@@ -1,7 +1,67 @@
-// Column component
-// displays column title and call cards in the column
-// add card component
-// passses card operations down to card components
+import Card from "./Card";
 
+function Column({
+    column,
+    currentUser,
+    dragState,
+    editingCard,
+    onEditCard,
+    onDeleteCard,
+    onSetEditingCard,
+    onDragOver,
+    onDrop,
+    onDragEnter,
+    onDragLeave
+}) {
+    return (
+        <div 
+            className={`retro-column ${column.type} ${
+                dragState.dragOverColumn === column.id ? 'drag-over' : ''
+            }`}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            onDragEnter={onDragEnter}
+        >
+            <div className="column-header">
+                <h3 className="column-title">{column.title}</h3>
+                <div className="column-count">
+                    {column.cards?.length || 0} cards
+                </div>
+            </div>
 
-// receives drag handlers as props from board 
+            <div className="column-content">
+                <div className="cards-list">
+                    {column.cards?.map(card => (
+                        <Card
+                            key={card.id}
+                            card={card}
+                            currentUser={currentUser}
+                            isEditing={editingCard === card.id}
+                            onEdit={(newText) => onEditCard(card.id, newText)}
+                            onDelete={() => onDeleteCard(card.id)}
+                            onStartEdit={() => onSetEditingCard(card.id)}
+                            onCancelEdit={() => onSetEditingCard(null)}
+                        />
+                    ))}
+                </div>
+
+                {/* Drop zone hint when dragging */}
+                {dragState.isDragging && (
+                    <div className="drop-zone-hint">
+                        Drop your card here
+                    </div>
+                )}
+
+                {/* Empty state */}
+                {!column.cards?.length && !dragState.isDragging && (
+                    <div className="empty-column">
+                        <p>No cards yet</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+export default Column;

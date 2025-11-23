@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
-import Board from "../components/Board/Board";
+import Board from "../components/boards/Board";
+import getBoardById from "../api/get-board";
 import "./RetroBoardPage.css";
 
 function RetroBoardPage() {
-    const { boardId } = useParams();
+    const { id } = useParams(); // Changed from boardId to id to match route
     const navigate = useNavigate();
     const { auth } = useAuth();
 
@@ -20,22 +21,11 @@ function RetroBoardPage() {
             try {
                 setBoardState(prev => ({ ...prev, isLoading: true }));
                 
-                // TODO: Replace with actual API call
-                // const response = await getBoardById(boardId);
+                // implemented API call
+                const response = await getBoardById(id, auth.token);
                 
-                // For MVP, create a basic board structure
                 setBoardState({
-                    data: {
-                        id: boardId,
-                        title: "Click to edit title",
-                        date: new Date().toLocaleDateString(),
-                        participants: [],
-                        columns: [
-                            { id: 1, title: "What went well?", type: "positive", cards: [] },
-                            { id: 2, title: "What could improve?", type: "negative", cards: [] },
-                            { id: 3, title: "Action items", type: "action", cards: [] }
-                        ]
-                    },
+                    data: response,
                     isLoading: false,
                     error: ""
                 });
@@ -44,15 +34,15 @@ function RetroBoardPage() {
                 setBoardState({
                     data: null,
                     isLoading: false,
-                    error: "Failed to load board. Please try again."
+                    error: error.message || "Failed to load board. Please try again."
                 });
             }
         }
 
-        if (boardId) {
+        if (id && auth.token) {
             fetchBoard();
         }
-    }, [boardId]);
+    }, [id, auth.token]);
 
     function handleBoardUpdate(updatedBoardData) {
         setBoardState(prev => ({

@@ -1,0 +1,65 @@
+/* Board container */
+.board {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+/* Board content area */
+.board-content {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Columns container */
+.columns-container {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 500px;
+}
+
+/* Individual column styling */
+.retro-column {
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+/* Column header */
+.column-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.column-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin: 0;
+}
+
+/* Column content area */
+.column-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Drag over styling */
+.retro-column.drag-over {
+  border-color: #667eea;
+  background-color: #f8f9ff;
+}

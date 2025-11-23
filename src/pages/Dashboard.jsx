@@ -3,11 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import getBoards from "../api/get-boards";
 import getTeams from "../api/get-teams";
+import CreateBoardForm from "../components/CreateBoardForm";
 import "./Dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { auth } = useAuth();
+  
+  // Modal state for CreateBoardForm
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const [teamsState, setTeamsState] = useState({
     data: [],
@@ -151,9 +155,12 @@ function Dashboard() {
         <div className="dashboard-section boards-section">
           <div className="section-header">
             <h2>Recent Boards</h2>
-            <Link to="/retro-board/new" className="btn btn-primary">
+            <button 
+              className="btn btn-primary"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
               Create New Board
-            </Link>
+            </button>
           </div>
 
           <div className="boards-overview">
@@ -164,9 +171,12 @@ function Dashboard() {
             ) : boardsState.data.length === 0 ? (
               <div className="empty-boards">
                 <p>No boards yet</p>
-                <Link to="/retro-board/new" className="btn btn-primary">
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
                   Create Your First Board
-                </Link>
+                </button>
               </div>
             ) : (
               <div className="boards-grid-preview">
@@ -196,6 +206,15 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Create Board Modal */}
+      {isCreateModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsCreateModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <CreateBoardForm onCancel={() => setIsCreateModalOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
