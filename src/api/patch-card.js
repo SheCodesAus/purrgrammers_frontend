@@ -1,5 +1,7 @@
-const patchCard = async (cardId, cardData, token) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cards/${cardId}/`, {
+async function patchCard(cardId, cardData, token) {
+    const url = `${import.meta.env.VITE_API_URL}/api/cards/${cardId}/`;
+
+    const response = await fetch(url, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -9,10 +11,18 @@ const patchCard = async (cardId, cardData, token) => {
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
+        const fallbackError = "Error updating card";
 
+        const data = await response.json().catch(() => {
+            throw new Error(fallbackError)
+        });
+
+        const errorMessage = data?.detail ?? fallbackError;
+        throw new Error(errorMessage)
+    }
     return await response.json();
 };
 
 export default patchCard;
+
+

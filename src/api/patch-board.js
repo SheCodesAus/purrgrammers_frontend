@@ -1,5 +1,7 @@
-const patchBoard = async (boardId, boardData, token) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/retro-boards/${boardId}/`, {
+async function patchBoard(boardId, boardData, token) {
+    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards/${boardId}/`;
+
+    const response = await fetch(url, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -9,10 +11,17 @@ const patchBoard = async (boardId, boardData, token) => {
     });
 
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const fallbackError = "Error updating board";
+
+        const data = await response.json().catch(() => {
+            throw new Error(fallbackError)
+        });
+
+        const errorMessage = data?.detail ?? fallbackError;
+        throw new Error(errorMessage)
     }
 
     return await response.json();
-};
+}
 
 export default patchBoard;

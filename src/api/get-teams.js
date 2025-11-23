@@ -4,8 +4,7 @@ async function getTeams(token) {
     const response = await fetch(url, {
         method: "GET", 
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": token  // Use token as-is since it already has "Token " prefix
+            "Authorization": token  
         }
     });
 
