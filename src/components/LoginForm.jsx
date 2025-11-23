@@ -92,13 +92,14 @@ function LoginForm() {
 
   return (
     <div className="login-form-container">
-      <h2 className="login-form-h2">Login</h2>
+      <h2 className="login-signup-page-title">Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username/Email:</label>
           <input
             type="text"
             id="username"
+            placeholder="Enter Your Username"
             value={formState.fields.username}
             onChange={handleChange}
             disabled={isLoading}
@@ -113,6 +114,7 @@ function LoginForm() {
           <input
             type="password"
             id="password"
+            placeholder="Enter Your Password"
             value={formState.fields.password}
             onChange={handleChange}
             disabled={isLoading}
@@ -129,6 +131,7 @@ function LoginForm() {
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Login"}
         </button>
+        <button onClick={() => navigate("/signup")}>Sign Up</button>
       </form>
     </div>
   );
