@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useAuth } from "../../hooks/use-auth";
+import patchCard from "../../api/patch-card";
+import "./Card.css";
 
 function Card({
     card,
-    currentUser,
+    columnType,
     isEditing,
     onEdit,
     onDelete,
@@ -10,17 +13,29 @@ function Card({
     onCancelEdit
 }) {
     const [editText, setEditText] = useState("");
+    const { auth } = useAuth();
 
     // Start editing mode
     const handleStartEdit = () => {
-        setEditText(card.text);
+        setEditText(card.content || "");
         onStartEdit();
     };
 
     // Save edited text
-    const handleSave = () => {
+    const handleSave = async () => {
         if (editText.trim()) {
-            onEdit(editText.trim());
+            try {
+                const updatedCard = await patchCard(
+                    card.id,
+                    { content: editText.trim() },
+                    auth.token
+                );
+                // Pass just the content string, not the full card object
+                onEdit(updatedCard.content);
+            } catch (error) {
+                console.error("Failed to update card:", error);
+                onCancelEdit(); // Fall back to cancel if error
+            }
         } else {
             onCancelEdit();
         }
@@ -34,15 +49,25 @@ function Card({
 
     // Format date in Australian format (short)
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-AU', {
-            day: 'numeric',
-            month: 'short'
-        });
+        if (!dateString) return "";
+        
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return "";
+            
+            return date.toLocaleDateString('en-AU', {
+                day: 'numeric',
+                month: 'short'
+            });
+        } catch (error) {
+            console.warn("Invalid date format:", dateString);
+            return "";
+        }
     };
 
     if (isEditing) {
         return (
-            <div className="card editing">
+            <div className={`card editing ${columnType}`}>
                 <textarea
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
@@ -71,19 +96,21 @@ function Card({
 
     return (
         <div 
-            className="card"
+            className={`card ${columnType}`}
             onDoubleClick={handleStartEdit}
             title="Double-click to edit"
         >
             <div className="card-content">
-                <p className="card-text">{card.text}</p>
+                <p className="card-text">{card.content || "Click to edit"}</p>
             </div>
 
             <div className="card-footer">
                 <div className="card-meta">
-                    <span className="card-author">{card.author}</span>
+                    <span className="card-author">
+                        {card.created_by?.username || card.created_by?.initials || card.author || "Anonymous"}
+                    </span>
                     <span className="card-date">
-                        {formatDate(card.createdAt)}
+                        {card.created_at ? formatDate(card.created_at) : ""}
                     </span>
                 </div>
 

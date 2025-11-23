@@ -1,5 +1,8 @@
+import './CardPool.css';
+
 function CardPool({
     dragState,     // current drag state from board: isDragging, draggedCardType, dragOverColumn
+    isCreatingCard, // loading state when creating a card
     onDragStart,   // function to START dragging
     onDragEnd,     // function to end drag
 }) {
@@ -13,6 +16,7 @@ function CardPool({
             <div className="draggable-cards">
                 <DraggableCard
                     isDragging={dragState.isDragging}
+                    isCreatingCard={isCreatingCard}
                     onDragStart={() => onDragStart('generic')} // generic card type
                     onDragEnd={onDragEnd}
                 />
@@ -20,7 +24,9 @@ function CardPool({
 
             {/* Instructions */}
             <div className="pool-instructions">
-                {dragState.isDragging ? (
+                {isCreatingCard ? (
+                    <p className="creating-hint">Creating card...</p>
+                ) : dragState.isDragging ? (
                     <p className="drag-hint">Drop your card into any column above</p>
                 ) : (
                     <p className="idle-hint">Drag the card to any column to get started</p>
@@ -31,7 +37,7 @@ function CardPool({
 }
 
 // Single generic draggable card
-function DraggableCard({ isDragging, onDragStart, onDragEnd }) {
+function DraggableCard({ isDragging, isCreatingCard, onDragStart, onDragEnd }) {
     const handleDragStart = (event) => {
         // Set drag data
         event.dataTransfer.effectAllowed = 'copy';
@@ -47,8 +53,8 @@ function DraggableCard({ isDragging, onDragStart, onDragEnd }) {
 
     return (
         <div
-            className={`draggable-card generic-card ${isDragging ? 'dragging' : ''}`}
-            draggable={true}
+            draggable={!isCreatingCard}  // Disable dragging while creating
+            className={`draggable-card ${isCreatingCard ? 'disabled' : ''} generic-card ${isDragging ? 'dragging' : ''}`}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             title="Drag me to any column to add a new card"

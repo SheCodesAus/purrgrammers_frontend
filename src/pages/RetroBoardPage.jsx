@@ -67,7 +67,7 @@ function RetroBoardPage() {
                 <div className="error-container">
                     <p className="error">{boardState.error}</p>
                     <button 
-                        className="btn btn-primary"
+                        className="retro-page-btn retro-page-btn-primary"
                         onClick={() => navigate("/dashboard")}
                     >
                         Back to Dashboard
@@ -83,7 +83,7 @@ function RetroBoardPage() {
                 <div className="error-container">
                     <p>Board not found</p>
                     <button 
-                        className="btn btn-primary"
+                        className="retro-page-btn retro-page-btn-primary"
                         onClick={() => navigate("/dashboard")}
                     >
                         Back to Dashboard

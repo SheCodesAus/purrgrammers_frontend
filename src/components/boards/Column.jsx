@@ -1,4 +1,5 @@
 import Card from "./Card";
+import './Column.css';
 
 function Column({
     column,
@@ -15,7 +16,7 @@ function Column({
 }) {
     return (
         <div 
-            className={`retro-column ${column.type} ${
+            className={`retro-column ${column.column_type} ${
                 dragState.dragOverColumn === column.id ? 'drag-over' : ''
             }`}
             onDragOver={onDragOver}
@@ -36,6 +37,7 @@ function Column({
                         <Card
                             key={card.id}
                             card={card}
+                            columnType={column.column_type}
                             currentUser={currentUser}
                             isEditing={editingCard === card.id}
                             onEdit={(newText) => onEditCard(card.id, newText)}

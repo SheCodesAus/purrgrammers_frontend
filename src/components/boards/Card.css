@@ -1,0 +1,225 @@
+/* ====================================
+   CARD COMPONENT
+   ==================================== */
+
+/* Base card styling */
+.card {
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Card colors based on column type */
+.card.start {
+  
+  background: #d3bdff;
+}
+
+.card.stop {
+  
+  background: #ffd3a8;
+}
+
+.card.continue {
+  
+  background: #d3bdff;
+}
+
+/* Card content */
+.card-content {
+  margin-bottom: 8px;
+  background-color: transparent;
+}
+
+.card-text {
+  margin: 0;
+  color: #374151;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  background-color: transparent;
+}
+
+/* Card footer with meta info and actions */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  background-color: transparent;
+}
+
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  background-color: transparent;
+}
+
+.card-author {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: transparent;
+}
+
+.card-date {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  background-color: transparent;
+}
+
+/* Card actions */
+.card-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .card-actions {
+  opacity: 1;
+}
+
+.edit-btn, .delete-btn {
+  all: unset;
+  display: inline-block;
+  background: none;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.edit-btn {
+  color: #6366f1;
+}
+
+.card .edit-btn:hover {
+  background: none;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  outline: none;
+  color: #4f46e5;
+}
+
+.delete-btn {
+  color: #dc2626;
+}
+
+.card .delete-btn:hover {
+  background: none;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  outline: none;
+  color: #b91c1c;
+}
+
+/* Editing state */
+.card.editing {
+  border: 2px solid #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.card-edit-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+  background: transparent;
+}
+
+.card-edit-textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.save-btn, .cancel-btn {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.save-btn {
+  background-color: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.save-btn:hover {
+  background-color: #059669;
+  border-color: #059669;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.cancel-btn:hover {
+  background-color: transparent;
+  color: #374151;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+/* Mobile */
+@media (max-width: 768px) {
+  .card {
+    padding: 10px;
+  }
+  
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .card-actions {
+    align-self: flex-end;
+    opacity: 1; /* Always show on mobile */
+  }
+  
+  .edit-btn, .delete-btn {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+}

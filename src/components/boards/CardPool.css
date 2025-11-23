@@ -1,0 +1,235 @@
+/* ====================================
+   CARD POOL COMPONENT
+   ==================================== */
+
+/* Main card pool container */
+.card-pool {
+  position: relative;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Card pool header */
+.card-pool-header {
+  background: transparent;
+  margin-bottom: 16px;
+}
+
+.card-pool-header h4 {
+  margin: 0 0 8px 0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: transparent;
+}
+
+.card-pool-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  background: transparent;
+}
+
+/* Draggable cards container */
+.draggable-cards {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+/* Individual draggable card */
+.draggable-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: grab;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.draggable-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.draggable-card:active {
+  cursor: grabbing;
+}
+
+/* Dragging state */
+.draggable-card.dragging {
+  opacity: 0.8;
+  transform: rotate(5deg) scale(1.05);
+  cursor: grabbing;
+}
+
+/* Disabled state */
+.draggable-card.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.draggable-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card icon */
+.card-icon {
+  font-size: 1.5rem;
+  background: transparent;
+}
+
+/* Card info */
+.card-info {
+  flex: 1;
+  background: transparent;
+}
+
+.card-title {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  background: transparent;
+}
+
+.card-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+  background: transparent;
+}
+
+/* Drag handle */
+.drag-handle {
+  color: #9ca3af;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: grab;
+  background: transparent;
+  user-select: none;
+}
+
+/* Instructions section */
+.pool-instructions {
+  background: transparent;
+  flex: 1;
+}
+
+.pool-instructions p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  background: transparent;
+  font-style: italic;
+}
+
+/* Different instruction states */
+.creating-hint {
+  color: #fbbf24 !important;
+  font-weight: 500 !important;
+  animation: pulse 2s infinite;
+}
+
+.drag-hint {
+  color: #34d399 !important;
+  font-weight: 500 !important;
+}
+
+.idle-hint {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .card-pool {
+    padding: 16px;
+    margin-top: 0.5rem;
+  }
+  
+  .draggable-card {
+    min-width: 180px;
+    padding: 14px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .card-pool {
+    padding: 14px;
+    margin: 0.5rem;
+  }
+  
+  .draggable-card {
+    min-width: auto;
+    padding: 12px;
+    gap: 8px;
+  }
+  
+  .card-title {
+    font-size: 0.9rem;
+  }
+  
+  .card-info p {
+    font-size: 0.75rem;
+  }
+  
+  .card-pool-header h4 {
+    font-size: 1.1rem;
+  }
+  
+  .card-pool-header p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .card-pool {
+    padding: 12px;
+    margin: 0.5rem;
+  }
+  
+  .draggable-card {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .card-icon {
+    font-size: 1.2rem;
+  }
+  
+  .drag-handle {
+    font-size: 1rem;
+  }
+}

@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/use-auth';
+import patchBoard from '../../api/patch-board';
+import './BoardHeader.css';
+import './CardPool.css';
 
 function BoardHeader({ 
     boardData, 
@@ -8,6 +12,7 @@ function BoardHeader({
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editTitle, setEditTitle] = useState('');
     const navigate = useNavigate();
+    const { auth } = useAuth();
 
     const handleTitleClick = () => {
         setEditTitle(boardData?.title || '');
@@ -16,7 +21,19 @@ function BoardHeader({
 
     const handleTitleSave = async () => {
         if (editTitle.trim() && editTitle !== boardData?.title) {
-            await onTitleUpdate(editTitle.trim());
+            try {
+                const updatedBoard = await patchBoard(
+                    boardData.id,
+                    { title: editTitle.trim() },
+                    auth.token
+                );
+                // Pass just the title string to match parent component expectations
+                onTitleUpdate(updatedBoard.title);
+            } catch (error) {
+                console.error("Failed to update board title:", error);
+                // Reset to original title on error
+                setEditTitle(boardData?.title || '');
+            }
         }
         setIsEditingTitle(false);
     };

@@ -1,0 +1,92 @@
+/* Main page container */
+.retro-board-page {
+  min-height: 100vh;
+  padding: 0 0 20px 0;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 200px;
+}
+
+.loading-container p {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+/* Error state */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 200px;
+  gap: 16px;
+}
+
+.error {
+  background-color: #fee;
+  color: #c33;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #fcc;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Button styling */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+/* RESPONSIVE DESIGN */
+
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .retro-board-page {
+    padding: 0 0 16px 0;
+  }
+  
+  .board-container {
+    max-width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .retro-board-page {
+    padding: 0 0 12px 0;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .retro-board-page {
+    padding: 0 0 8px 0;
+  }
+}

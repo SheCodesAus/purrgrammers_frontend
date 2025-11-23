@@ -2,9 +2,13 @@ import { useState } from "react";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import CardPool from "./CardPool";
+import createCard from "../../api/create-card";
+import { useAuth } from "../../hooks/use-auth";
 import "./Board.css";
 
 function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
+    const { auth } = useAuth();
+    
     // Debug logging
     console.log("Board received boardData:", boardData);
     console.log("boardData.columns:", boardData?.columns);
@@ -20,6 +24,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Editing state
     const [editingCard, setEditingCard] = useState(null);
 
+    // Card creation state
+    const [isCreatingCard, setIsCreatingCard] = useState(false);
+
+    // Error state
+    const [cardError, setCardError] = useState(null);
+
     // Board title management
     const handleTitleUpdate = (newTitle) => {
         const updatedBoard = {
@@ -30,28 +40,69 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     };
 
     // Card operations
-    const handleAddCard = (columnId, cardText, cardType = null) => {
-        const newCard = {
-            id: Date.now(), // Simple ID generation for MVP
-            text: cardText,
-            author: currentUser?.username || "Anonymous",
-            authorId: currentUser?.id,
-            createdAt: new Date().toISOString(),
-            votes: 0,
-            type: cardType
-        };
+    const handleAddCard = async (columnId, cardText, cardType = null) => {
+        try {
+            setIsCreatingCard(true);
+            
+            // Debug logging
+            console.log("Creating card with data:", { columnId, cardText, cardType });
+            console.log("Auth token:", auth?.token ? "[Token present]" : "[No token]");
+            console.log("Current board data:", boardData);
+            console.log("Available columns:", boardData?.columns);
+            console.log("Target column:", boardData?.columns?.find(col => col.id === columnId));
+            console.log("Sample existing cards:", boardData?.columns?.flatMap(col => col.cards || []).slice(0, 2));
+            console.log("Auth token (first 20 chars):", auth?.token?.substring(0, 20));
+            
+            // Find target column and calculate next position
+            const targetColumn = boardData?.columns?.find(col => col.id === columnId);
+            const nextPosition = targetColumn?.cards?.length || 0;
+            
+            console.log("Target column for color:", targetColumn);
+            
+            // Prepare card data for API - backend will set status automatically
+            const cardData = {
+                content: cardText || "",  // Empty string for blank cards
+                column: parseInt(columnId, 10), // Ensure column ID is an integer
+                retro_board: parseInt(boardData?.id, 10), // Add board reference
+                position: nextPosition,  // Use next available position
+                // Add column color if backend needs it
+                ...(targetColumn?.color && { color: targetColumn.color })
+            };
+            
+            console.log("Sending card data to API:", cardData);
 
-        const updatedBoard = {
-            ...boardData,
-            columns: boardData.columns?.map(column => 
-                column.id === columnId 
-                    ? { ...column, cards: [...column.cards, newCard] }
-                    : column
-            ) || []
-        };
+            // Call the API
+            const newCard = await createCard(cardData, auth.token);
+            
+            // Update board state with real card data from backend
+            const updatedBoard = {
+                ...boardData,
+                columns: boardData.columns?.map(column => 
+                    column.id === columnId 
+                        ? { ...column, cards: [...(column.cards || []), newCard] }
+                        : column
+                ) || []
+            };
 
-        onBoardUpdate(updatedBoard);
-        return newCard.id; // Return ID for immediate editing
+            onBoardUpdate(updatedBoard);
+            return newCard.id; // Return real card ID from backend
+            
+        } catch (error) {
+            console.error("Failed to create card:", error);
+            console.error("Error details:", {
+                message: error.message,
+                columnId,
+                cardText,
+                authToken: auth?.token ? "[Present]" : "[Missing]"
+            });
+            
+            // Show error to user
+            setCardError(`Failed to create card: ${error.message}`);
+            setTimeout(() => setCardError(null), 5000); // Clear after 5 seconds
+            return null;
+        } finally {
+            setIsCreatingCard(false);
+        }
     };
 
     const handleEditCard = (columnId, cardId, newText) => {
@@ -62,7 +113,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     ? { 
                         ...column, 
                         cards: column.cards.map(card => 
-                            card.id === cardId ? { ...card, text: newText } : card
+                            card.id === cardId ? { ...card, content: newText } : card
                         ) 
                     }
                     : column
@@ -122,15 +173,17 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         }
     };
 
-    const handleDrop = (e, columnId) => {
+    const handleDrop = async (e, columnId) => {
         e.preventDefault();
         
-        if (dragState.isDragging && dragState.draggedCardType) {
+        if (dragState.isDragging && dragState.draggedCardType && !isCreatingCard) {
             // Create a new card in the dropped column
-            const cardId = handleAddCard(columnId, "", dragState.draggedCardType);
+            const cardId = await handleAddCard(columnId, "", dragState.draggedCardType);
             
-            // Set it to editing mode immediately
-            setEditingCard(cardId);
+            // Set to editing mode if card was created successfully
+            if (cardId) {
+                setEditingCard(cardId);
+            }
         }
 
         // Reset drag state
@@ -179,9 +232,17 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             
             <CardPool
                 dragState={dragState}
+                isCreatingCard={isCreatingCard}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             />
+
+            {/* Error display */}
+            {cardError && (
+                <div className="error-message">
+                    {cardError}
+                </div>
+            )}
         </div>
     );
 }

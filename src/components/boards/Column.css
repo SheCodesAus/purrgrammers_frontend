@@ -1,0 +1,158 @@
+/* ====================================
+   COLUMN COMPONENT
+   ==================================== */
+
+/* Main column container */
+.retro-column {
+  flex: 0 1 auto;
+  min-width: 300px;
+  max-width: 450px;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+/* Drag over state */
+.retro-column.drag-over {
+  border-color: #667eea;
+  background-color: #f8f9ff;
+  border-style: dashed;
+  border-width: 3px;
+  transform: scale(1.02);
+}
+
+/* Column header */
+.column-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.column-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin: 0;
+}
+
+.column-count {
+  background-color: #e2e8f0;
+  color: #6b7280;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Column content area */
+.column-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Cards list */
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+/* Drop zone hint during drag */
+.drop-zone-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  margin-top: 16px;
+  border: 2px dashed #9ca3af;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.9rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Empty column state */
+.empty-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 100px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.empty-column p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .retro-column {
+    max-width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .retro-column {
+    padding: 12px;
+  }
+  
+  .column-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+  
+  .column-title {
+    font-size: 1.1rem;
+  }
+  
+  .cards-list {
+    gap: 8px;
+  }
+  
+  .drop-zone-hint {
+    padding: 16px;
+    margin-top: 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .retro-column {
+    padding: 8px;
+  }
+  
+  .column-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    text-align: center;
+  }
+}
