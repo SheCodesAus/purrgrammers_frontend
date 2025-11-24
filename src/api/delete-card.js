@@ -1,15 +1,15 @@
-async function getBoards(token) {
-    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards`;
+async function deleteCard(cardId, token) {
+    const url = `${import.meta.env.VITE_API_URL}/api/cards/${cardId}/`;
 
     const response = await fetch(url, {
-        method: "GET",
+        method: "DELETE",
         headers: {
             "Authorization": token
         }
     });
 
     if (!response.ok) {
-        const fallbackError = "Error fetching boards";
+        const fallbackError = "Error deleting card";
 
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
@@ -19,7 +19,8 @@ async function getBoards(token) {
         throw new Error(errorMessage)
     }
 
-    return await response.json();
+    // delete returns 204 no content, so no JSON to parse
+    return;
 }
 
-export default getBoards;
+export default deleteCard;

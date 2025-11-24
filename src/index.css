@@ -3,9 +3,24 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Stack Sans Notch", sans-serif;
   letter-spacing: 0.5 px;
-  background-color: white;
 }
 
 /* Root styling goes here*/
+:root {
+  /* fonts */
+  --font-heading: 'Stack Sans Notch', sans-serif;
+  --font-space-grotesk: 'Space Grotesk', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-nunito-sans: 'Nunito Sans', sans-serif;
+  --font-merriweather: 'Merriweather', serif;
+  --font-roboto: 'Roboto', sans-serif;
+  --font-rubik-fade: 'Rubik 80s Fade', cursive;
+  --font-stack-sans-text: 'Stack Sans Text', sans-serif;
+
+  /* color variables */
+  --primary-color: #7c67e7; 
+  --primary-color-dark: #24127b; /* Darker shade for hover states */
+  --white: #ffffff;
+}

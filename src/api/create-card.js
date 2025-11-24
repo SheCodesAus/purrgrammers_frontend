@@ -1,15 +1,17 @@
-async function getBoards(token) {
-    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards`;
+async function createCard(cardData, token) {
+    const url = `${import.meta.env.VITE_API_URL}/api/cards/`;
 
     const response = await fetch(url, {
-        method: "GET",
+        method: "POST",
         headers: {
+            "Content-Type": "application/json",
             "Authorization": token
-        }
+        },
+        body: JSON.stringify(cardData)
     });
 
     if (!response.ok) {
-        const fallbackError = "Error fetching boards";
+        const fallbackError = "Error creating card";
 
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
@@ -22,4 +24,4 @@ async function getBoards(token) {
     return await response.json();
 }
 
-export default getBoards;
+export default createCard;
