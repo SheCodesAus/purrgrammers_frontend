@@ -2,22 +2,19 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
 import patchBoard from '../../api/patch-board';
+import deleteBoard from '../../api/delete-board';
 import './BoardHeader.css';
 import './CardPool.css';
 
 function BoardHeader({ 
     boardData, 
-    onTitleUpdate  // function to update board title
+    onTitleUpdate,  // function to update board title
+    onBoardDelete   // function to handle board deletion
 }) {
-    const [isEditingTitle, setIsEditingTitle] = useState(false);
-    const [editTitle, setEditTitle] = useState('');
+    const [editTitle, setEditTitle] = useState(boardData?.title || '');
+    const [showEditOptions, setShowEditOptions] = useState(false);
     const navigate = useNavigate();
     const { auth } = useAuth();
-
-    const handleTitleClick = () => {
-        setEditTitle(boardData?.title || '');
-        setIsEditingTitle(true);
-    };
 
     const handleTitleSave = async () => {
         if (editTitle.trim() && editTitle !== boardData?.title) {
@@ -27,20 +24,42 @@ function BoardHeader({
                     { title: editTitle.trim() },
                     auth.token
                 );
-                // Pass just the title string to match parent component expectations
                 onTitleUpdate(updatedBoard.title);
             } catch (error) {
                 console.error("Failed to update board title:", error);
-                // Reset to original title on error
                 setEditTitle(boardData?.title || '');
             }
         }
-        setIsEditingTitle(false);
     };
 
-    const handleTitleCancel = () => {
-        setIsEditingTitle(false);
-        setEditTitle('');
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleTitleSave();
+        } else if (e.key === 'Escape') {
+            setEditTitle(boardData?.title || '');
+        }
+    };
+
+    const handleDeleteBoard = async () => {
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${boardData?.title}"? This action cannot be undone.`
+        );
+        
+        if (!confirmDelete) {
+            return;
+        }
+
+        try {
+            await deleteBoard(boardData.id, auth.token);
+            
+            // Call parent callback to handle post-deletion (e.g., navigate away)
+            if (onBoardDelete) {
+                onBoardDelete(boardData.id);
+            }
+        } catch (error) {
+            console.error("Failed to delete board:", error);
+            alert(`Failed to delete board: ${error.message}`);
+        }
     };
 
     const formatDate = (dateString) => {
@@ -61,44 +80,41 @@ function BoardHeader({
                 >
                     ← Back
                 </button>
+            </div>
 
-                <div className="board-title-section">
-                    {isEditingTitle ? (
-                        <div className="title-edit-mode">
-                            <input
-                                type="text"
-                                value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                                onBlur={handleTitleSave}
-                                className="title-edit-input"
-                                autoFocus
-                                maxLength={100}
-                            />
-                            <div className="edit-hints">
-                                <button onClick={handleTitleSave} className="save-btn">Save</button>
-                                <button onClick={handleTitleCancel} className="cancel-btn">Cancel</button>
-                            </div>
-                        </div>
-                    ) : (
-                        <h1 
-                            className="board-title editable"
-                            onClick={handleTitleClick}
-                            title="Click to edit title"
-                        >
-                            {boardData?.title || 'Untitled Board'}
-                        </h1>
-                    )}
+            <div className="board-title-section">
+                <div className="title-input-container">
+                    <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onBlur={handleTitleSave}
+                        onKeyDown={handleKeyPress}
+                        onFocus={() => setShowEditOptions(true)}
+                        className={`board-title-inline ${showEditOptions ? 'editable-indicator' : ''}`}
+                        maxLength={100}
+                        placeholder={boardData?.title || 'Board title'}
+                    />
                 </div>
             </div>
 
             <div className="board-header-right">
                 <div className="board-metadata">
                     {boardData?.created_at && (
-                        <div className="board-date">
-                            <span className="date-label">Created:</span>
-                            <span className="date-value">
-                                {formatDate(boardData.created_at)}
-                            </span>
+                        <div className="board-date-with-delete">
+                            <div className="board-date">
+                                <span className="date-label">Created:</span>
+                                <span className="date-value">
+                                    {formatDate(boardData.created_at)}
+                                </span>
+                            </div>
+                            <button 
+                                className="delete-board-btn" 
+                                onClick={handleDeleteBoard}
+                                title="Delete board"
+                            >
+                                <span className="material-icons">delete</span>
+                            </button>
                         </div>
                     )}
                 </div>

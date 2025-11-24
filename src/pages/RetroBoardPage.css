@@ -55,12 +55,12 @@
 }
 
 .btn-primary {
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--white);
 }
 
 .btn-primary:hover {
-  background-color: #2563eb;
+  background-color: var(--primary-color-dark);
 }
 
 /* RESPONSIVE DESIGN */

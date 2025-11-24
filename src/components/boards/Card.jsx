@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import patchCard from "../../api/patch-card";
+import deleteCard from "../../api/delete-card";
 import "./Card.css";
 
 function Card({
     card,
     columnType,
+    columnColor,
     isEditing,
     onEdit,
     onDelete,
@@ -47,6 +49,21 @@ function Card({
         onCancelEdit();
     };
 
+    // delete card
+    const handleDelete = async () => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this card?');
+
+        if (confirmDelete) {
+            try {
+                await deleteCard(card.id, auth.token);
+                onDelete(); //call the existing onDelete prop to update parent state
+            } catch (error) {
+                console.error("Failed to delete card:", error);
+                alert("Failed to delete card. Please try again");
+            }
+        }
+    };
+
     // Format date in Australian format (short)
     const formatDate = (dateString) => {
         if (!dateString) return "";
@@ -58,7 +75,7 @@ function Card({
             return date.toLocaleDateString('en-AU', {
                 day: 'numeric',
                 month: 'short'
-            });
+            }).replace(' ', ' '); // Ensure single space
         } catch (error) {
             console.warn("Invalid date format:", dateString);
             return "";
@@ -67,7 +84,12 @@ function Card({
 
     if (isEditing) {
         return (
-            <div className={`card editing ${columnType}`}>
+            <div 
+                className={`card editing ${columnType}`}
+                style={{
+                    backgroundColor: columnColor || undefined
+                }}
+            >
                 <textarea
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
@@ -80,14 +102,16 @@ function Card({
                     <button 
                         onClick={handleSave}
                         className="save-btn"
+                        title="Save"
                     >
-                        Save
+                        ✓
                     </button>
                     <button 
                         onClick={handleCancel}
                         className="cancel-btn"
+                        title="Cancel"
                     >
-                        Cancel
+                        ✕
                     </button>
                 </div>
             </div>
@@ -97,9 +121,23 @@ function Card({
     return (
         <div 
             className={`card ${columnType}`}
-            onDoubleClick={handleStartEdit}
-            title="Double-click to edit"
+            style={{
+                backgroundColor: columnColor || undefined
+            }}
+            onClick={handleStartEdit}
+            title="Click to edit"
         >
+            <button 
+                className="card-delete-btn"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete();
+                }}
+                title="Delete card"
+            >
+                <span className="material-icons">close</span>
+            </button>
+            
             <div className="card-content">
                 <p className="card-text">{card.content || "Click to edit"}</p>
             </div>
@@ -123,11 +161,7 @@ function Card({
                     </button>
                     
                     <button 
-                        onClick={() => {
-                            if (window.confirm('Delete this card?')) {
-                                onDelete();
-                            }
-                        }}
+                        onClick={handleDelete}
                         className="delete-btn"
                     >
                         Delete

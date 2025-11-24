@@ -36,7 +36,7 @@ input:focus {
   outline: none;
 }
 
-button {
+form button {
   padding: 0.8rem 1rem;
   background-color: #6b6b6b;
   color: white;
@@ -48,16 +48,16 @@ button {
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-button:hover {
+form button:hover {
   background-color: #595959;
 }
 
-button:active {
+form button:active {
   transform: scale(0.98);
 }
 
 /* Style the link inside the signup button */
-button a {
+form button a {
   text-decoration: none;
   color: inherit;
 }

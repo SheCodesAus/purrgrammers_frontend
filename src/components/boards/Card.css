@@ -4,18 +4,18 @@
 
 /* Base card styling */
 .card {
+  position: relative;
   border-radius: 6px;
   border: 1px solid #e2e8f0;
   padding: 12px;
   margin-bottom: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  aspect-ratio: 1/1;
+  width: 200px;
+  display: grid;
+  grid-template-rows: 1fr auto; /* content flexible, footer fixed */
+  font-family: var(--font-stack-sans-text);
 }
 
 /* Card colors based on column type */
@@ -36,17 +36,22 @@
 
 /* Card content */
 .card-content {
-  margin-bottom: 8px;
-  background-color: transparent;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
 }
 
 .card-text {
   margin: 0;
-  color: #374151;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  color: black;
+  font-size: 0.8rem;
+  line-height: 1.3;
   word-wrap: break-word;
-  background-color: transparent;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 /* Card footer with meta info and actions */
@@ -54,147 +59,108 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  background-color: transparent;
+  min-height: 0;
 }
 
 .card-meta {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   flex: 1;
-  background-color: transparent;
+  min-width: 0;
 }
 
 .card-author {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #6b7280;
-  background-color: transparent;
+  color: rgb(91, 88, 88);
 }
 
 .card-date {
   font-size: 0.7rem;
-  color: #9ca3af;
-  background-color: transparent;
+  color: rgb(91, 88, 88);
+  white-space: nowrap;
 }
 
-/* Card actions */
-.card-actions {
-  display: flex;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.card:hover .card-actions {
-  opacity: 1;
-}
-
-.edit-btn, .delete-btn {
-  all: unset;
-  display: inline-block;
+/* Card delete button */
+.card-delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
   background: none;
-  background-color: transparent;
-  background-image: none;
   border: none;
-  padding: 4px 6px;
-  border-radius: 3px;
-  font-size: 0.7rem;
-  font-weight: 500;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: none;
+  z-index: 1;
+  transition: transform 0.1s ease;
 }
 
-.edit-btn {
-  color: #6366f1;
+.card-delete-btn .material-icons {
+  font-size: 16px;
+  color: #6b7280;
 }
 
-.card .edit-btn:hover {
-  background: none;
-  background-color: transparent;
-  background-image: none;
-  box-shadow: none;
-  outline: none;
-  color: #4f46e5;
+.card-delete-btn:hover {
+  transform: scale(1.2);
 }
 
-.delete-btn {
-  color: #dc2626;
-}
-
-.card .delete-btn:hover {
-  background: none;
-  background-color: transparent;
-  background-image: none;
-  box-shadow: none;
-  outline: none;
-  color: #b91c1c;
+/* Card actions (hidden for now) */
+.card-actions {
+  display: none;
 }
 
 /* Editing state */
 .card.editing {
-  border: 2px solid #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.1);
 }
 
 .card-edit-textarea {
-  width: 100%;
-  min-height: 60px;
-  padding: 8px;
-  border: 1px solid #d1d5db;
+  width: calc(100% - 16px);
+  min-height: 50px;
+  padding: 6px;
+  border: none;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-family: inherit;
-  resize: vertical;
+  resize: none;
   background: transparent;
-}
-
-.card-edit-textarea:focus {
+  margin: 0;
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 1px #6366f1;
 }
 
 .edit-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 4px;
+  margin-top: 4px;
 }
 
 .save-btn, .cancel-btn {
-  padding: 4px 12px;
+  padding: 6px 8px;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid;
-}
-
-.save-btn {
-  background-color: #10b981;
-  color: white;
-  border-color: #10b981;
-}
-
-.save-btn:hover {
-  background-color: #059669;
-  border-color: #059669;
-}
-
-.cancel-btn {
-  background-color: transparent;
+  border: none;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
   color: #6b7280;
-  border-color: #d1d5db;
 }
 
-.cancel-btn:hover {
-  background-color: transparent;
+.save-btn:hover, .cancel-btn:hover {
   color: #374151;
+  background: rgba(107, 114, 128, 0.1);
 }
 
 /* ====================================
@@ -211,15 +177,5 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-  }
-  
-  .card-actions {
-    align-self: flex-end;
-    opacity: 1; /* Always show on mobile */
-  }
-  
-  .edit-btn, .delete-btn {
-    padding: 6px 8px;
-    font-size: 0.75rem;
   }
 }

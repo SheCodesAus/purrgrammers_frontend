@@ -11,7 +11,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 0rem;
 }
 
 /* Columns container - layout for all columns */
@@ -19,10 +19,37 @@
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   flex: 1;
   width: 100%;
-  gap: 20px;
+  gap: 0px;
   align-items: flex-start;
+}
+
+/* Add column button */
+.add-column-button {
+  flex: 0 0 320px;
+  min-height: 300px;
+  background: transparent;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.add-column-button:hover {
+  border-color: #9ca3af;
+  color: #374151;
+  background: #f9fafb;
+}
+
+.add-column-button:active {
+  transform: translateY(1px);
 }

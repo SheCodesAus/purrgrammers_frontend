@@ -1,4 +1,4 @@
-async function postLogin(username, password) {
+async function login(username, password) {
     const url = `${import.meta.env.VITE_API_URL}/api/users/login/`;
     const response = await fetch(url, {
         method: "POST",
@@ -25,4 +25,4 @@ async function postLogin(username, password) {
     return await response.json();
 }
 
-export default postLogin;
+export default login;

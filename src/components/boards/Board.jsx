@@ -3,34 +3,25 @@ import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import CardPool from "./CardPool";
 import createCard from "../../api/create-card";
+import createColumn from "../../api/create-column";
+import deleteColumn from "../../api/delete-column";
 import { useAuth } from "../../hooks/use-auth";
 import "./Board.css";
 
 function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const { auth } = useAuth();
     
-    // Debug logging
-    console.log("Board received boardData:", boardData);
-    console.log("boardData.columns:", boardData?.columns);
-    console.log("Type of columns:", typeof boardData?.columns);
-    
-    // Drag and drop state
+    // State management
     const [dragState, setDragState] = useState({
         isDragging: false,
         draggedCardType: null,
         dragOverColumn: null
     });
-
-    // Editing state
     const [editingCard, setEditingCard] = useState(null);
-
-    // Card creation state
     const [isCreatingCard, setIsCreatingCard] = useState(false);
-
-    // Error state
     const [cardError, setCardError] = useState(null);
 
-    // Board title management
+    // Board management
     const handleTitleUpdate = (newTitle) => {
         const updatedBoard = {
             ...boardData,
@@ -39,42 +30,76 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         onBoardUpdate(updatedBoard);
     };
 
-    // Card operations
+    const handleBoardDelete = (boardId) => {
+        if (onNavigateBack) {
+            onNavigateBack();
+        }
+    };
+
+    // Column management
+    const handleAddColumn = async () => {
+        try {
+            const nextPosition = (boardData?.columns?.length || 0) + 1;
+            const columnData = {
+                retro_board: parseInt(boardData?.id, 10),
+                title: "New Column",
+                position: nextPosition
+            };
+
+            const newColumn = await createColumn(columnData, auth.token);
+            const updatedBoard = {
+                ...boardData,
+                columns: [...(boardData?.columns || []), newColumn]
+            };
+
+            onBoardUpdate(updatedBoard);
+        } catch (error) {
+            console.error("Failed to create column:", error);
+            alert(`Failed to create column: ${error.message}`);
+        }
+    };
+
+    const handleColumnUpdate = (updatedColumn) => {
+        const updatedBoard = {
+            ...boardData,
+            columns: boardData.columns?.map(column => 
+                column.id === updatedColumn.id ? updatedColumn : column
+            ) || []
+        };
+        onBoardUpdate(updatedBoard);
+    };
+
+    const handleDeleteColumn = async (columnId) => {
+        try {
+            await deleteColumn(columnId, auth.token);
+            const updatedBoard = {
+                ...boardData,
+                columns: boardData.columns?.filter(column => column.id !== columnId) || []
+            };
+            onBoardUpdate(updatedBoard);
+        } catch (error) {
+            console.error("Failed to delete column:", error);
+            alert(`Failed to delete column: ${error.message}`);
+        }
+    };
+
+    // Card management
     const handleAddCard = async (columnId, cardText, cardType = null) => {
         try {
             setIsCreatingCard(true);
             
-            // Debug logging
-            console.log("Creating card with data:", { columnId, cardText, cardType });
-            console.log("Auth token:", auth?.token ? "[Token present]" : "[No token]");
-            console.log("Current board data:", boardData);
-            console.log("Available columns:", boardData?.columns);
-            console.log("Target column:", boardData?.columns?.find(col => col.id === columnId));
-            console.log("Sample existing cards:", boardData?.columns?.flatMap(col => col.cards || []).slice(0, 2));
-            console.log("Auth token (first 20 chars):", auth?.token?.substring(0, 20));
-            
-            // Find target column and calculate next position
             const targetColumn = boardData?.columns?.find(col => col.id === columnId);
             const nextPosition = targetColumn?.cards?.length || 0;
             
-            console.log("Target column for color:", targetColumn);
-            
-            // Prepare card data for API - backend will set status automatically
             const cardData = {
-                content: cardText || "",  // Empty string for blank cards
-                column: parseInt(columnId, 10), // Ensure column ID is an integer
-                retro_board: parseInt(boardData?.id, 10), // Add board reference
-                position: nextPosition,  // Use next available position
-                // Add column color if backend needs it
+                content: cardText || "",
+                column: parseInt(columnId, 10),
+                retro_board: parseInt(boardData?.id, 10),
+                position: nextPosition,
                 ...(targetColumn?.color && { color: targetColumn.color })
             };
-            
-            console.log("Sending card data to API:", cardData);
 
-            // Call the API
             const newCard = await createCard(cardData, auth.token);
-            
-            // Update board state with real card data from backend
             const updatedBoard = {
                 ...boardData,
                 columns: boardData.columns?.map(column => 
@@ -85,20 +110,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             };
 
             onBoardUpdate(updatedBoard);
-            return newCard.id; // Return real card ID from backend
+            return newCard.id;
             
         } catch (error) {
             console.error("Failed to create card:", error);
-            console.error("Error details:", {
-                message: error.message,
-                columnId,
-                cardText,
-                authToken: auth?.token ? "[Present]" : "[Missing]"
-            });
-            
-            // Show error to user
             setCardError(`Failed to create card: ${error.message}`);
-            setTimeout(() => setCardError(null), 5000); // Clear after 5 seconds
+            setTimeout(() => setCardError(null), 5000);
             return null;
         } finally {
             setIsCreatingCard(false);
@@ -147,7 +164,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     };
 
     const handleDragOver = (e, columnId) => {
-        e.preventDefault(); // Allow drop
+        e.preventDefault();
         if (dragState.dragOverColumn !== columnId) {
             setDragState(prev => ({
                 ...prev,
@@ -164,7 +181,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     };
 
     const handleDragLeave = (e, columnId) => {
-        // Only clear if we're leaving the column entirely
         if (!e.currentTarget.contains(e.relatedTarget)) {
             setDragState(prev => ({
                 ...prev,
@@ -177,16 +193,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         e.preventDefault();
         
         if (dragState.isDragging && dragState.draggedCardType && !isCreatingCard) {
-            // Create a new card in the dropped column
             const cardId = await handleAddCard(columnId, "", dragState.draggedCardType);
-            
-            // Set to editing mode if card was created successfully
             if (cardId) {
                 setEditingCard(cardId);
             }
         }
 
-        // Reset drag state
         setDragState({
             isDragging: false,
             draggedCardType: null,
@@ -202,11 +214,26 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         });
     };
 
+    // Add column button component
+    function AddColumnButton({ onClick }) {
+        return (
+            <div className="add-column-container">
+                <button
+                    className="btn btn-primary"
+                    onClick={onClick}
+                >
+                    + Add Column
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="board">
             <BoardHeader 
                 boardData={boardData}
                 onTitleUpdate={handleTitleUpdate}
+                onBoardDelete={handleBoardDelete}
             />
             
             <div className="board-content">
@@ -221,12 +248,15 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                             onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
                             onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
                             onSetEditingCard={setEditingCard}
+                            onColumnUpdate={handleColumnUpdate}
+                            onDeleteColumn={handleDeleteColumn}
                             onDragOver={(e) => handleDragOver(e, column.id)}
                             onDrop={(e) => handleDrop(e, column.id)}
                             onDragEnter={() => handleDragEnter(column.id)}
                             onDragLeave={(e) => handleDragLeave(e, column.id)}
                         />
                     )) || <div>No columns found - check backend API</div>}
+                    <AddColumnButton onClick={handleAddColumn} />
                 </div>
             </div>
             
@@ -237,7 +267,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onDragEnd={handleDragEnd}
             />
 
-            {/* Error display */}
             {cardError && (
                 <div className="error-message">
                     {cardError}

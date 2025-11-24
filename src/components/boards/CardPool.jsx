@@ -59,13 +59,9 @@ function DraggableCard({ isDragging, isCreatingCard, onDragStart, onDragEnd }) {
             onDragEnd={handleDragEnd}
             title="Drag me to any column to add a new card"
         >
-            <div className="card-icon">📝</div>
             <div className="card-info">
-                <h5 className="card-title">New Card</h5>
+                
                 <p>Drag me into any column</p>
-            </div>
-            <div className="drag-handle">
-                <span>⋮⋮</span>
             </div>
         </div>
     );

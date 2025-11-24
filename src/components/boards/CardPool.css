@@ -6,29 +6,28 @@
 .card-pool {
   position: relative;
   margin-top: 0.5rem;
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
+  background: none;
   padding: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid black;
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 20px;
+  font-family: var(--font-stack-sans-text);
 }
 
 /* Card pool header */
 .card-pool-header {
   background: transparent;
-  margin-bottom: 16px;
+  flex: 1;
+  text-align: center;
 }
 
 .card-pool-header h4 {
   margin: 0 0 8px 0;
-  color: white;
+  color: black;
   font-size: 1.2rem;
   font-weight: 600;
   background: transparent;
@@ -36,7 +35,7 @@
 
 .card-pool-header p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: black;
   font-size: 0.9rem;
   background: transparent;
 }
@@ -46,7 +45,7 @@
   display: flex;
   justify-content: center;
   background: transparent;
-  flex-shrink: 0;
+  flex: 1;
 }
 
 /* Individual draggable card */
@@ -58,9 +57,12 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 12px;
-  min-width: 200px;
+  width: 120px;
+  height: 120px;
   border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -93,54 +95,33 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Card icon */
-.card-icon {
-  font-size: 1.5rem;
-  background: transparent;
-}
-
 /* Card info */
 .card-info {
-  flex: 1;
-  background: transparent;
-}
-
-.card-title {
-  margin: 0 0 4px 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #374151;
-  background: transparent;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .card-info p {
   margin: 0;
   font-size: 0.8rem;
   color: #6b7280;
-  background: transparent;
-}
-
-/* Drag handle */
-.drag-handle {
-  color: #9ca3af;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: grab;
-  background: transparent;
-  user-select: none;
 }
 
 /* Instructions section */
 .pool-instructions {
   background: transparent;
   flex: 1;
+  text-align: center;
 }
 
 .pool-instructions p {
   margin: 0;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
-  background: transparent;
+  color: black;
   font-style: italic;
 }
 
@@ -157,7 +138,7 @@
 }
 
 .idle-hint {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: black;
 }
 
 /* Pulse animation */
@@ -178,7 +159,8 @@
   }
   
   .draggable-card {
-    min-width: 180px;
+    width: 100px;
+    height: 100px;
     padding: 14px;
   }
 }
@@ -187,17 +169,13 @@
 @media (max-width: 768px) {
   .card-pool {
     padding: 14px;
-    margin: 0.5rem;
   }
   
   .draggable-card {
-    min-width: auto;
+    width: 80px;
+    height: 80px;
     padding: 12px;
     gap: 8px;
-  }
-  
-  .card-title {
-    font-size: 0.9rem;
   }
   
   .card-info p {
@@ -225,11 +203,5 @@
     gap: 6px;
   }
   
-  .card-icon {
-    font-size: 1.2rem;
-  }
-  
-  .drag-handle {
-    font-size: 1rem;
-  }
+
 }

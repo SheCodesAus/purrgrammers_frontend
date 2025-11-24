@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/use-auth';
 import './NavBar.css';
 
 function NavBar() {
+    const { auth, setAuth } = useAuth();
     const { logout } = useAuth();
 
     const handleLogout = () => {
@@ -17,9 +18,22 @@ function NavBar() {
             <div className='nav-bar'>
                 <ul className='nav-links'>
                     <li><NavLink to="/">Home</NavLink></li>
-                    <li><NavLink to="/login">Login</NavLink></li>
-                    <li><NavLink to="/dashboard">Dashboard</NavLink></li>
-                    <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
+
+                    {/* Show login only when not logged in */}
+                    {!auth?.token && (
+                        <li><NavLink to="/login">Login</NavLink></li>  
+                    )}
+                    
+                    {/* Show Dashboard only when logged in */}
+                    {auth?.token && (
+                        <li><NavLink to="/dashboard">Dashboard</NavLink></li>
+                    )}
+
+                    
+                    {/* Show Logout only when logged in */}
+                    {auth?.token && (
+                        <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
+                    )}
                 </ul>
             </div>
         </nav>
