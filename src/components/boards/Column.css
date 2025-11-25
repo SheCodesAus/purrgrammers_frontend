@@ -1,9 +1,8 @@
 /* Main column container */
 .retro-column {
-  flex: 0 0 400px; /* Fixed width, no grow/shrink */
-  width: 360px;
-  min-width: 300px;
-  max-width: 450px;
+  flex: 1; /* Allow columns to grow and fill available space */
+  min-width: 300px; /* Keep minimum for readability */
+  max-width: none; /* Remove max width restriction */
   background: white;
   border-radius: 8px;
   padding: 1rem;
@@ -299,11 +298,11 @@
 
 /* Cards list */
 .cards-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   flex: 1;
+  align-items: start;
 }
 
 /* Drop zone hint during drag */
