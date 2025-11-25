@@ -3,11 +3,50 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import getBoards from "../api/get-boards";
 import getTeams from "../api/get-teams";
+import deleteBoard from "../api/delete-board";
+import CreateBoardForm from "../components/CreateBoardForm";
 import "./Dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { auth } = useAuth();
+  
+  // Modal state for CreateBoardForm
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Function to format date to "day month year"
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short', 
+      year: 'numeric'
+    });
+  };
+
+  // Function to handle board deletion
+  const handleDeleteBoard = async (boardId, boardTitle) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${boardTitle}"? This action cannot be undone.`
+    );
+    
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      await deleteBoard(boardId, auth.token);
+      
+      // Update the boards state by removing the deleted board
+      setBoardsState(prev => ({
+        ...prev,
+        data: prev.data.filter(board => board.id !== boardId)
+      }));
+    } catch (error) {
+      console.error("Failed to delete board:", error);
+      alert(`Failed to delete board: ${error.message}`);
+    }
+  };
 
   const [teamsState, setTeamsState] = useState({
     data: [],
@@ -101,7 +140,7 @@ function Dashboard() {
         <div className="dashboard-section teams-section">
           <div className="section-header">
             <h2>My Teams</h2>
-            <Link to="/teams" className="btn btn-secondary">
+            <Link to="/teams" className="btn btn-primary">
               Manage Teams
             </Link>
           </div>
@@ -151,9 +190,12 @@ function Dashboard() {
         <div className="dashboard-section boards-section">
           <div className="section-header">
             <h2>Recent Boards</h2>
-            <Link to="/retro-board/new" className="btn btn-primary">
+            <button 
+              className="btn btn-primary"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
               Create New Board
-            </Link>
+            </button>
           </div>
 
           <div className="boards-overview">
@@ -164,9 +206,12 @@ function Dashboard() {
             ) : boardsState.data.length === 0 ? (
               <div className="empty-boards">
                 <p>No boards yet</p>
-                <Link to="/retro-board/new" className="btn btn-primary">
+                <button 
+                  className="btn btn-primary"
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
                   Create Your First Board
-                </Link>
+                </button>
               </div>
             ) : (
               <div className="boards-grid-preview">
@@ -174,13 +219,22 @@ function Dashboard() {
                   <div key={board.id} className="board-card-small">
                     <h4 className="board-name-small">{board.title}</h4>
                     <p className="board-team-name">Team: {board.team?.name}</p>
-                    <p className="board-date">Created: {board.created_at}</p>
-                    <button 
-                      className="btn btn-small btn-primary"
-                      onClick={() => navigate(`/retro-board/${board.id}`)}
-                    >
-                      Open Board
-                    </button>
+                    <p className="board-date">Created: {formatDate(board.created_at)}</p>
+                    <div className="board-card-actions">
+                      <button 
+                        className="btn btn-small btn-primary"
+                        onClick={() => navigate(`/retro-board/${board.id}`)}
+                      >
+                        Open Board
+                      </button>
+                      <button 
+                        className="btn btn-small btn-danger"
+                        onClick={() => handleDeleteBoard(board.id, board.title)}
+                        title="Delete board"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {boardsState.data.length > 4 && (
@@ -196,6 +250,15 @@ function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Create Board Modal */}
+      {isCreateModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsCreateModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <CreateBoardForm onCancel={() => setIsCreateModalOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

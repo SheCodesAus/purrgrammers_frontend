@@ -12,6 +12,7 @@ async function createBoard(boardData, token) {
 
     if (!response.ok) {
         const fallbackError = "Error creating board";
+        
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
         });

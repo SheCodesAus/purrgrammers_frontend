@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
-import postLogin from "../api/post-login";
+import login from "../api/login";
 import "./LoginForm.css";
 
 function LoginForm() {
@@ -63,7 +63,7 @@ function LoginForm() {
       setIsLoading(true);
 
       try {
-        const response = await postLogin(
+        const response = await login(
           formState.fields.username,
           formState.fields.password
         );
