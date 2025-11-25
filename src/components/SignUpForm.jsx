@@ -12,14 +12,20 @@ function SignUpForm() {
 
   const [formState, setFormState] = useState({
     fields: {
-      email: "",
       username: "",
+      email: "",
+      first_name: "",
+      last_name: "",
       password: "",
+      password_confirm: "",
     },
     errors: {
-      email: "",
       username: "",
+      email: "",
+      first_name: "",
+      last_name: "",
       password: "",
+      password_confirm: "",
       submit: "",
     },
   });
@@ -27,23 +33,41 @@ function SignUpForm() {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {
-      email: "",
       username: "",
+      email: "",
+      first_name: "",
+      last_name: "",
       password: "",
+      password_confirm: "",
     };
-
-    if (!formState.fields.email) {
-      newErrors.email = "Email is required";
-      isValid = false;
-    }
 
     if (!formState.fields.username) {
       newErrors.username = "Username is required";
       isValid = false;
     }
 
+    if (!formState.fields.email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    }
+
+    if (!formState.fields.first_name) {
+      newErrors.email = "First name is required";
+      isValid = false;
+    }
+
+    if (!formState.fields.last_name_name) {
+      newErrors.email = "Last name is required";
+      isValid = false;
+    }
+
     if (!formState.fields.password) {
       newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    if (!formState.fields.password_confirm) {
+      newErrors.password = "Password confirmation is required";
       isValid = false;
     }
 
@@ -76,7 +100,10 @@ function SignUpForm() {
       const response = await postSignup(
         formState.fields.username,
         formState.fields.email,
-        formState.fields.password
+        formState.fields.first_name,
+        formState.fields.last_name,
+        formState.fields.password,
+        formState.fields.password_confirm
       );
 
       const token = response.token;
@@ -102,17 +129,6 @@ function SignUpForm() {
       <h2 className="login-signup-page-title">Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter Your Email Address"
-            ovalue={formState.fields.username}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-        </div>
-        <div className="signup-form">
           <label htmlFor="username">Username:</label>
           <input
             type="text"
@@ -123,6 +139,42 @@ function SignUpForm() {
             disabled={isLoading}
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter Your Email Address"
+            ovalue={formState.fields.username}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="first_name">First name:</label>
+          <input
+            type="text"
+            id="first_name"
+            placeholder="Enter Your First Name"
+            ovalue={formState.fields.first_name}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="last_name">Last name:</label>
+          <input
+            type="text"
+            id="last_name"
+            placeholder="Enter Your Last Name"
+            ovalue={formState.fields.last_name}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+
         <div>
           <label htmlFor="password">Password:</label>
           <input
