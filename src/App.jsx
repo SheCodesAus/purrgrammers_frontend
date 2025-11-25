@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import TeamsPage from "./pages/TeamsPage";
 import SignUpForm from "./components/SignUpForm";
+import RetroBoardPage from "./pages/RetroBoardPage";
 
 // Layout component keeps navigation and page structure consistent across the whole site
 
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/teams", element: <TeamsPage /> },
       { path: "/signup", element: <SignUpForm /> },
+      { path: "/retro-board/:id", element: <RetroBoardPage /> },
     ],
   },
 ]);
