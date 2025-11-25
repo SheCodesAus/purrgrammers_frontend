@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import postSignup from "../api/post-login";
+import postSignup from "../api/create-user.js";
 import { useAuth } from "../hooks/use-auth.js";
 import "./LoginForm.css";
 
@@ -52,12 +52,12 @@ function SignUpForm() {
     }
 
     if (!formState.fields.first_name) {
-      newErrors.email = "First name is required";
+      newErrors.first_name = "First name is required";
       isValid = false;
     }
 
-    if (!formState.fields.last_name_name) {
-      newErrors.email = "Last name is required";
+    if (!formState.fields.last_name) {
+      newErrors.last_name = "Last name is required";
       isValid = false;
     }
 
@@ -67,7 +67,7 @@ function SignUpForm() {
     }
 
     if (!formState.fields.password_confirm) {
-      newErrors.password = "Password confirmation is required";
+      newErrors.password_confirm = "Password confirmation is required";
       isValid = false;
     }
 
@@ -145,7 +145,7 @@ function SignUpForm() {
             type="email"
             id="email"
             placeholder="Enter Your Email Address"
-            ovalue={formState.fields.username}
+            value={formState.fields.email}
             onChange={handleChange}
             disabled={isLoading}
           />
@@ -157,7 +157,7 @@ function SignUpForm() {
             type="text"
             id="first_name"
             placeholder="Enter Your First Name"
-            ovalue={formState.fields.first_name}
+            value={formState.fields.first_name}
             onChange={handleChange}
             disabled={isLoading}
           />
@@ -169,7 +169,7 @@ function SignUpForm() {
             type="text"
             id="last_name"
             placeholder="Enter Your Last Name"
-            ovalue={formState.fields.last_name}
+            value={formState.fields.last_name}
             onChange={handleChange}
             disabled={isLoading}
           />
@@ -181,7 +181,18 @@ function SignUpForm() {
             type="password"
             id="password"
             placeholder="Enter Your Password"
-            value={formState.fields.username}
+            value={formState.fields.password}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Password confirmation:</label>
+          <input
+            type="password"
+            id="password_confirm"
+            placeholder="Confirm Your Password"
+            value={formState.fields.password_confirm}
             onChange={handleChange}
             disabled={isLoading}
           />
