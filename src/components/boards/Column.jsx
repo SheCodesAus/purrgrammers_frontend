@@ -185,7 +185,7 @@ function Column({
                 )}
 
                 <div className="column-count">
-                    {column.cards?.length || 0} cards
+                    {column.cards?.length || 0} {(column.cards?.length || 0) === 1 ? 'card' : 'cards'}
                 </div>
             </div>
 
