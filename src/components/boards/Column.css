@@ -341,7 +341,7 @@
   margin: 0;
   font-size: 0.9rem;
   font-family: var(--font-stack-sans-text);
-  font-style: none;
+  font-style: normal;
 }
 
 /* ====================================
