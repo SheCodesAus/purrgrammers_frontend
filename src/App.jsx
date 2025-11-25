@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import TeamsPage from "./pages/TeamsPage";
+import About from "./pages/About";
 
 // Layout component keeps navigation and page structure consistent across the whole site
 
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <LoginPage />},
       { path: "/dashboard", element: <Dashboard />},
       { path: "/teams", element: <TeamsPage />},
+      { path: "/about", element: <About />},
     ],
   },
 ]);
