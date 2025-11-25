@@ -1,15 +1,17 @@
-async function getBoards(token) {
-    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards`;
+async function patchBoard(boardId, boardData, token) {
+    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards/${boardId}/`;
 
     const response = await fetch(url, {
-        method: "GET",
+        method: "PATCH",
         headers: {
+            "Content-Type": "application/json",
             "Authorization": token
-        }
+        },
+        body: JSON.stringify(boardData)
     });
 
     if (!response.ok) {
-        const fallbackError = "Error fetching boards";
+        const fallbackError = "Error updating board";
 
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
@@ -22,4 +24,4 @@ async function getBoards(token) {
     return await response.json();
 }
 
-export default getBoards;
+export default patchBoard;

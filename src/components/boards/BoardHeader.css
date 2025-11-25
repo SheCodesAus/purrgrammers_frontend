@@ -1,0 +1,178 @@
+/* Main header container */
+.board-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 16px;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+/* Left side - Back button */
+.board-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+/* Board title section */
+.board-title-section {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.title-input-container {
+  flex: 1;
+}
+
+.board-title-inline {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111827;
+  font-family: var(--font-heading);
+  border: none;
+  background: transparent;
+  outline: none;
+  border-radius: 4px;
+  cursor: text;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  box-shadow: none !important;
+}
+
+.board-title-inline:hover {
+  background-color: #f9fafb;
+}
+
+.board-title-inline:focus {
+  background-color: white;
+  padding: 4px 8px;
+}
+
+/* Right side - Metadata and delete */
+.board-header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.board-metadata {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-stack-sans-text);
+}
+
+.board-date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.75rem;
+}
+
+.board-date-with-delete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.date-value {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Delete board button */
+.delete-board-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
+.delete-board-btn .material-icons {
+  font-size: 18px;
+  color: #6c757d;
+}
+
+.delete-board-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.delete-board-btn:hover .material-icons {
+  color: #495057;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .board-header {
+    padding: 8px 16px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .board-header-left {
+    width: 100%;
+  }
+  
+  .board-header-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .board-metadata {
+    align-items: flex-start;
+  }
+  
+  .board-date {
+    align-items: flex-start;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .board-header {
+    padding: 6px 12px;
+  }
+  
+  .board-title-inline {
+    font-size: 1.125rem;
+  }
+}
