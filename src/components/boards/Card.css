@@ -49,9 +49,6 @@
   word-wrap: break-word;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3; /* Standard property for newer browsers */
-  -webkit-box-orient: vertical;
 }
 
 /* Card footer with meta info and actions */
