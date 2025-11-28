@@ -49,6 +49,9 @@ function SignUpForm() {
     if (!formState.fields.email) {
       newErrors.email = "Email is required";
       isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.fields.email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
     }
 
     if (!formState.fields.first_name) {
@@ -142,7 +145,7 @@ function SignUpForm() {
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
-            type="email"
+            type="text"
             id="email"
             placeholder="Enter Your Email Address"
             value={formState.fields.email}
@@ -198,7 +201,7 @@ function SignUpForm() {
           />
         </div>
 
-        <button className="signup-button" type="submit" onClick={handleSubmit}>
+        <button className="signup-button" type="submit">
           Sign Up
         </button>
       </form>
