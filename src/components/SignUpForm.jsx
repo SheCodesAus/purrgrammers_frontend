@@ -109,10 +109,19 @@ function SignUpForm() {
         formState.fields.password_confirm
       );
 
-      const token = response.token;
-      window.localStorage.setItem("token", token);
+      const token = `Token ${response.token}`;
+      const user = {
+        id: response.user_id,
+        username: response.username || formState.fields.username,
+        email: response.email || formState.fields.email,
+        first_name: response.first_name || formState.fields.first_name,
+        last_name: response.last_name || formState.fields.last_name,
+      };
 
-      setAuth({ token });
+      window.localStorage.setItem("token", token);
+      window.localStorage.setItem("user", JSON.stringify(user));
+
+      setAuth({ token, user });
       navigate("/");
     } catch (error) {
       setFormState((prev) => ({
