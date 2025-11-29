@@ -71,14 +71,9 @@
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
 }
 
-/* Teams Section */
-.teams-section {
-  flex: 1;
-}
-
 /* Boards Section */
 .boards-section {
-  flex: 2;
+  flex: 1;
 }
 
 /* Section Headers */
@@ -100,7 +95,6 @@
 }
 
 /* Overview Containers */
-.teams-overview,
 .boards-overview {
   min-height: 180px;
 }
@@ -109,8 +103,7 @@
    GRID LAYOUTS
    ==================================== */
 
-/* Teams and Boards Grid */
-.teams-grid-preview,
+/* Boards Grid */
 .boards-grid-preview {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -122,7 +115,6 @@
    ==================================== */
 
 /* Base Card Styles */
-.team-card-small,
 .board-card-small {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
@@ -133,7 +125,6 @@
   font-family: var(--font-stack-sans-text);
 }
 
-.team-card-small:hover,
 .board-card-small:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -142,18 +133,10 @@
 }
 
 /* Card Content */
-.team-name-small,
 .board-name-small {
   font-size: 1.3rem;
   font-weight: 600;
   color: #111827;
-  margin: 0 0 0.5rem 0;
-}
-
-.team-member-count,
-.board-team-name {
-  font-size: 0.95rem;
-  color: #6b7280;
   margin: 0 0 0.5rem 0;
 }
 
@@ -191,8 +174,7 @@
    MORE ITEMS CARDS
    ==================================== */
 
-/* More Teams/Boards Cards */
-.more-teams,
+/* More Boards Cards */
 .more-boards {
   background: #f3f4f6;
   border: 2px dashed #d1d5db;
@@ -206,13 +188,11 @@
   transition: all 0.3s ease;
 }
 
-.more-teams:hover,
 .more-boards:hover {
   background: #e5e7eb;
   border-color: #9ca3af;
 }
 
-.more-teams p,
 .more-boards p {
   color: #6b7280;
   margin: 0;
@@ -226,14 +206,12 @@
    ==================================== */
 
 /* Empty States */
-.empty-teams,
 .empty-boards {
   text-align: center;
   padding: 4rem;
   color: #6b7280;
 }
 
-.empty-teams p,
 .empty-boards p {
   font-size: 1.2rem;
   margin-bottom: 2rem;
@@ -355,7 +333,6 @@
     text-align: center;
   }
   
-  .teams-grid-preview,
   .boards-grid-preview {
     grid-template-columns: 1fr;
     gap: 1.5rem;
