@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import CardPool from "./CardPool";
@@ -20,6 +20,47 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const [editingCard, setEditingCard] = useState(null);
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const [cardError, setCardError] = useState(null);
+
+    // CRITICAL FIX #1: State cleanup when board data changes
+    useEffect(() => {
+        // Reset all interaction states when board structure changes
+        setDragState({
+            isDragging: false,
+            draggedCardType: null,
+            dragOverColumn: null
+        });
+        
+        // Check if currently editing card still exists
+        if (editingCard) {
+            const cardExists = boardData?.columns?.some(column => 
+                column.cards?.some(card => card.id === editingCard)
+            );
+            
+            if (!cardExists) {
+                console.warn(`Editing card ${editingCard} no longer exists, clearing edit state`);
+                setEditingCard(null);
+            }
+        }
+    }, [boardData?.columns, editingCard]);
+
+    // Drag timeout safety net
+    useEffect(() => {
+        let dragTimeout;
+        
+        if (dragState.isDragging) {
+            // Force reset drag state after 10 seconds (safety net)
+            dragTimeout = setTimeout(() => {
+                console.warn("Drag state timeout, resetting");
+                setDragState({
+                    isDragging: false,
+                    draggedCardType: null,
+                    dragOverColumn: null
+                });
+            }, 10000);
+        }
+        
+        return () => clearTimeout(dragTimeout);
+    }, [dragState.isDragging]);
 
     // Board management
     const handleTitleUpdate = (newTitle) => {
@@ -122,7 +163,18 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         }
     };
 
+    // CRITICAL FIX #2: Defensive card editing
     const handleEditCard = (columnId, cardId, newText) => {
+        // Validate card still exists
+        const targetColumn = boardData.columns?.find(col => col.id === columnId);
+        const targetCard = targetColumn?.cards?.find(card => card.id === cardId);
+        
+        if (!targetCard) {
+            console.warn(`Card ${cardId} no longer exists, cancelling edit`);
+            setEditingCard(null);
+            return;
+        }
+
         const updatedBoard = {
             ...boardData,
             columns: boardData.columns?.map(column => 
@@ -189,21 +241,29 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         }
     };
 
+    // CRITICAL FIX #3: Robust drag state management
     const handleDrop = async (e, columnId) => {
         e.preventDefault();
         
-        if (dragState.isDragging && dragState.draggedCardType && !isCreatingCard) {
-            const cardId = await handleAddCard(columnId, "", dragState.draggedCardType);
-            if (cardId) {
-                setEditingCard(cardId);
-            }
-        }
-
+        // Reset drag state immediately to prevent stuck state
+        const currentDragState = { ...dragState };
         setDragState({
             isDragging: false,
             draggedCardType: null,
             dragOverColumn: null
         });
+        
+        if (currentDragState.isDragging && currentDragState.draggedCardType && !isCreatingCard) {
+            try {
+                const cardId = await handleAddCard(columnId, "", currentDragState.draggedCardType);
+                if (cardId) {
+                    setEditingCard(cardId);
+                }
+            } catch (error) {
+                console.error("Failed to create card during drop:", error);
+                // Don't set editing state if card creation failed
+            }
+        }
     };
 
     const handleDragEnd = () => {
