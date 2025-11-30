@@ -116,7 +116,7 @@ function CreateBoardForm({ onCancel }) {
         const boardData = {
           title: formState.fields.title,
           description: formState.fields.description,
-          team: teamId, // Assign board to team
+          team_id: parseInt(teamId, 10), // Use team_id for backend
         };
 
         const response = await createBoard(boardData, auth.token);
