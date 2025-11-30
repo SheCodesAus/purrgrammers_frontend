@@ -135,6 +135,101 @@
   color: #495057;
 }
 
+/* Team Settings Section */
+.team-settings-section {
+    position: relative;
+    margin-right: 20px;
+}
+
+.team-settings-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.team-settings-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.team-settings-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 220px;
+    z-index: 100;
+    color: #333;
+}
+
+.team-settings-dropdown h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.team-members-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+}
+
+.team-members-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.team-members-list li:last-child {
+    border-bottom: none;
+}
+
+.add-member-form {
+    display: flex;
+    gap: 8px;
+}
+
+.add-member-form input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.add-member-form button {
+    padding: 8px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.add-member-form button:hover:not(:disabled) {
+    background: #0056b3;
+}
+
+.add-member-form button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.add-member-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin: 8px 0 0 0;
+}
+
 /* ====================================
    RESPONSIVE DESIGN
    ==================================== */

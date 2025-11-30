@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
 import patchBoard from '../../api/patch-board';
 import deleteBoard from '../../api/delete-board';
+import getTeam from '../../api/get-team';
+import addTeamMember from '../../api/add-team-member';
 import './BoardHeader.css';
 import './CardPool.css';
 
@@ -15,6 +17,26 @@ function BoardHeader({
     const [showEditOptions, setShowEditOptions] = useState(false);
     const navigate = useNavigate();
     const { auth } = useAuth();
+    const [showTeamSettings, setShowTeamSettings] = useState(false);
+    const [teamDetails, setTeamDetails] = useState(null);
+    const [newMemberUsername, setNewMemberUsername] = useState('');
+    const [addMemberError, setAddMemberError] = useState('');
+    const [addMemberLoading, setAddMemberLoading] = useState(false);
+
+    // Fetch team details when board has a team
+    useEffect(() => {
+        const fetchTeamDetails = async () => {
+            if (boardData?.team?.id && auth.token) {
+                try {
+                    const team = await getTeam(boardData.team.id, auth.token);
+                    setTeamDetails(team);
+                } catch (error) {
+                    console.error("Failed to fetch team details:", error);
+                }
+            }
+        };
+        fetchTeamDetails();
+    }, [boardData?.team?.id, auth.token]);
 
     const handleTitleSave = async () => {
         if (editTitle.trim() && editTitle !== boardData?.title) {
@@ -70,6 +92,28 @@ function BoardHeader({
         });
     };
 
+    const handleAddMember = async () => {
+        if (!newMemberUsername.trim()) {
+            return;
+        }
+        
+        setAddMemberLoading(true);
+        setAddMemberError('');
+        
+        try {
+            await addTeamMember(boardData.team.id, newMemberUsername.trim(), auth.token);
+            // Refresh team details to show new member
+            const updatedTeam = await getTeam(boardData.team.id, auth.token);
+            setTeamDetails(updatedTeam);
+            setNewMemberUsername('');
+        } catch (error) {
+            console.error("Failed to add team member:", error);
+            setAddMemberError(error.message);
+        } finally {
+            setAddMemberLoading(false);
+        }
+    };
+
     return (
         <header className="board-header">
             <div className="board-header-left">
@@ -99,15 +143,48 @@ function BoardHeader({
             </div>
 
             <div className="board-header-right">
-                <div className="board-metadata">
-                    {/* Team assignment done here */}
-                    <div className='team-assignment'>
-                        <label>Team:</label>
-                        <select>
-                            <option>Select team...</option>
-                            {/* team options */}
-                        </select>
+                {/* Team Settings Section */}
+                {boardData?.team && (
+                    <div className="team-settings-section">
+                        <button 
+                            className="team-settings-btn"
+                            onClick={() => setShowTeamSettings(!showTeamSettings)}
+                        >
+                            👥 {teamDetails?.name || boardData.team.name || 'Team'}
+                        </button>
+                        
+                        {showTeamSettings && (
+                            <div className="team-settings-dropdown">
+                                <h4>Team Members</h4>
+                                <ul className="team-members-list">
+                                    {teamDetails?.members?.map((member) => (
+                                        <li key={member.id}>{member.username}</li>
+                                    ))}
+                                </ul>
+                                
+                                <div className="add-member-form">
+                                    <input
+                                        type="text"
+                                        placeholder="Username"
+                                        value={newMemberUsername}
+                                        onChange={(e) => setNewMemberUsername(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleAddMember()}
+                                    />
+                                    <button 
+                                        onClick={handleAddMember}
+                                        disabled={addMemberLoading || !newMemberUsername.trim()}
+                                    >
+                                        {addMemberLoading ? 'Adding...' : 'Add'}
+                                    </button>
+                                </div>
+                                {addMemberError && (
+                                    <p className="add-member-error">{addMemberError}</p>
+                                )}
+                            </div>
+                        )}
                     </div>
+                )}
+                <div className="board-metadata">
                     {boardData?.created_at && (
                         <div className="board-date-with-delete">
                             <div className="board-date">
