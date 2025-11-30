@@ -2,10 +2,12 @@ import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../hooks/use-auth';
 import './NavBar.css';
+import TeamsModal from './TeamsModal';
 
 function NavBar() {
     const { auth, setAuth } = useAuth();
     const { logout } = useAuth();
+    const [showTeamsModal, setShowTeamsModal] = useState(false);
 
     const handleLogout = () => {
         logout();
@@ -30,6 +32,17 @@ function NavBar() {
                         <li><NavLink to="/dashboard">Dashboard</NavLink></li>
                     )}
 
+                    {/* Show Teams only when logged in */}
+                    {auth?.token && (
+                        <li>
+                            <button 
+                                onClick={() => setShowTeamsModal(true)} 
+                                className="nav-btn"
+                            >
+                                Teams
+                            </button>
+                        </li>
+                    )}
                     
                     {/* Show Logout only when logged in */}
                     {auth?.token && (
@@ -37,13 +50,13 @@ function NavBar() {
                     )}
                 </ul>
             </div>
+
+            <TeamsModal 
+                isOpen={showTeamsModal} 
+                onClose={() => setShowTeamsModal(false)} 
+            />
         </nav>
     );
 }
 
 export default NavBar;
-
-// TODO: Login states:
-// when logged out: Home, login, signup
-// when logged in: dashboard, my boards, {username} logout
-// when admin user: also shows teams, and analytics

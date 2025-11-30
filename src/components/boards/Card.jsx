@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
@@ -15,13 +15,48 @@ function Card({
     onCancelEdit
 }) {
     const [editText, setEditText] = useState("");
+    const [fontSize, setFontSize] = useState(0.8); // rem
+    const textRef = useRef(null);
+    const contentRef = useRef(null);
     const { auth } = useAuth();
+
+    // Auto-resize font to fit content
+    useEffect(() => {
+        if (!textRef.current || !contentRef.current || isEditing) return;
+        
+        const resizeText = () => {
+            const container = contentRef.current;
+            const text = textRef.current;
+            
+            // Reset to max size first
+            let currentSize = 0.8;
+            text.style.fontSize = `${currentSize}rem`;
+            
+            // Reduce font size until text fits (min 0.5rem)
+            while (
+                text.scrollHeight > container.clientHeight && 
+                currentSize > 0.5
+            ) {
+                currentSize -= 0.05;
+                text.style.fontSize = `${currentSize}rem`;
+            }
+            
+            setFontSize(currentSize);
+        };
+        
+        resizeText();
+    }, [card.content, isEditing]);
 
     // Start editing mode
     const handleStartEdit = () => {
+        if (!isOwner) return; // Only owner can edit
         setEditText(card.content || "");
         onStartEdit();
     };
+
+    // Check if current user is the card creator
+    const isOwner = auth.user?.id === card.created_by?.id || 
+                    auth.user?.username === card.created_by?.username;
 
     // Save edited text
     const handleSave = async () => {
@@ -64,24 +99,6 @@ function Card({
         }
     };
 
-    // Format date in Australian format (short)
-    const formatDate = (dateString) => {
-        if (!dateString) return "";
-        
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return "";
-            
-            return date.toLocaleDateString('en-AU', {
-                day: 'numeric',
-                month: 'short'
-            }).replace(' ', ' '); // Ensure single space
-        } catch (error) {
-            console.warn("Invalid date format:", dateString);
-            return "";
-        }
-    };
-
     if (isEditing) {
         return (
             <div 
@@ -120,53 +137,59 @@ function Card({
 
     return (
         <div 
-            className={`card ${columnType}`}
+            className={`card ${columnType} ${isOwner ? 'editable' : ''}`}
             style={{
                 backgroundColor: columnColor || undefined
             }}
-            onClick={handleStartEdit}
-            title="Click to edit"
+            onClick={isOwner ? handleStartEdit : undefined}
+            title={isOwner ? "Click to edit" : ""}
         >
-            <button 
-                className="card-delete-btn"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete();
-                }}
-                title="Delete card"
-            >
-                <span className="material-icons">close</span>
-            </button>
+            {isOwner && (
+                <button 
+                    className="card-delete-btn"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete();
+                    }}
+                    title="Delete card"
+                >
+                    <span className="material-icons">close</span>
+                </button>
+            )}
             
-            <div className="card-content">
-                <p className="card-text">{card.content || "Click to edit"}</p>
+            <div className="card-content" ref={contentRef}>
+                <p className="card-text" ref={textRef}>
+                    {card.content || (isOwner ? "Click to edit" : "")}
+                </p>
             </div>
 
             <div className="card-footer">
                 <div className="card-meta">
-                    <span className="card-author">
-                        {card.created_by?.username || card.created_by?.initials || card.author || "Anonymous"}
-                    </span>
-                    <span className="card-date">
-                        {card.created_at ? formatDate(card.created_at) : ""}
+                    <span className={`card-author ${card.is_anonymous ? 'anonymous' : ''}`}>
+                        {card.is_anonymous ? "Anonymous" : (card.created_by?.username || card.created_by?.initials || card.author || "Anonymous")}
                     </span>
                 </div>
 
-                <div className="card-actions">
-                    <button 
-                        onClick={handleStartEdit}
-                        className="edit-btn"
-                    >
-                        Edit
-                    </button>
-                    
-                    <button 
-                        onClick={handleDelete}
-                        className="delete-btn"
-                    >
-                        Delete
-                    </button>
-                </div>
+                {isOwner && (
+                    <div className="card-actions">
+                        <button 
+                            onClick={handleStartEdit}
+                            className="edit-btn"
+                        >
+                            Edit
+                        </button>
+                        
+                        <button 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete();
+                            }}
+                            className="delete-btn"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

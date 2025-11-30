@@ -53,3 +53,91 @@
 .add-column-button:active {
   transform: translateY(1px);
 }
+
+/* Anonymous Choice Modal */
+.anon-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.anon-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 24px 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anon-modal h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.1rem;
+  color: #374151;
+  font-family: var(--font-stack-sans-text);
+}
+
+.anon-modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.anon-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-stack-sans-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.anon-btn.with-name {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.anon-btn.with-name:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.anon-btn.anonymous {
+  background: #f3f4f6;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+}
+
+.anon-btn.anonymous:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}

@@ -21,6 +21,10 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const [editingCard, setEditingCard] = useState(null);
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const [cardError, setCardError] = useState(null);
+    
+    // Anonymous modal state
+    const [showAnonModal, setShowAnonModal] = useState(false);
+    const [pendingCardColumn, setPendingCardColumn] = useState(null);
 
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
@@ -180,7 +184,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     };
 
     // Card management
-    const handleAddCard = async (columnId, cardText, cardType = null) => {
+    const handleAddCard = async (columnId, cardText, isAnonymous = false) => {
         try {
             setIsCreatingCard(true);
             
@@ -192,6 +196,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 column: parseInt(columnId, 10),
                 retro_board: parseInt(boardData?.id, 10),
                 position: nextPosition,
+                is_anonymous: isAnonymous,
                 ...(targetColumn?.color && { color: targetColumn.color })
             };
 
@@ -309,16 +314,33 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         });
         
         if (currentDragState.isDragging && currentDragState.draggedCardType && !isCreatingCard) {
+            // Show anonymous modal instead of creating immediately
+            setPendingCardColumn(columnId);
+            setShowAnonModal(true);
+        }
+    };
+
+    // Handle anonymous modal choice
+    const handleAnonChoice = async (isAnonymous) => {
+        setShowAnonModal(false);
+        
+        if (pendingCardColumn) {
             try {
-                const cardId = await handleAddCard(columnId, "", currentDragState.draggedCardType);
+                const cardId = await handleAddCard(pendingCardColumn, "", isAnonymous);
                 if (cardId) {
                     setEditingCard(cardId);
                 }
             } catch (error) {
-                console.error("Failed to create card during drop:", error);
-                // Don't set editing state if card creation failed
+                console.error("Failed to create card:", error);
             }
         }
+        
+        setPendingCardColumn(null);
+    };
+
+    const handleAnonModalClose = () => {
+        setShowAnonModal(false);
+        setPendingCardColumn(null);
     };
 
     const handleDragEnd = () => {
@@ -381,6 +403,29 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
             />
+
+            {/* Anonymous Choice Modal */}
+            {showAnonModal && (
+                <div className="anon-modal-overlay" onClick={handleAnonModalClose}>
+                    <div className="anon-modal" onClick={(e) => e.stopPropagation()}>
+                        <h3>Post this card as...</h3>
+                        <div className="anon-modal-buttons">
+                            <button 
+                                className="anon-btn with-name"
+                                onClick={() => handleAnonChoice(false)}
+                            >
+                                {auth.user?.username || 'Me'}
+                            </button>
+                            <button 
+                                className="anon-btn anonymous"
+                                onClick={() => handleAnonChoice(true)}
+                            >
+                                Anonymous
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {cardError && (
                 <div className="error-message">
