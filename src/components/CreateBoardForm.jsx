@@ -1,22 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import createBoard from "../api/create-board";
+import createTeam from "../api/create-team";
+import getTeams from "../api/get-teams";
 import "./CreateBoardForm.css";
 
 function CreateBoardForm({ onCancel }) {
   const navigate = useNavigate();
   const { auth } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [teamsLoading, setTeamsLoading] = useState(true);
+
+  // Fetch user's teams on component mount
+  useEffect(() => {
+    async function fetchTeams() {
+      if (!auth?.token) {
+        setTeamsLoading(false);
+        return;
+      }
+
+      try {
+        const userTeams = await getTeams(auth.token);
+        setTeams(userTeams);
+      } catch (error) {
+        console.error("Failed to fetch teams:", error);
+        // Don't show error to user, just continue without teams
+      } finally {
+        setTeamsLoading(false);
+      }
+    }
+
+    fetchTeams();
+  }, [auth?.token]);
 
   const [formState, setFormState] = useState({
     fields: {
       title: "",
       description: "",
+      selectedTeam: "", // "" = no selection, "create-new" = create new team, or team ID
+      newTeamName: "",
     },
     errors: {
       title: "",
       description: "",
+      selectedTeam: "",
+      newTeamName: "",
       submit: "",
     },
   });
@@ -26,11 +56,25 @@ function CreateBoardForm({ onCancel }) {
     const newErrors = {
       title: "",
       description: "",
+      selectedTeam: "",
+      newTeamName: "",
     };
 
     // title validation
     if (!formState.fields.title.trim()) {
       newErrors.title = "Board title is required";
+      isValid = false;
+    }
+
+    // team validation
+    if (!formState.fields.selectedTeam) {
+      newErrors.selectedTeam = "Please select a team or create a new one";
+      isValid = false;
+    }
+
+    // new team name validation (only if creating new team)
+    if (formState.fields.selectedTeam === "create-new" && !formState.fields.newTeamName.trim()) {
+      newErrors.newTeamName = "Team name is required";
       isValid = false;
     }
 
@@ -57,23 +101,39 @@ function CreateBoardForm({ onCancel }) {
       setIsLoading(true);
 
       try {
-        const response = await createBoard(
-          {
-            title: formState.fields.title,
-            description: formState.fields.description,
-          },
-          auth.token
-        );
+        let teamId = formState.fields.selectedTeam;
+        
+        // Create new team if needed
+        if (formState.fields.selectedTeam === "create-new") {
+          const newTeam = await createTeam(
+            { name: formState.fields.newTeamName.trim() },
+            auth.token
+          );
+          teamId = newTeam.id;
+        }
+
+        // Create the board
+        const boardData = {
+          title: formState.fields.title,
+          description: formState.fields.description,
+          team: teamId, // Assign board to team
+        };
+
+        const response = await createBoard(boardData, auth.token);
 
         // Reset form on success
         setFormState({
           fields: {
             title: "",
             description: "",
+            selectedTeam: "",
+            newTeamName: "",
           },
           errors: {
             title: "",
             description: "",
+            selectedTeam: "",
+            newTeamName: "",
             submit: "",
           },
         });
@@ -100,10 +160,14 @@ function CreateBoardForm({ onCancel }) {
       fields: {
         title: "",
         description: "",
+        selectedTeam: "",
+        newTeamName: "",
       },
       errors: {
         title: "",
         description: "",
+        selectedTeam: "",
+        newTeamName: "",
         submit: "",
       },
     });
@@ -145,6 +209,50 @@ function CreateBoardForm({ onCancel }) {
             <span className="board-form-error">{formState.errors.description}</span>
           )}
         </div>
+
+        <div className="board-form-field">
+          <label htmlFor="selectedTeam" className="board-form-label">Assign to Team</label>
+          {teamsLoading ? (
+            <div className="loading-text">Loading teams...</div>
+          ) : (
+            <select
+              id="selectedTeam"
+              className="board-form-input"
+              value={formState.fields.selectedTeam}
+              onChange={handleChange}
+              disabled={isLoading}
+            >
+              <option value="">Select a team...</option>
+              {teams.map(team => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+              <option value="create-new">+ Create New Team</option>
+            </select>
+          )}
+          {formState.errors.selectedTeam && (
+            <span className="board-form-error">{formState.errors.selectedTeam}</span>
+          )}
+        </div>
+
+        {formState.fields.selectedTeam === "create-new" && (
+          <div className="board-form-field">
+            <label htmlFor="newTeamName" className="board-form-label">New Team Name</label>
+            <input
+              type="text"
+              id="newTeamName"
+              className="board-form-input"
+              value={formState.fields.newTeamName}
+              onChange={handleChange}
+              disabled={isLoading}
+              placeholder="e.g., Frontend Team"
+            />
+            {formState.errors.newTeamName && (
+              <span className="board-form-error">{formState.errors.newTeamName}</span>
+            )}
+          </div>
+        )}
 
         {formState.errors.submit && (
           <div className="board-form-error">{formState.errors.submit}</div>
