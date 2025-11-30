@@ -100,6 +100,14 @@ function BoardHeader({
 
             <div className="board-header-right">
                 <div className="board-metadata">
+                    {/* Team assignment done here */}
+                    <div className='team-assignment'>
+                        <label>Team:</label>
+                        <select>
+                            <option>Select team...</option>
+                            {/* team options */}
+                        </select>
+                    </div>
                     {boardData?.created_at && (
                         <div className="board-date-with-delete">
                             <div className="board-date">

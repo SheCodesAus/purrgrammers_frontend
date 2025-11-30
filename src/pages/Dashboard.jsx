@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
-import getBoards from "../api/get-boards";
 import getTeams from "../api/get-teams";
+import testGetTeamBoards from "../api/get-team";
 import deleteBoard from "../api/delete-board";
 import CreateBoardForm from "../components/CreateBoardForm";
 import "./Dashboard.css";
+import getTeamBoards from "../api/get-team-boards";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -37,10 +38,13 @@ function Dashboard() {
     try {
       await deleteBoard(boardId, auth.token);
       
-      // Update the boards state by removing the deleted board
-      setBoardsState(prev => ({
+      // Update the teams with boards state by removing the deleted board
+      setTeamsWithBoards(prev => ({
         ...prev,
-        data: prev.data.filter(board => board.id !== boardId)
+        data: prev.data.map(teamWithBoards => ({
+          ...teamWithBoards,
+          boards: teamWithBoards.boards.filter(board => board.id !== boardId)
+        }))
       }));
     } catch (error) {
       console.error("Failed to delete board:", error);
@@ -48,22 +52,16 @@ function Dashboard() {
     }
   };
 
-  const [teamsState, setTeamsState] = useState({
-    data: [],
-    isLoading: true,
-    error: ""
-  });
-
-  const [boardsState, setBoardsState] = useState({
+  const [teamsWithBoards, setTeamsWithBoards] = useState({
     data: [],
     isLoading: true,
     error: ""
   });
 
   useEffect(() => {
-    async function fetchUserTeams() {
+    async function fetchTeamsAndBoards() {
       if (!auth?.token) {
-        setTeamsState({
+        setTeamsWithBoards({
           data: [],
           isLoading: false,
           error: ""
@@ -72,55 +70,40 @@ function Dashboard() {
       }
 
       try {
-        setTeamsState(prev => ({ ...prev, isLoading: true }));
+        setTeamsWithBoards(prev => ({ ...prev, isLoading: true }));
+        
+        // First! Get all teams user belongs to
         const teams = await getTeams(auth.token);
-        setTeamsState({
-          data: teams,
+        
+        // Second! For each team, fetch its boards
+        const teamsWithBoardsData = await Promise.all(
+          teams.map(async (team) => {
+            try {
+              const boards = await getTeamBoards(team.id, auth.token);
+              return { team, boards };
+            } catch (error) {
+              console.error(`Failed to fetch boards for team ${team.name}:`, error);
+              return { team, boards: [] };
+            }
+          })
+        );
+
+        setTeamsWithBoards({
+          data: teamsWithBoardsData,
           isLoading: false,
           error: ""
         });
       } catch (error) {
-        setTeamsState({
+        setTeamsWithBoards({
           data: [],
           isLoading: false,
           error: error.message
         });
       }
-    }
-
-    async function fetchUserBoards() {
-      if (!auth?.token) {
-        setBoardsState({
-          data: [],
-          isLoading: false,
-          error: ""
-        });
-        return;
-      }
-
-      try {
-        setBoardsState(prev => ({ ...prev, isLoading: true }));
-        const boards = await getBoards(auth.token);
-        setBoardsState({
-          data: boards,
-          isLoading: false,
-          error: ""
-        });
-      } catch (error) {
-        setBoardsState({
-          data: [],
-          isLoading: false,
-          error: error.message
-        });
-      }
-    }
-
-    async function fetchData() {
-      fetchUserTeams();
-      fetchUserBoards();
     }
     
-    fetchData();
+
+    fetchTeamsAndBoards();
   }, [auth?.token]);
 
   return (
@@ -131,61 +114,11 @@ function Dashboard() {
           Welcome, {auth?.user?.username || 'User'}!
         </h1>
         <p className="dashboard-subtitle">
-          Manage your teams and collaborate on retro boards
+          Manage your retro boards and collaborate with your team
         </p>
       </div>
 
       <div className="dashboard-content">
-        {/* Teams Section */}
-        <div className="dashboard-section teams-section">
-          <div className="section-header">
-            <h2>My Teams</h2>
-            <Link to="/teams" className="btn btn-primary">
-              Manage Teams
-            </Link>
-          </div>
-
-          <div className="teams-overview">
-            {teamsState.isLoading ? (
-              <p className="loading-text">Loading teams...</p>
-            ) : teamsState.error ? (
-              <p className="error-text">Error: {teamsState.error}</p>
-            ) : teamsState.data.length === 0 ? (
-              <div className="empty-teams">
-                <p>No teams yet</p>
-                <Link to="/teams" className="btn btn-primary">
-                  Create or Join a Team
-                </Link>
-              </div>
-            ) : (
-              <div className="teams-grid-preview">
-                {teamsState.data.slice(0, 3).map(team => (
-                  <div key={team.id} className="team-card-small">
-                    <h4 className="team-name-small">{team.name}</h4>
-                    <p className="team-member-count">
-                      {team.member_count || 0} members
-                    </p>
-                    <button 
-                      className="btn btn-small btn-primary"
-                      onClick={() => navigate(`/teams/${team.id}`)}
-                    >
-                      View
-                    </button>
-                  </div>
-                ))}
-                {teamsState.data.length > 3 && (
-                  <div className="more-teams">
-                    <p>+ {teamsState.data.length - 3} more teams</p>
-                    <Link to="/teams" className="btn btn-small btn-secondary">
-                      View All
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Boards Section */}
         <div className="dashboard-section boards-section">
           <div className="section-header">
@@ -199,11 +132,11 @@ function Dashboard() {
           </div>
 
           <div className="boards-overview">
-            {boardsState.isLoading ? (
+            {teamsWithBoards.isLoading ? (
               <p className="loading-text">Loading boards...</p>
-            ) : boardsState.error ? (
-              <p className="error-text">Error: {boardsState.error}</p>
-            ) : boardsState.data.length === 0 ? (
+            ) : teamsWithBoards.error ? (
+              <p className="error-text">Error: {teamsWithBoards.error}</p>
+            ) : teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).length === 0 ? (
               <div className="empty-boards">
                 <p>No boards yet</p>
                 <button 
@@ -215,10 +148,9 @@ function Dashboard() {
               </div>
             ) : (
               <div className="boards-grid-preview">
-                {boardsState.data.slice(0, 4).map(board => (
+                {teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).slice(0, 4).map(board => (
                   <div key={board.id} className="board-card-small">
                     <h4 className="board-name-small">{board.title}</h4>
-                    <p className="board-team-name">Team: {board.team?.name}</p>
                     <p className="board-date">Created: {formatDate(board.created_at)}</p>
                     <div className="board-card-actions">
                       <button 
@@ -237,9 +169,9 @@ function Dashboard() {
                     </div>
                   </div>
                 ))}
-                {boardsState.data.length > 4 && (
+                {teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).length > 4 && (
                   <div className="more-boards">
-                    <p>+ {boardsState.data.length - 4} more boards</p>
+                    <p>+ {teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).length - 4} more boards</p>
                     <Link to="/boards" className="btn btn-small btn-secondary">
                       View All Boards
                     </Link>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import CardPool from "./CardPool";
@@ -6,6 +6,7 @@ import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
 import { useAuth } from "../../hooks/use-auth";
+import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
 import "./Board.css";
 
 function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
@@ -21,7 +22,61 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const [isCreatingCard, setIsCreatingCard] = useState(false);
     const [cardError, setCardError] = useState(null);
 
-    // CRITICAL FIX #1: State cleanup when board data changes
+    // Websocket message handler
+    const handleWebSocketMessage = useCallback((message) => {
+        switch (message.type) {
+            case 'card_created':
+                onBoardUpdate(prevBoard => {
+                    // Check if card already exists (prevent duplicates)
+                    const cardExists = prevBoard.columns?.some(col =>
+                        col.cards?.some(card => card.id === message.data.id)
+                    );
+                    
+                    if (cardExists) {
+                        return prevBoard; // Don't add duplicate
+                    }
+                    
+                    const updatedBoard = {
+                        ...prevBoard,
+                        columns: prevBoard.columns?.map(col =>
+                            col.id === message.data.column
+                            ? { ...col, cards: [...(col.cards || []), message.data] }
+                            : col
+                        ) || []
+                    };
+                    return updatedBoard;
+                });
+                break;
+
+            case 'card_updated':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    columns: prevBoard.columns?.map(col => ({
+                        ...col,
+                        cards: col.cards?.map(card =>
+                            card.id === message.data.id ? message.data : card
+                        ) || []
+                    })) || []
+                }));
+                break;
+
+            case 'card_deleted':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    columns: prevBoard.columns?.map(col => ({
+                        ...col,
+                        cards: col.cards?.filter(card => card.id !== message.data.id) || []
+                    })) || []
+                }));
+                break;
+
+            default:
+                console.log('Unknown WebSocket message:', message);
+        }
+    }, [onBoardUpdate]);    // Initialise WebSocket connection
+    useBoardWebSocket(boardData?.id, handleWebSocketMessage);
+
+    // FIX #1: State cleanup when board data changes
     useEffect(() => {
         // Reset all interaction states when board structure changes
         setDragState({

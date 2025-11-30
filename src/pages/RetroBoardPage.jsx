@@ -45,10 +45,18 @@ function RetroBoardPage() {
     }, [id, auth.token]);
 
     function handleBoardUpdate(updatedBoardData) {
-        setBoardState(prev => ({
-            ...prev,
-            data: updatedBoardData
-        }));
+        // Support both direct updates and functional updates
+        if (typeof updatedBoardData === 'function') {
+            setBoardState(prev => ({
+                ...prev,
+                data: updatedBoardData(prev.data)
+            }));
+        } else {
+            setBoardState(prev => ({
+                ...prev,
+                data: updatedBoardData
+            }));
+        }
     }
 
     if (boardState.isLoading) {
