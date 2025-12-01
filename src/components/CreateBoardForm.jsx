@@ -6,7 +6,7 @@ import createTeam from "../api/create-team";
 import getTeams from "../api/get-teams";
 import "./CreateBoardForm.css";
 
-function CreateBoardForm({ onCancel }) {
+function CreateBoardForm({ onCancel, teamId }) {
   const navigate = useNavigate();
   const { auth } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,7 @@ function CreateBoardForm({ onCancel }) {
     fields: {
       title: "",
       description: "",
-      selectedTeam: "", // "" = no selection, "create-new" = create new team, or team ID
+      selectedTeam: teamId ? String(teamId) : "", // Pre-select team if passed as prop
       newTeamName: "",
     },
     errors: {

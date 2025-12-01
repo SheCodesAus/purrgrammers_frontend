@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import getTeams from "../api/get-teams";
-import testGetTeamBoards from "../api/get-team";
+import getTeamBoards from "../api/get-team-boards";
 import deleteBoard from "../api/delete-board";
 import CreateBoardForm from "../components/CreateBoardForm";
 import "./Dashboard.css";
-import getTeamBoards from "../api/get-team-boards";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { auth } = useAuth();
-  
-  // Modal state for CreateBoardForm
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // State to track which team's create modal is open
+  const [createModalTeamId, setCreateModalTeamId] = useState(null);
 
   // Function to format date to "day month year"
   const formatDate = (dateString) => {
@@ -108,86 +107,77 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Header Section */}
+      {/* Welcome Header */}
       <div className="dashboard-header-section">
         <h1 className="dashboard-header">
           Welcome, {auth?.user?.username || 'User'}!
         </h1>
-        <p className="dashboard-subtitle">
-          Manage your retro boards and collaborate with your team
-        </p>
       </div>
 
+      {/* Teams and Boards */}
       <div className="dashboard-content">
-        {/* Boards Section */}
-        <div className="dashboard-section boards-section">
-          <div className="section-header">
-            <h2>Recent Boards</h2>
-            <button 
-              className="btn btn-primary"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
-              Create New Board
-            </button>
+        {teamsWithBoards.isLoading ? (
+          <p className="loading-text">Loading...</p>
+        ) : teamsWithBoards.error ? (
+          <p className="error-text">Error: {teamsWithBoards.error}</p>
+        ) : teamsWithBoards.data.length === 0 ? (
+          <div className="empty-state">
+            <p>You're not part of any teams yet.</p>
           </div>
-
-          <div className="boards-overview">
-            {teamsWithBoards.isLoading ? (
-              <p className="loading-text">Loading boards...</p>
-            ) : teamsWithBoards.error ? (
-              <p className="error-text">Error: {teamsWithBoards.error}</p>
-            ) : teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).length === 0 ? (
-              <div className="empty-boards">
-                <p>No boards yet</p>
-                <button 
-                  className="btn btn-primary"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  Create Your First Board
-                </button>
-              </div>
-            ) : (
-              <div className="boards-grid-preview">
-                {teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).slice(0, 4).map(board => (
-                  <div key={board.id} className="board-card-small">
-                    <h4 className="board-name-small">{board.title}</h4>
-                    <p className="board-date">Created: {formatDate(board.created_at)}</p>
-                    <div className="board-card-actions">
-                      <button 
-                        className="btn btn-small btn-primary"
-                        onClick={() => navigate(`/retro-board/${board.id}`)}
-                      >
-                        Open Board
-                      </button>
-                      <button 
-                        className="btn btn-small btn-danger"
-                        onClick={() => handleDeleteBoard(board.id, board.title)}
-                        title="Delete board"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                {teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).length > 4 && (
-                  <div className="more-boards">
-                    <p>+ {teamsWithBoards.data.flatMap(teamWithBoards => teamWithBoards.boards).length - 4} more boards</p>
-                    <Link to="/boards" className="btn btn-small btn-secondary">
-                      View All Boards
-                    </Link>
+        ) : (
+          <div className="teams-boards-container">
+            {teamsWithBoards.data.map(({ team, boards }) => (
+              <div key={team.id} className="team-section">
+                <div className="team-header">
+                  <h3 className="team-name">{team.name}</h3>
+                  <button 
+                    className="btn btn-small btn-primary"
+                    onClick={() => setCreateModalTeamId(team.id)}
+                  >
+                    + New Board
+                  </button>
+                </div>
+                
+                {boards.length === 0 ? (
+                  <p className="no-boards-text">No boards yet</p>
+                ) : (
+                  <div className="boards-grid">
+                    {boards.map(board => (
+                      <div key={board.id} className="board-card">
+                        <h4 className="board-name">{board.title}</h4>
+                        <p className="board-date">{formatDate(board.created_at)}</p>
+                        <div className="board-card-actions">
+                          <button 
+                            className="btn btn-small btn-primary"
+                            onClick={() => navigate(`/retro-board/${board.id}`)}
+                          >
+                            Open
+                          </button>
+                          <button 
+                            className="btn btn-small btn-danger"
+                            onClick={() => handleDeleteBoard(board.id, board.title)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
-            )}
+            ))}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Create Board Modal */}
-      {isCreateModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsCreateModalOpen(false)}>
+      {createModalTeamId && (
+        <div className="modal-overlay" onClick={() => setCreateModalTeamId(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <CreateBoardForm onCancel={() => setIsCreateModalOpen(false)} />
+            <CreateBoardForm 
+              teamId={createModalTeamId}
+              onCancel={() => setCreateModalTeamId(null)} 
+            />
           </div>
         </div>
       )}
