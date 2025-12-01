@@ -7,6 +7,7 @@ import deleteBoard from "../api/delete-board";
 import createTeam from "../api/create-team";
 import CreateBoardForm from "../components/CreateBoardForm";
 import TeamDetailModal from "../components/TeamDetailModal";
+import ProfileModal from "../components/ProfileModal";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -17,6 +18,7 @@ function Dashboard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createModalTeamId, setCreateModalTeamId] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   // State for creating new team
   const [showCreateTeamForm, setShowCreateTeamForm] = useState(false);
@@ -243,7 +245,7 @@ function Dashboard() {
         </div>
 
         {/* User Profile */}
-        <div className="sidebar-user">
+        <div className="sidebar-user" onClick={() => setShowProfileModal(true)}>
           <div className="sidebar-user-avatar">
             {auth?.user?.username?.charAt(0).toUpperCase() || 'U'}
           </div>
@@ -340,6 +342,12 @@ function Dashboard() {
         onClose={closeTeamDetail}
         teamId={selectedTeam?.id}
         teamName={selectedTeam?.name}
+      />
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
       />
     </div>
   );

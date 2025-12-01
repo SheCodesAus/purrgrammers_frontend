@@ -126,6 +126,15 @@
     color: #374151;
 }
 
+.member-name-link {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.member-name-link:hover {
+    color: #667eea;
+}
+
 .team-member-item .remove-member-btn {
     background: none;
     border: none;

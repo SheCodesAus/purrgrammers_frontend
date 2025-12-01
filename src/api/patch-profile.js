@@ -1,7 +1,7 @@
 // user can update own profile
 
 async function patchProfile(profileData, token) {
-    const url =`${import.meta.env.VITE_API_URL}/api/users/profile`;
+    const url =`${import.meta.env.VITE_API_URL}/api/users/profile/`;
 
     const response = await fetch(url, {
         method: "PATCH",
@@ -9,6 +9,7 @@ async function patchProfile(profileData, token) {
             "Content-Type": "application/json",
             "Authorization": token,
         },
+        body: JSON.stringify(profileData),
     });
 
     if (!response.ok) {

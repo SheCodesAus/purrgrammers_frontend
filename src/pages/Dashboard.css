@@ -206,6 +206,13 @@
   padding: 1rem 0;
   border-top: 1px solid #e5e7eb;
   margin-top: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.sidebar-user:hover {
+  background: rgba(102, 126, 234, 0.1);
 }
 
 .sidebar-user-avatar {

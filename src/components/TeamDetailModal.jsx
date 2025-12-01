@@ -6,6 +6,7 @@ import getTeamBoards from '../api/get-team-boards';
 import addTeamMember from '../api/add-team-member';
 import deleteTeamMember from '../api/delete-team-member';
 import deleteTeam from '../api/delete-team';
+import ProfileModal from './ProfileModal';
 import './TeamDetailModal.css';
 
 function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
@@ -15,6 +16,7 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
     const [boards, setBoards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [selectedMember, setSelectedMember] = useState(null);
 
     // Add member state
     const [newMemberUsername, setNewMemberUsername] = useState('');
@@ -135,7 +137,12 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
                                 <ul className="team-members-list">
                                     {teamDetails?.members?.map((member) => (
                                         <li key={member.id} className="team-member-item">
-                                            <span>👤 {member.username}</span>
+                                            <span 
+                                                className="member-name-link"
+                                                onClick={() => setSelectedMember(member)}
+                                            >
+                                                👤 {member.username}
+                                            </span>
                                             {member.id !== auth.user.id && (
                                                 <button
                                                     className="remove-member-btn"
@@ -213,6 +220,14 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
                     )}
                 </div>
             </div>
+
+            {/* Member Profile Modal */}
+            <ProfileModal
+                isOpen={!!selectedMember}
+                onClose={() => setSelectedMember(null)}
+                userId={selectedMember?.id}
+                username={selectedMember?.username}
+            />
         </div>
     );
 }
