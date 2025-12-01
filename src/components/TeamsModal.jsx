@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import getTeams from '../api/get-teams';
 import getTeam from '../api/get-team';
 import createTeam from '../api/create-team';
 import addTeamMember from '../api/add-team-member';
+import deleteTeam from '../api/delete-team';
 import './TeamsModal.css';
 
 function TeamsModal({ isOpen, onClose }) {
+    const navigate = useNavigate();
     const { auth } = useAuth();
     const [teams, setTeams] = useState([]);
     const [expandedTeamId, setExpandedTeamId] = useState(null);
@@ -24,10 +27,14 @@ function TeamsModal({ isOpen, onClose }) {
     const [addMemberLoading, setAddMemberLoading] = useState(false);
     const [addMemberError, setAddMemberError] = useState('');
 
+    // Track if changes were made
+    const [hasChanges, setHasChanges] = useState(false);
+
     // Fetch teams when modal opens
     useEffect(() => {
         if (isOpen && auth.token) {
             fetchTeams();
+            setHasChanges(false);
         }
     }, [isOpen, auth.token]);
 
@@ -73,6 +80,7 @@ function TeamsModal({ isOpen, onClose }) {
             setNewTeamName('');
             setShowCreateForm(false);
             fetchTeams(); // Refresh the list
+            setHasChanges(true);
         } catch (err) {
             console.error("Failed to create team:", err);
         } finally {
@@ -98,6 +106,36 @@ function TeamsModal({ isOpen, onClose }) {
         } finally {
             setAddMemberLoading(false);
         }
+    };
+
+    const handleDeleteTeam = async (teamId, teamName) => {
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${teamName}"? This action cannot be undone.`
+        );
+
+        if (!confirmDelete) {
+            return;
+        }
+        
+        try {
+            await deleteTeam(teamId, auth.token);
+            setTeams(prev => prev.filter(team => team.id !== teamId));
+            
+            if (expandedTeamId === teamId) {
+                setExpandedTeamId(null);
+            }
+            
+            setHasChanges(true);
+        } catch (error) {
+            console.error("Failed to delete team:", error);
+            alert(`Failed to delete team: ${error.message}`);
+        }
+    };
+
+    const handleSaveChanges = () => {
+        onClose();
+        navigate('/dashboard');
+        window.location.reload();
     };
 
     if (!isOpen) return null;
@@ -156,6 +194,13 @@ function TeamsModal({ isOpen, onClose }) {
                                                 {addMemberError && (
                                                     <p className="add-member-error">{addMemberError}</p>
                                                 )}
+
+                                                <button 
+                                                    className="btn btn-danger btn-small"
+                                                    onClick={() => handleDeleteTeam(team.id, team.name)}
+                                                >
+                                                    Delete Team
+                                                </button>
                                             </div>
                                         )}
                                     </li>
@@ -200,6 +245,14 @@ function TeamsModal({ isOpen, onClose }) {
                                     </button>
                                 </div>
                             )}
+
+                            {/* Save Changes Button */}
+                            <button 
+                                className="save-changes-btn"
+                                onClick={handleSaveChanges}
+                            >
+                                Save Changes
+                            </button>
                         </>
                     )}
                 </div>
