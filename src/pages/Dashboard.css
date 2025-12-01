@@ -2,12 +2,257 @@
    DASHBOARD STYLES
    ==================================== */
 
-/* Dashboard Container */
-.dashboard-container {
-  max-width: 90%;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  min-height: 80vh;
+/* Dashboard Layout - Sidebar + Main */
+.dashboard-layout {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
+/* ====================================
+   SIDEBAR
+   ==================================== */
+
+.dashboard-sidebar {
+  width: 220px;
+  background: transparent;
+  border-right: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.dashboard-sidebar.collapsed {
+  width: 50px;
+  padding: 1rem 0.5rem;
+  align-items: center;
+}
+
+.sidebar-toggle-btn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.dashboard-sidebar.collapsed .sidebar-toggle-btn {
+  margin-bottom: 0;
+}
+
+.sidebar-new-board-btn {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-teams {
+  margin-top: 1rem;
+  flex: 1;
+}
+
+.sidebar-teams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.sidebar-heading {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.sidebar-add-team-btn {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.sidebar-add-team-btn:hover {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.sidebar-create-team-form {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.sidebar-create-team-form input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-create-team-form input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.sidebar-create-team-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sidebar-create-team-actions button {
+  flex: 1;
+  padding: 0.375rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.sidebar-create-team-actions .btn-create {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.sidebar-create-team-actions .btn-create:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar-create-team-actions .btn-cancel {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.sidebar-create-team-actions .btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+.sidebar-loading {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.sidebar-team-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-team-list li {
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-team-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-team-btn:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* Sidebar User Profile */
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1rem;
+}
+
+.sidebar-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-user-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-user-email {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ====================================
+   MAIN CONTENT
+   ==================================== */
+
+.dashboard-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
 }
 
 /* ====================================
@@ -383,9 +628,8 @@
 
 /* Larger Tablets */
 @media (max-width: 1024px) {
-  .dashboard-content {
-    flex-direction: column;
-    gap: 2rem;
+  .boards-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
   
   .dashboard-section {
@@ -395,7 +639,50 @@
 
 /* Tablet and Mobile */
 @media (max-width: 768px) {
-  .dashboard-container {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .dashboard-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem;
+  }
+
+  .sidebar-teams {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .sidebar-heading {
+    margin: 0;
+    margin-right: 0.5rem;
+  }
+
+  .sidebar-team-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .sidebar-team-list li {
+    margin: 0;
+  }
+
+  .sidebar-team-btn {
+    padding: 0.375rem 0.75rem;
+    background: #e5e7eb;
+    border-radius: 999px;
+    font-size: 0.8rem;
+  }
+
+  .dashboard-main {
     padding: 1.5rem 1rem;
   }
   
@@ -403,28 +690,14 @@
     font-size: 2rem;
   }
 
-  .dashboard-subtitle {
-    font-size: 1.1rem;
+  .boards-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .section-header {
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: stretch;
-    text-align: center;
-  }
-  
-  .boards-grid-preview {
+}
+
+@media (max-width: 480px) {
+  .boards-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .dashboard-section {
-    padding: 1.5rem;
-  }
-
-  .dashboard-content {
-    gap: 2rem;
   }
 }
 

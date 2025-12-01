@@ -1,0 +1,289 @@
+.team-detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.team-detail-modal {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Header */
+.team-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.team-detail-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+}
+
+.team-detail-header .close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.team-detail-header .close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Content */
+.team-detail-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.loading-text,
+.error-text {
+    text-align: center;
+    color: #6b7280;
+    margin: 2rem 0;
+}
+
+.error-text {
+    color: #ef4444;
+}
+
+/* Sections */
+.team-detail-section {
+    margin-bottom: 1.5rem;
+}
+
+.team-detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.team-detail-section h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.75rem 0;
+}
+
+/* Members List */
+.team-members-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.team-member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.team-member-item .remove-member-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.team-member-item .remove-member-btn:hover {
+    color: #ef4444;
+}
+
+/* Add Member Form */
+.add-member-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.add-member-form input {
+    flex: 1;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.add-member-form input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.add-member-form button {
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.add-member-form button:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.add-member-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.add-member-error {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin: 0.5rem 0 0 0;
+}
+
+/* Boards List */
+.team-boards-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.team-board-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.board-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.board-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.board-date {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.no-boards-text {
+    color: #9ca3af;
+    font-style: italic;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Actions */
+.team-detail-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 0.5rem;
+}
+
+.team-detail-actions .btn {
+    width: 100%;
+}
+
+.team-detail-actions .btn-save {
+    background: transparent;
+    border: 2px dashed #667eea;
+    color: #667eea;
+}
+
+.team-detail-actions .btn-save:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-style: solid;
+}
+
+/* Button Styles (reuse from app) */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
