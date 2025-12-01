@@ -147,6 +147,14 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         onBoardUpdate(updatedBoard);
     };
 
+    const handleBoardStatusChange = (newStatus) => {
+        const updatedBoard = {
+            ...boardData,
+            is_active: newStatus
+        };
+        onBoardUpdate(updatedBoard);
+    };
+
     const handleBoardDelete = (boardId) => {
         if (onNavigateBack) {
             onNavigateBack();
@@ -419,6 +427,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 boardData={boardData}
                 onTitleUpdate={handleTitleUpdate}
                 onBoardDelete={handleBoardDelete}
+                onBoardStatusChange={handleBoardStatusChange}
             />
             
             <div className="board-content">

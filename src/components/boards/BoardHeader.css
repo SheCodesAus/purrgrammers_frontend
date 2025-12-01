@@ -278,3 +278,55 @@
     font-size: 1.125rem;
   }
 }
+
+/* Board Closed Badge */
+.board-closed-badge {
+  display: inline-block;
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}
+
+/* Toggle Status Button */
+.toggle-status-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #6b7280;
+}
+
+.toggle-status-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.toggle-status-btn.closed {
+  color: #22c55e;
+}
+
+.toggle-status-btn.closed:hover {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.toggle-status-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-status-btn .material-icons {
+  font-size: 1.25rem;
+}

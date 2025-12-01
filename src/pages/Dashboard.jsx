@@ -193,11 +193,16 @@ function Dashboard() {
                 .map(board => (
                   <li key={board.id}>
                     <button 
-                      className="sidebar-board-btn"
-                      onClick={() => navigate(`/boards/${board.id}`)}
-                      title={`${board.title} (${board.teamName})`}
+                      className={`sidebar-board-btn ${board.is_active === false ? 'sidebar-board-closed' : ''}`}
+                      onClick={() => navigate(`/retro-board/${board.id}`)}
+                      title={`${board.title} (${board.teamName})${board.is_active === false ? ' - Closed' : ''}`}
                     >
-                      <span className="sidebar-board-title">{board.title}</span>
+                      <div className="sidebar-board-title-row">
+                        <span className="sidebar-board-title">{board.title}</span>
+                        {board.is_active === false && (
+                          <span className="sidebar-board-closed-badge">Closed</span>
+                        )}
+                      </div>
                       <span className="sidebar-board-team">{board.teamName}</span>
                     </button>
                   </li>
@@ -327,8 +332,13 @@ function Dashboard() {
                   ) : (
                     <div className="boards-grid">
                       {boards.map(board => (
-                        <div key={board.id} className="board-card">
-                          <h4 className="board-name">{board.title}</h4>
+                        <div key={board.id} className={`board-card ${board.is_active === false ? 'board-closed' : ''}`}>
+                          <div className="board-card-header">
+                            <h4 className="board-name">{board.title}</h4>
+                            {board.is_active === false && (
+                              <span className="board-closed-badge">Closed</span>
+                            )}
+                          </div>
                           <p className="board-date">{formatDate(board.created_at)}</p>
                           <div className="board-card-actions">
                             <button 

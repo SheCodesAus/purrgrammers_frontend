@@ -156,12 +156,34 @@
   background: #e5e7eb;
 }
 
+.sidebar-board-btn.sidebar-board-closed {
+  opacity: 0.6;
+}
+
+.sidebar-board-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .sidebar-board-title {
   font-size: 0.875rem;
   color: #374151;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.sidebar-board-closed-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .sidebar-board-team {
@@ -411,6 +433,30 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.board-card.board-closed {
+  opacity: 0.7;
+  background: #f9fafb;
+}
+
+.board-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.board-closed-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
 }
 
 .board-name {

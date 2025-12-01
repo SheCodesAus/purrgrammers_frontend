@@ -11,10 +11,12 @@ import './CardPool.css';
 function BoardHeader({ 
     boardData, 
     onTitleUpdate,  // function to update board title
-    onBoardDelete   // function to handle board deletion
+    onBoardDelete,  // function to handle board deletion
+    onBoardStatusChange  // function to handle board active status change
 }) {
     const [editTitle, setEditTitle] = useState(boardData?.title || '');
     const [showEditOptions, setShowEditOptions] = useState(false);
+    const [isToggling, setIsToggling] = useState(false);
     const navigate = useNavigate();
     const { auth } = useAuth();
     const [showTeamSettings, setShowTeamSettings] = useState(false);
@@ -114,6 +116,34 @@ function BoardHeader({
         }
     };
 
+    const handleToggleActive = async () => {
+        const newStatus = !boardData?.is_active;
+        const action = newStatus ? 'reopen' : 'close';
+        
+        const confirmToggle = window.confirm(
+            `Are you sure you want to ${action} this board?`
+        );
+        
+        if (!confirmToggle) return;
+        
+        setIsToggling(true);
+        try {
+            const updatedBoard = await patchBoard(
+                boardData.id,
+                { is_active: newStatus },
+                auth.token
+            );
+            if (onBoardStatusChange) {
+                onBoardStatusChange(updatedBoard.is_active);
+            }
+        } catch (error) {
+            console.error("Failed to update board status:", error);
+            alert(`Failed to ${action} board: ${error.message}`);
+        } finally {
+            setIsToggling(false);
+        }
+    };
+
     return (
         <header className="board-header">
             <div className="board-header-left">
@@ -139,6 +169,9 @@ function BoardHeader({
                         maxLength={100}
                         placeholder={boardData?.title || 'Board title'}
                     />
+                    {boardData?.is_active === false && (
+                        <span className="board-closed-badge">CLOSED</span>
+                    )}
                 </div>
             </div>
 
@@ -200,6 +233,16 @@ function BoardHeader({
                                 title="Delete board"
                             >
                                 <span className="material-icons">delete</span>
+                            </button>
+                            <button 
+                                className={`toggle-status-btn ${boardData?.is_active === false ? 'closed' : ''}`}
+                                onClick={handleToggleActive}
+                                disabled={isToggling}
+                                title={boardData?.is_active === false ? 'Reopen board' : 'Close board'}
+                            >
+                                <span className="material-icons">
+                                    {boardData?.is_active === false ? 'lock_open' : 'lock'}
+                                </span>
                             </button>
                         </div>
                     )}
