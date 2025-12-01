@@ -10,8 +10,10 @@ function Column({
     currentUser,
     dragState,
     editingCard,
+    remainingVotes,
     onEditCard,
     onDeleteCard,
+    onVoteChange,
     onSetEditingCard,
     onDeleteColumn,
     onDragOver,
@@ -199,8 +201,10 @@ function Column({
                             columnColor={column.color}
                             currentUser={currentUser}
                             isEditing={editingCard === card.id}
+                            remainingVotes={remainingVotes}
                             onEdit={(newText) => onEditCard(card.id, newText)}
                             onDelete={() => onDeleteCard(card.id)}
+                            onVoteChange={(voteData) => onVoteChange(card.id, voteData)}
                             onStartEdit={() => onSetEditingCard(card.id)}
                             onCancelEdit={() => onSetEditingCard(null)}
                         />

@@ -25,6 +25,9 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Anonymous modal state
     const [showAnonModal, setShowAnonModal] = useState(false);
     const [pendingCardColumn, setPendingCardColumn] = useState(null);
+    
+    // Voting state - tracks remaining votes for current user
+    const [remainingVotes, setRemainingVotes] = useState(boardData?.user_remaining_votes ?? 5);
 
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
@@ -70,6 +73,20 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     columns: prevBoard.columns?.map(col => ({
                         ...col,
                         cards: col.cards?.filter(card => card.id !== message.data.id) || []
+                    })) || []
+                }));
+                break;
+
+            case 'card_voted':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    columns: prevBoard.columns?.map(col => ({
+                        ...col,
+                        cards: col.cards?.map(card =>
+                            card.id === message.data.id 
+                                ? { ...card, vote_count: message.data.vote_count }
+                                : card
+                        ) || []
                     })) || []
                 }));
                 break;
@@ -266,6 +283,37 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         onBoardUpdate(updatedBoard);
     };
 
+    // Vote change handler - updates card vote count and remaining votes
+    const handleVoteChange = (columnId, cardId, voteData) => {
+        // Update remaining votes from response
+        if (voteData.remaining_votes !== undefined) {
+            setRemainingVotes(voteData.remaining_votes);
+        }
+        
+        // Update the card's vote count and user_vote_count
+        const updatedBoard = {
+            ...boardData,
+            columns: boardData.columns?.map(column => 
+                column.id === columnId 
+                    ? { 
+                        ...column, 
+                        cards: column.cards.map(card => 
+                            card.id === cardId 
+                                ? { 
+                                    ...card, 
+                                    vote_count: voteData.total_card_votes,
+                                    user_vote_count: voteData.user_votes_on_card
+                                } 
+                                : card
+                        ) 
+                    }
+                    : column
+            ) || []
+        };
+
+        onBoardUpdate(updatedBoard);
+    };
+
     // Drag and drop handlers
     const handleDragStart = (cardType) => {
         setDragState({
@@ -382,8 +430,10 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                             currentUser={currentUser}
                             dragState={dragState}
                             editingCard={editingCard}
+                            remainingVotes={remainingVotes}
                             onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
                             onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
+                            onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
                             onSetEditingCard={setEditingCard}
                             onColumnUpdate={handleColumnUpdate}
                             onDeleteColumn={handleDeleteColumn}

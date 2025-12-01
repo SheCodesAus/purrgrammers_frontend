@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
+import VoteButton from "./VoteButton";
 import "./Card.css";
 
 function Card({
@@ -9,8 +10,10 @@ function Card({
     columnType,
     columnColor,
     isEditing,
+    remainingVotes,
     onEdit,
     onDelete,
+    onVoteChange,
     onStartEdit,
     onCancelEdit
 }) {
@@ -141,8 +144,6 @@ function Card({
             style={{
                 backgroundColor: columnColor || undefined
             }}
-            onClick={isOwner ? handleStartEdit : undefined}
-            title={isOwner ? "Click to edit" : ""}
         >
             {isOwner && (
                 <button 
@@ -157,18 +158,29 @@ function Card({
                 </button>
             )}
             
-            <div className="card-content" ref={contentRef}>
+            <div 
+                className="card-content" 
+                ref={contentRef}
+                onClick={isOwner ? handleStartEdit : undefined}
+                title={isOwner ? "Click to edit" : ""}
+            >
                 <p className="card-text" ref={textRef}>
                     {card.content || (isOwner ? "Click to edit" : "")}
                 </p>
             </div>
 
-            <div className="card-footer">
+            <div className="card-footer" onClick={(e) => e.stopPropagation()}>
                 <div className="card-meta">
                     <span className={`card-author ${card.is_anonymous ? 'anonymous' : ''}`}>
                         {card.is_anonymous ? "Anonymous" : (card.created_by?.username || card.created_by?.initials || card.author || "Anonymous")}
                     </span>
                 </div>
+
+                <VoteButton
+                    card={card}
+                    remainingVotes={remainingVotes}
+                    onVoteChange={onVoteChange}
+                />
 
                 {isOwner && (
                     <div className="card-actions">
