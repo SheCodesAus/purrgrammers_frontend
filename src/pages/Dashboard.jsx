@@ -8,6 +8,7 @@ import createTeam from "../api/create-team";
 import CreateBoardForm from "../components/CreateBoardForm";
 import TeamDetailModal from "../components/TeamDetailModal";
 import ProfileModal from "../components/ProfileModal";
+import Avatar from "../components/Avatar";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -176,12 +177,44 @@ function Dashboard() {
 
         {!sidebarCollapsed && (
           <>
-            <button 
-              className="btn btn-primary sidebar-new-board-btn"
-              onClick={() => openCreateModal()}
-            >
-              + New Board
-            </button>
+        {/* Latest Boards */}
+        <div className="sidebar-boards">
+          <h3 className="sidebar-heading">Latest Boards</h3>
+          {teamsWithBoards.isLoading ? (
+            <p className="sidebar-loading">Loading...</p>
+          ) : (
+            <ul className="sidebar-board-list">
+              {teamsWithBoards.data
+                .flatMap(({ team, boards }) => 
+                  boards.map(board => ({ ...board, teamName: team.name }))
+                )
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 5)
+                .map(board => (
+                  <li key={board.id}>
+                    <button 
+                      className="sidebar-board-btn"
+                      onClick={() => navigate(`/boards/${board.id}`)}
+                      title={`${board.title} (${board.teamName})`}
+                    >
+                      <span className="sidebar-board-title">{board.title}</span>
+                      <span className="sidebar-board-team">{board.teamName}</span>
+                    </button>
+                  </li>
+                ))
+              }
+              {teamsWithBoards.data.flatMap(({ boards }) => boards).length === 0 && (
+                <li className="sidebar-empty">No boards yet</li>
+              )}
+            </ul>
+          )}
+          <button 
+            className="sidebar-new-board-btn"
+            onClick={() => openCreateModal()}
+          >
+            + New Board
+          </button>
+        </div>
 
         <div className="sidebar-teams">
           <div className="sidebar-teams-header">
@@ -246,9 +279,7 @@ function Dashboard() {
 
         {/* User Profile */}
         <div className="sidebar-user" onClick={() => setShowProfileModal(true)}>
-          <div className="sidebar-user-avatar">
-            {auth?.user?.username?.charAt(0).toUpperCase() || 'U'}
-          </div>
+          <Avatar initials={auth?.user?.initials} size={40} />
           <div className="sidebar-user-info">
             <span className="sidebar-user-name">{auth?.user?.username || 'User'}</span>
             <span className="sidebar-user-email">{auth?.user?.email || ''}</span>

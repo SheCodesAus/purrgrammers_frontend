@@ -150,7 +150,8 @@ function BoardHeader({
                             className="team-settings-btn"
                             onClick={() => setShowTeamSettings(!showTeamSettings)}
                         >
-                            👥 {teamDetails?.name || boardData.team.name || 'Team'}
+                            <span className="material-icons">group</span>
+                            {teamDetails?.name || boardData.team.name || 'Team'}
                         </button>
                         
                         {showTeamSettings && (

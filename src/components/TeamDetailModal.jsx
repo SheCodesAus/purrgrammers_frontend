@@ -7,6 +7,7 @@ import addTeamMember from '../api/add-team-member';
 import deleteTeamMember from '../api/delete-team-member';
 import deleteTeam from '../api/delete-team';
 import ProfileModal from './ProfileModal';
+import Avatar from './Avatar';
 import './TeamDetailModal.css';
 
 function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
@@ -141,7 +142,8 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
                                                 className="member-name-link"
                                                 onClick={() => setSelectedMember(member)}
                                             >
-                                                👤 {member.username}
+                                                <Avatar initials={member.initials} size={24} />
+                                                {member.username}
                                             </span>
                                             {member.id !== auth.user.id && (
                                                 <button

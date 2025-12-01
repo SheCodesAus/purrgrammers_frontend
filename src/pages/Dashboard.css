@@ -46,6 +46,7 @@
   color: #6b7280;
   font-size: 1rem;
   margin-bottom: 1rem;
+  margin-left: auto;
   transition: all 0.2s;
   flex-shrink: 0;
 }
@@ -61,7 +62,21 @@
 
 .sidebar-new-board-btn {
   width: 100%;
-  margin-bottom: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+  background: transparent;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  color: #6b7280;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sidebar-new-board-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
 }
 
 .sidebar-teams {
@@ -104,6 +119,61 @@
   background: #667eea;
   border-color: #667eea;
   color: white;
+}
+
+/* Sidebar Boards Section */
+.sidebar-boards {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-board-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.sidebar-board-list li {
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-board-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.sidebar-board-btn:hover {
+  background: #e5e7eb;
+}
+
+.sidebar-board-title {
+  font-size: 0.875rem;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-board-team {
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.sidebar-empty {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  padding: 0.5rem 0.75rem;
+  font-style: italic;
 }
 
 .sidebar-create-team-form {
@@ -411,6 +481,8 @@
   flex: 1;
   min-width: 0;
 }
+
+.section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
