@@ -1,27 +1,26 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/use-auth';
+import createActionItem from '../../api/create-action-item';
 import patchActionItem from '../../api/patch-action-item';
 import deleteActionItem from '../../api/delete-action-item';
-import returnToColumn from '../../api/return-to-column';
 import Avatar from '../Avatar';
 import './ActionBar.css';
 
 function ActionBar({ 
     actionItems = [], 
     teamMembers = [],
+    boardId,
     isCollapsed, 
     onToggleCollapse,
+    onActionItemCreate,
     onActionItemUpdate,
-    onActionItemDelete,
-    onCardReturn,
-    isDragOver,
-    onDragOver,
-    onDragLeave,
-    onDrop
+    onActionItemDelete
 }) {
     const { auth } = useAuth();
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState({});
+    const [newItemText, setNewItemText] = useState('');
+    const [isCreating, setIsCreating] = useState(false);
 
     const statusOptions = [
         { value: 'todo', label: 'To Do', color: '#6b7280' },
@@ -60,18 +59,20 @@ function ActionBar({
         }
     };
 
-    const handleReturnToColumn = async (actionItemId) => {
-        if (!window.confirm('Return this action item to its original column?')) return;
-        
-        setLoading(prev => ({ ...prev, [actionItemId]: true }));
+    const handleCreateItem = async (e) => {
+        e.preventDefault();
+        if (!newItemText.trim() || isCreating) return;
+
+        setIsCreating(true);
         try {
-            const result = await returnToColumn(actionItemId, auth.token);
-            onCardReturn(result);
+            const newItem = await createActionItem(boardId, newItemText.trim(), auth.token);
+            onActionItemCreate(newItem);
+            setNewItemText('');
         } catch (error) {
-            console.error('Failed to return to column:', error);
-            alert(`Failed to return to column: ${error.message}`);
+            console.error('Failed to create action item:', error);
+            alert(`Failed to create action item: ${error.message}`);
         } finally {
-            setLoading(prev => ({ ...prev, [actionItemId]: false }));
+            setIsCreating(false);
         }
     };
 
@@ -119,37 +120,48 @@ function ActionBar({
                         <span className="action-count">{actionItems.length}</span>
                     </div>
 
-                    {/* Drop Zone */}
-                    <div 
-                        className={`action-bar-dropzone ${isDragOver ? 'drag-over' : ''}`}
-                        onDragOver={onDragOver}
-                        onDragLeave={onDragLeave}
-                        onDrop={onDrop}
-                    >
-                        <span className="material-icons">add_circle_outline</span>
-                        <span>Drop card here to create action</span>
+                    {/* Add New Action Item */}
+                    <div className="action-bar__form">
+                        <input
+                            type="text"
+                            className="action-bar__input"
+                            value={newItemText}
+                            onChange={(e) => setNewItemText(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleCreateItem(e)}
+                            placeholder="Add action item..."
+                            disabled={isCreating}
+                        />
+                        <button 
+                            type="button"
+                            className="action-bar__submit-btn"
+                            onClick={handleCreateItem}
+                            disabled={!newItemText.trim() || isCreating}
+                            title="Add action item"
+                        >
+                            <span className="material-icons">add</span>
+                        </button>
                     </div>
 
                     {/* Action Items List */}
-                    <div className="action-items-list">
+                    <div className="action-bar__list">
                         {actionItems.length === 0 ? (
-                            <p className="no-actions">No action items yet. Drag cards here to create actions.</p>
+                            <p className="action-bar__empty">No action items yet. Add one above!</p>
                         ) : (
                             actionItems.map(item => (
                                 <div 
                                     key={item.id} 
-                                    className={`action-item ${loading[item.id] ? 'loading' : ''}`}
+                                    className={`action-bar__item ${loading[item.id] ? 'action-bar__item--loading' : ''}`}
                                 >
-                                    <div className="action-item-content">
+                                    <div className="action-bar__item-content">
                                         {item.content}
                                     </div>
 
-                                    <div className="action-item-meta">
+                                    <div className="action-bar__item-meta">
                                         {/* Status Dropdown */}
                                         <select
                                             value={item.status}
                                             onChange={(e) => handleStatusChange(item.id, e.target.value)}
-                                            className="status-select"
+                                            className="action-bar__status-select"
                                             style={getStatusStyle(item.status)}
                                             disabled={loading[item.id]}
                                         >
@@ -161,14 +173,14 @@ function ActionBar({
                                         </select>
 
                                         {/* Assignee */}
-                                        <div className="assignee-section">
+                                        <div className="action-bar__assignee">
                                             {editingId === item.id ? (
                                                 <select
                                                     value={item.assignee?.username || ''}
                                                     onChange={(e) => handleAssigneeChange(item.id, e.target.value)}
                                                     onBlur={() => setEditingId(null)}
                                                     autoFocus
-                                                    className="assignee-select"
+                                                    className="action-bar__assignee-select"
                                                 >
                                                     <option value="">Unassigned</option>
                                                     {teamMembers.map(member => (
@@ -179,7 +191,7 @@ function ActionBar({
                                                 </select>
                                             ) : (
                                                 <button 
-                                                    className="assignee-btn"
+                                                    className="action-bar__assignee-btn"
                                                     onClick={() => setEditingId(item.id)}
                                                     title={item.assignee ? item.assignee.username : 'Assign someone'}
                                                 >
@@ -194,20 +206,12 @@ function ActionBar({
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="action-item-actions">
-                                        <button
-                                            onClick={() => handleReturnToColumn(item.id)}
-                                            disabled={loading[item.id]}
-                                            title="Return to column"
-                                            className="action-btn return-btn"
-                                        >
-                                            <span className="material-icons">undo</span>
-                                        </button>
+                                    <div className="action-bar__item-actions">
                                         <button
                                             onClick={() => handleDelete(item.id)}
                                             disabled={loading[item.id]}
                                             title="Delete action"
-                                            className="action-btn delete-btn"
+                                            className="action-bar__delete-btn"
                                         >
                                             <span className="material-icons">delete</span>
                                         </button>

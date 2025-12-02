@@ -6,7 +6,6 @@ import ActionBar from "./ActionBar";
 import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
-import convertToAction from "../../api/convert-to-action";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
 import "./Board.css";
@@ -33,7 +32,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
 
     // Action bar state
     const [actionBarCollapsed, setActionBarCollapsed] = useState(false);
-    const [actionBarDragOver, setActionBarDragOver] = useState(false);
 
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
@@ -200,14 +198,17 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     };
 
     // Action bar handlers
-    const handleConvertToAction = async (cardId) => {
-        try {
-            await convertToAction(cardId, auth.token);
-            // WebSocket will handle the state updates
-        } catch (error) {
-            console.error('Failed to convert card to action:', error);
-            alert(`Failed to create action item: ${error.message}`);
-        }
+    const handleActionItemCreate = (newItem) => {
+        // Optimistic update - add item immediately
+        // WebSocket will also send this, but we check for duplicates there
+        onBoardUpdate(prevBoard => {
+            const exists = prevBoard.action_items?.some(item => item.id === newItem.id);
+            if (exists) return prevBoard;
+            return {
+                ...prevBoard,
+                action_items: [...(prevBoard.action_items || []), newItem]
+            };
+        });
     };
 
     const handleActionItemUpdate = (updatedItem) => {
@@ -226,44 +227,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 item.id !== actionItemId
             ) || []
         }));
-    };
-
-    const handleCardReturn = (result) => {
-        // WebSocket should handle both card_created and action_item_deleted
-        // This is a fallback if needed
-        if (result.created_card) {
-            onBoardUpdate(prevBoard => ({
-                ...prevBoard,
-                columns: prevBoard.columns?.map(col =>
-                    col.id === result.created_card.column
-                        ? { ...col, cards: [...(col.cards || []), result.created_card] }
-                        : col
-                ) || [],
-                action_items: prevBoard.action_items?.filter(item =>
-                    item.id !== result.deleted_action_item_id
-                ) || []
-            }));
-        }
-    };
-
-    // Action bar drag handlers
-    const handleActionBarDragOver = (e) => {
-        e.preventDefault();
-        setActionBarDragOver(true);
-    };
-
-    const handleActionBarDragLeave = () => {
-        setActionBarDragOver(false);
-    };
-
-    const handleActionBarDrop = (e) => {
-        e.preventDefault();
-        setActionBarDragOver(false);
-        
-        const cardId = e.dataTransfer.getData('cardId');
-        if (cardId) {
-            handleConvertToAction(parseInt(cardId, 10));
-        }
     };
 
     // Get team members for assignee dropdown
@@ -566,15 +529,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 <ActionBar
                     actionItems={boardData?.action_items || []}
                     teamMembers={teamMembers}
+                    boardId={boardData?.id}
                     isCollapsed={actionBarCollapsed}
                     onToggleCollapse={() => setActionBarCollapsed(!actionBarCollapsed)}
+                    onActionItemCreate={handleActionItemCreate}
                     onActionItemUpdate={handleActionItemUpdate}
                     onActionItemDelete={handleActionItemDelete}
-                    onCardReturn={handleCardReturn}
-                    isDragOver={actionBarDragOver}
-                    onDragOver={handleActionBarDragOver}
-                    onDragLeave={handleActionBarDragLeave}
-                    onDrop={handleActionBarDrop}
                 />
             </div>
             
