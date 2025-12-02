@@ -144,6 +144,11 @@ function Card({
             style={{
                 backgroundColor: columnColor || undefined
             }}
+            draggable={true}
+            onDragStart={(e) => {
+                e.dataTransfer.setData('cardId', card.id.toString());
+                e.dataTransfer.effectAllowed = 'move';
+            }}
         >
             {isOwner && (
                 <button 

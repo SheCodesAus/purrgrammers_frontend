@@ -1,5 +1,5 @@
 async function convertToAction(cardId, token) {
-    const url = `${import.meta.env.VITE_API_URL}/api/cards/${cardId}/convert-to-action/`;
+    const url = `${import.meta.env.VITE_API_URL}/api/cards/${cardId}/convert_to_action/`;
 
     const response = await fetch(url, {
         method: "POST",

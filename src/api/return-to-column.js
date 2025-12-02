@@ -1,5 +1,5 @@
 async function returnToColumn(actionItemId, token) {
-    const url = `${import.meta.env.VITE_API_URL}/api/action-items/${actionItemId}/return-to-column/`;
+    const url = `${import.meta.env.VITE_API_URL}/api/action-items/${actionItemId}/return_to_column/`;
 
     const response = await fetch(url, {
         method: "POST",

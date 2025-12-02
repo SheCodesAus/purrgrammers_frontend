@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import CardPool from "./CardPool";
+import ActionBar from "./ActionBar";
 import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
+import convertToAction from "../../api/convert-to-action";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
 import "./Board.css";
@@ -28,6 +30,10 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     
     // Voting state - tracks remaining votes for current user
     const [remainingVotes, setRemainingVotes] = useState(boardData?.user_remaining_votes ?? 5);
+
+    // Action bar state
+    const [actionBarCollapsed, setActionBarCollapsed] = useState(false);
+    const [actionBarDragOver, setActionBarDragOver] = useState(false);
 
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
@@ -88,6 +94,38 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                                 : card
                         ) || []
                     })) || []
+                }));
+                break;
+
+            case 'action_item_created':
+                onBoardUpdate(prevBoard => {
+                    // Check if action item already exists (prevent duplicates)
+                    const exists = prevBoard.action_items?.some(item => item.id === message.data.id);
+                    if (exists) {
+                        return prevBoard;
+                    }
+                    return {
+                        ...prevBoard,
+                        action_items: [...(prevBoard.action_items || []), message.data]
+                    };
+                });
+                break;
+
+            case 'action_item_updated':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    action_items: prevBoard.action_items?.map(item =>
+                        item.id === message.data.id ? message.data : item
+                    ) || []
+                }));
+                break;
+
+            case 'action_item_deleted':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    action_items: prevBoard.action_items?.filter(item => 
+                        item.id !== message.data.id
+                    ) || []
                 }));
                 break;
 
@@ -160,6 +198,76 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             onNavigateBack();
         }
     };
+
+    // Action bar handlers
+    const handleConvertToAction = async (cardId) => {
+        try {
+            await convertToAction(cardId, auth.token);
+            // WebSocket will handle the state updates
+        } catch (error) {
+            console.error('Failed to convert card to action:', error);
+            alert(`Failed to create action item: ${error.message}`);
+        }
+    };
+
+    const handleActionItemUpdate = (updatedItem) => {
+        onBoardUpdate(prevBoard => ({
+            ...prevBoard,
+            action_items: prevBoard.action_items?.map(item =>
+                item.id === updatedItem.id ? updatedItem : item
+            ) || []
+        }));
+    };
+
+    const handleActionItemDelete = (actionItemId) => {
+        onBoardUpdate(prevBoard => ({
+            ...prevBoard,
+            action_items: prevBoard.action_items?.filter(item => 
+                item.id !== actionItemId
+            ) || []
+        }));
+    };
+
+    const handleCardReturn = (result) => {
+        // WebSocket should handle both card_created and action_item_deleted
+        // This is a fallback if needed
+        if (result.created_card) {
+            onBoardUpdate(prevBoard => ({
+                ...prevBoard,
+                columns: prevBoard.columns?.map(col =>
+                    col.id === result.created_card.column
+                        ? { ...col, cards: [...(col.cards || []), result.created_card] }
+                        : col
+                ) || [],
+                action_items: prevBoard.action_items?.filter(item =>
+                    item.id !== result.deleted_action_item_id
+                ) || []
+            }));
+        }
+    };
+
+    // Action bar drag handlers
+    const handleActionBarDragOver = (e) => {
+        e.preventDefault();
+        setActionBarDragOver(true);
+    };
+
+    const handleActionBarDragLeave = () => {
+        setActionBarDragOver(false);
+    };
+
+    const handleActionBarDrop = (e) => {
+        e.preventDefault();
+        setActionBarDragOver(false);
+        
+        const cardId = e.dataTransfer.getData('cardId');
+        if (cardId) {
+            handleConvertToAction(parseInt(cardId, 10));
+        }
+    };
+
+    // Get team members for assignee dropdown
+    const teamMembers = boardData?.team?.members || [];
 
     // Column management
     const handleAddColumn = async () => {
@@ -454,6 +562,20 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     )) || <div>No columns found - check backend API</div>}
                     <AddColumnButton onClick={handleAddColumn} />
                 </div>
+
+                <ActionBar
+                    actionItems={boardData?.action_items || []}
+                    teamMembers={teamMembers}
+                    isCollapsed={actionBarCollapsed}
+                    onToggleCollapse={() => setActionBarCollapsed(!actionBarCollapsed)}
+                    onActionItemUpdate={handleActionItemUpdate}
+                    onActionItemDelete={handleActionItemDelete}
+                    onCardReturn={handleCardReturn}
+                    isDragOver={actionBarDragOver}
+                    onDragOver={handleActionBarDragOver}
+                    onDragLeave={handleActionBarDragLeave}
+                    onDrop={handleActionBarDrop}
+                />
             </div>
             
             <CardPool

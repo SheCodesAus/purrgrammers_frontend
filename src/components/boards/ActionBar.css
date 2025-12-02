@@ -1,0 +1,318 @@
+/* Action Bar Container */
+.action-bar {
+    position: relative;
+    width: 320px;
+    background: #f9fafb;
+    border-left: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+    flex-shrink: 0;
+}
+
+.action-bar.collapsed {
+    width: 48px;
+}
+
+/* Toggle Button */
+.action-bar-toggle {
+    position: absolute;
+    left: -16px;
+    top: 20px;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.action-bar-toggle:hover {
+    background: #f3f4f6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-bar-toggle .material-icons {
+    font-size: 1.25rem;
+    color: #6b7280;
+}
+
+.action-bar-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #667eea;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* Content Area */
+.action-bar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.action-bar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.action-bar-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.action-bar-header .material-icons {
+    font-size: 1.25rem;
+    color: #667eea;
+}
+
+.action-count {
+    background: #e5e7eb;
+    color: #374151;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* Drop Zone */
+.action-bar-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.5rem 1rem;
+    margin: 1rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    color: #9ca3af;
+    font-size: 0.85rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.action-bar-dropzone .material-icons {
+    font-size: 1.5rem;
+}
+
+.action-bar-dropzone.drag-over {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+/* Action Items List */
+.action-items-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1rem 1rem;
+}
+
+.no-actions {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 1rem;
+    font-style: italic;
+}
+
+/* Individual Action Item */
+.action-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s;
+}
+
+.action-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.action-item.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.action-item-content {
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Meta Row (Status + Assignee) */
+.action-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Status Select */
+.status-select {
+    flex: 1;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    padding-right: 24px;
+}
+
+.status-select:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Assignee Section */
+.assignee-section {
+    flex-shrink: 0;
+}
+
+.assignee-btn {
+    background: transparent;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.assignee-btn:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.assignee-btn .material-icons {
+    font-size: 1rem;
+    color: #9ca3af;
+}
+
+.assignee-select {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background: white;
+    cursor: pointer;
+}
+
+.assignee-select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Action Buttons */
+.action-item-actions {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: flex-end;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.action-btn .material-icons {
+    font-size: 1.1rem;
+}
+
+.return-btn {
+    color: #6b7280;
+}
+
+.return-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.delete-btn {
+    color: #9ca3af;
+}
+
+.delete-btn:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .action-bar {
+        width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .action-bar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 100;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-bar.collapsed {
+        width: 0;
+        border: none;
+    }
+
+    .action-bar.collapsed .action-bar-toggle {
+        left: -48px;
+    }
+}

@@ -9,13 +9,24 @@
   border: 1px solid #e2e8f0;
   padding: 12px;
   margin-bottom: 8px;
-  cursor: default;
+  cursor: grab;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   aspect-ratio: 1/1;
   width: 200px;
   display: grid;
   grid-template-rows: 1fr auto; /* content flexible, footer fixed */
   font-family: var(--font-stack-sans-text);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+/* Dragging state */
+.card:active:not(.editing) {
+  opacity: 0.7;
+  transform: scale(1.02);
 }
 
 /* Editable cards (owned by current user) */
