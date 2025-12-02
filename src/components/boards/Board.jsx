@@ -7,6 +7,7 @@ import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
 import { useAuth } from "../../hooks/use-auth";
 import "./Board.css";
+import ActionButton from "./ActionButton";
 
 function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const { auth } = useAuth();
@@ -235,7 +236,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onTitleUpdate={handleTitleUpdate}
                 onBoardDelete={handleBoardDelete}
             />
-            
+            <ActionButton />
             <div className="board-content">
                 <div className="columns-container">
                     {boardData.columns?.map(column => (

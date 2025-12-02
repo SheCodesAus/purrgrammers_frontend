@@ -3,6 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* Board content area */
@@ -53,3 +54,5 @@
 .add-column-button:active {
   transform: translateY(1px);
 }
+
+
