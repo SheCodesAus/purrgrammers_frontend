@@ -2,6 +2,7 @@
 .action-bar {
     position: relative;
     width: 320px;
+    height: 100%; /* Fill parent height */
     background: #f9fafb;
     border-left: 1px solid #e5e7eb;
     display: flex;

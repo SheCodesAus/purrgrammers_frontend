@@ -193,6 +193,31 @@
 }
 
 /* ====================================
+   CARD TAGS
+   ==================================== */
+
+.card-tags {
+  padding: 4px 0;
+  margin-bottom: 4px;
+}
+
+.card-tags__display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.card-tags__tag {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ====================================
    RESPONSIVE DESIGN
    ==================================== */
 

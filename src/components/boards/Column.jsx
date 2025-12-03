@@ -11,9 +11,11 @@ function Column({
     dragState,
     editingCard,
     remainingVotes,
+    availableTags,
     onEditCard,
     onDeleteCard,
     onVoteChange,
+    onCardTagsChange,
     onSetEditingCard,
     onDeleteColumn,
     onDragOver,
@@ -202,9 +204,11 @@ function Column({
                             currentUser={currentUser}
                             isEditing={editingCard === card.id}
                             remainingVotes={remainingVotes}
+                            availableTags={availableTags}
                             onEdit={(newText) => onEditCard(card.id, newText)}
                             onDelete={() => onDeleteCard(card.id)}
                             onVoteChange={(voteData) => onVoteChange(card.id, voteData)}
+                            onTagsChange={(updatedCard) => onCardTagsChange(column.id, updatedCard)}
                             onStartEdit={() => onSetEditingCard(card.id)}
                             onCancelEdit={() => onSetEditingCard(null)}
                         />

@@ -1,11 +1,12 @@
 /* Board container */
 .board {
-  min-height: 100vh;
+  height: calc(100vh - 60px); /* Viewport minus navbar */
   display: flex;
   flex-direction: column;
+  overflow: visible; /* Allow control panel collapse button to show */
 }
 
-/* Board content area */
+/* Board content area - takes all available space, pushing control panel to bottom */
 .board-content {
   flex: 1;
   padding: 0;
@@ -13,19 +14,21 @@
   flex-direction: row;
   gap: 0;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Columns container - layout for all columns */
 .columns-container {
   display: flex;
-  justify-content: stretch; /* Change from space-evenly to stretch */
-  flex-wrap: nowrap; /* Prevent wrapping to keep columns in one row */
-  padding-left: 20px;
-  padding-right: 20px;
-  flex: 1;
-  width: 100%;
-  gap: 20px; /* Add gap between columns */
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  padding: 20px;
+  flex: 1 1 100%; /* Take full available width/height */
+  gap: 20px;
   align-items: flex-start;
+  align-content: flex-start;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 /* Add column button */

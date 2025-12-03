@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
-import CardPool from "./CardPool";
+import ControlPanel from "./ControlPanel";
 import ActionBar from "./ActionBar";
 import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
+import getTags from "../../api/get-tags";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
 import "./Board.css";
@@ -32,6 +33,9 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
 
     // Action bar state
     const [actionBarCollapsed, setActionBarCollapsed] = useState(false);
+
+    // Tags state
+    const [availableTags, setAvailableTags] = useState([]);
 
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
@@ -132,6 +136,22 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         }
     }, [onBoardUpdate]);    // Initialise WebSocket connection
     useBoardWebSocket(boardData?.id, handleWebSocketMessage);
+
+    // Fetch available tags on mount
+    useEffect(() => {
+        const fetchTags = async () => {
+            try {
+                const tags = await getTags(auth.token);
+                setAvailableTags(tags);
+            } catch (error) {
+                console.error('Failed to fetch tags:', error);
+            }
+        };
+        
+        if (auth.token) {
+            fetchTags();
+        }
+    }, [auth.token]);
 
     // FIX #1: State cleanup when board data changes
     useEffect(() => {
@@ -393,6 +413,24 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         onBoardUpdate(updatedBoard);
     };
 
+    // Handle card tags change
+    const handleCardTagsChange = (columnId, updatedCard) => {
+        const updatedBoard = {
+            ...boardData,
+            columns: boardData.columns?.map(column => 
+                column.id === columnId 
+                    ? { 
+                        ...column, 
+                        cards: column.cards.map(card => 
+                            card.id === updatedCard.id ? updatedCard : card
+                        ) 
+                    }
+                    : column
+            ) || []
+        };
+        onBoardUpdate(updatedBoard);
+    };
+
     // Drag and drop handlers
     const handleDragStart = (cardType) => {
         setDragState({
@@ -478,20 +516,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         });
     };
 
-    // Add column button component
-    function AddColumnButton({ onClick }) {
-        return (
-            <div className="add-column-container">
-                <button
-                    className="btn btn-primary"
-                    onClick={onClick}
-                >
-                    + Add Column
-                </button>
-            </div>
-        );
-    }
-
     return (
         <div className="board">
             <BoardHeader 
@@ -511,9 +535,11 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                             dragState={dragState}
                             editingCard={editingCard}
                             remainingVotes={remainingVotes}
+                            availableTags={availableTags}
                             onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
                             onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
                             onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
+                            onCardTagsChange={handleCardTagsChange}
                             onSetEditingCard={setEditingCard}
                             onColumnUpdate={handleColumnUpdate}
                             onDeleteColumn={handleDeleteColumn}
@@ -523,7 +549,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                             onDragLeave={(e) => handleDragLeave(e, column.id)}
                         />
                     )) || <div>No columns found - check backend API</div>}
-                    <AddColumnButton onClick={handleAddColumn} />
                 </div>
 
                 <ActionBar
@@ -538,11 +563,13 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 />
             </div>
             
-            <CardPool
+            <ControlPanel
                 dragState={dragState}
                 isCreatingCard={isCreatingCard}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                onAddColumn={handleAddColumn}
+                boardId={boardData?.id}
             />
 
             {/* Anonymous Choice Modal */}

@@ -3,6 +3,8 @@ import { useAuth } from "../../hooks/use-auth";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
 import VoteButton from "./VoteButton";
+import TagSelector from "./TagSelector";
+import { getTagColor } from "../../utils/tag-colors";
 import "./Card.css";
 
 function Card({
@@ -11,9 +13,11 @@ function Card({
     columnColor,
     isEditing,
     remainingVotes,
+    availableTags = [],
     onEdit,
     onDelete,
     onVoteChange,
+    onTagsChange,
     onStartEdit,
     onCancelEdit
 }) {
@@ -102,6 +106,24 @@ function Card({
         }
     };
 
+    // Handle tag changes
+    const handleTagsChange = async (newTags) => {
+        try {
+            const tagIds = newTags.map(t => t.id);
+            const updatedCard = await patchCard(
+                card.id,
+                { tag_ids: tagIds },
+                auth.token
+            );
+            if (onTagsChange) {
+                onTagsChange(updatedCard);
+            }
+        } catch (error) {
+            console.error("Failed to update tags:", error);
+            alert("Failed to update tags. Please try again.");
+        }
+    };
+
     if (isEditing) {
         return (
             <div 
@@ -173,6 +195,34 @@ function Card({
                     {card.content || (isOwner ? "Click to edit" : "")}
                 </p>
             </div>
+
+            {/* Tags Section */}
+            {(card.tags?.length > 0 || isOwner) && (
+                <div className="card-tags" onClick={(e) => e.stopPropagation()}>
+                    {isOwner ? (
+                        <TagSelector
+                            selectedTags={card.tags || []}
+                            availableTags={availableTags}
+                            onTagsChange={handleTagsChange}
+                        />
+                    ) : (
+                        <div className="card-tags__display">
+                            {card.tags?.map(tag => {
+                                const colors = getTagColor(tag.name);
+                                return (
+                                    <span
+                                        key={tag.id}
+                                        className="card-tags__tag"
+                                        style={{ backgroundColor: colors.bg, color: colors.text }}
+                                    >
+                                        {tag.display_name}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="card-footer" onClick={(e) => e.stopPropagation()}>
                 <div className="card-meta">
