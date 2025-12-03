@@ -8,6 +8,10 @@ function ControlPanel({
     onDragEnd,
     onAddColumn,
     boardId,
+    currentVotingRound,
+    remainingVotes,
+    maxVotes,
+    onStartNewRound,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -80,6 +84,32 @@ function ControlPanel({
                 >
                     <span className="material-icons">add</span>
                     Add Column
+                </button>
+            </div>
+
+            {/* Divider */}
+            <div className="control-panel__divider" />
+
+            {/* Voting Section */}
+            <div className="control-panel__section">
+                <h4 className="control-panel__section-title">Voting</h4>
+                <div className="control-panel__voting-info">
+                    <div className="control-panel__voting-round">
+                        <span className="material-icons">how_to_vote</span>
+                        <span>Round {currentVotingRound?.round_number ?? currentVotingRound ?? 1}</span>
+                    </div>
+                    <div className="control-panel__votes-remaining">
+                        <span className="votes-count">{remainingVotes ?? maxVotes ?? 5}</span>
+                        <span className="votes-label">/ {maxVotes ?? 5} votes left</span>
+                    </div>
+                </div>
+                <button 
+                    className="control-panel__btn control-panel__btn--accent"
+                    onClick={onStartNewRound}
+                    title="Start a new voting round - everyone gets fresh votes!"
+                >
+                    <span className="material-icons">restart_alt</span>
+                    New Round
                 </button>
             </div>
 

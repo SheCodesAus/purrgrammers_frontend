@@ -7,6 +7,7 @@ import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
 import getTags from "../../api/get-tags";
+import startNewRound from "../../api/start-new-round";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
 import "./Board.css";
@@ -30,6 +31,8 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     
     // Voting state - tracks remaining votes for current user
     const [remainingVotes, setRemainingVotes] = useState(boardData?.user_remaining_votes ?? 5);
+    const [currentVotingRound, setCurrentVotingRound] = useState(boardData?.current_voting_round || null);
+    const [maxVotesPerUser] = useState(boardData?.max_votes_per_user ?? 5);
 
     // Action bar state
     const [actionBarCollapsed, setActionBarCollapsed] = useState(false);
@@ -128,6 +131,19 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     action_items: prevBoard.action_items?.filter(item => 
                         item.id !== message.data.id
                     ) || []
+                }));
+                break;
+
+            case 'voting_round_started':
+                // Update current voting round and reset votes
+                setCurrentVotingRound(message.data.current_voting_round);
+                setRemainingVotes(maxVotesPerUser); // Reset to full votes
+                // Update board data with new round info
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    current_voting_round: message.data.current_voting_round,
+                    user_remaining_votes: maxVotesPerUser,
+                    user_vote_count: 0
                 }));
                 break;
 
@@ -247,6 +263,19 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 item.id !== actionItemId
             ) || []
         }));
+    };
+
+    // Voting round management
+    const handleStartNewRound = async () => {
+        try {
+            const result = await startNewRound(boardData?.id, auth.token);
+            // WebSocket will handle the broadcast, but update locally too
+            setCurrentVotingRound(result.current_voting_round);
+            setRemainingVotes(maxVotesPerUser);
+        } catch (error) {
+            console.error('Failed to start new voting round:', error);
+            alert(`Failed to start new round: ${error.message}`);
+        }
     };
 
     // Get team members for assignee dropdown
@@ -570,6 +599,10 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onDragEnd={handleDragEnd}
                 onAddColumn={handleAddColumn}
                 boardId={boardData?.id}
+                currentVotingRound={currentVotingRound}
+                remainingVotes={remainingVotes}
+                maxVotes={maxVotesPerUser}
+                onStartNewRound={handleStartNewRound}
             />
 
             {/* Anonymous Choice Modal */}
