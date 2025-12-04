@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
+import { useToast } from '../ToastProvider';
 import patchBoard from '../../api/patch-board';
 import deleteBoard from '../../api/delete-board';
 import getTeam from '../../api/get-team';
@@ -19,6 +20,7 @@ function BoardHeader({
     const [isToggling, setIsToggling] = useState(false);
     const navigate = useNavigate();
     const { auth } = useAuth();
+    const { showToast } = useToast();
     const [showTeamSettings, setShowTeamSettings] = useState(false);
     const [teamDetails, setTeamDetails] = useState(null);
     const [newMemberUsername, setNewMemberUsername] = useState('');
@@ -82,7 +84,7 @@ function BoardHeader({
             }
         } catch (error) {
             console.error("Failed to delete board:", error);
-            alert(`Failed to delete board: ${error.message}`);
+            showToast(`Failed to delete board: ${error.message}`);
         }
     };
 
@@ -138,7 +140,7 @@ function BoardHeader({
             }
         } catch (error) {
             console.error("Failed to update board status:", error);
-            alert(`Failed to ${action} board: ${error.message}`);
+            showToast(`Failed to ${action} board: ${error.message}`);
         } finally {
             setIsToggling(false);
         }

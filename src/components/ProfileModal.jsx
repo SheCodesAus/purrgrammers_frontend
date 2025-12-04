@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/use-auth";
+import { useToast } from "./ToastProvider";
 import getProfile from "../api/get-profile";
 import getUserProfile from "../api/get-user-profile";
 import patchProfile from "../api/patch-profile";
@@ -8,6 +9,7 @@ import './ProfileModal.css';
 
 function ProfileModal({ isOpen, onClose, userId = null, username = null }) {
     const { auth } = useAuth();
+    const { showToast } = useToast();
 
     // determines if user is viewing own profile
     const isOwnProfile = !userId || userId === auth?.user?.id;
@@ -69,7 +71,7 @@ function ProfileModal({ isOpen, onClose, userId = null, username = null }) {
             setProfile(updated);
             setIsEditing(false);
         } catch (error) {
-            alert(`Failed to save: ${error.message}`);
+            showToast(`Failed to save: ${error.message}`);
         } finally {
             setSaving(false);
         }

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { voteCard, removeVote } from "../../api/vote-card.js";
 import { useAuth } from "../../hooks/use-auth.js";
+import { useToast } from "../ToastProvider.jsx";
 import "./VoteButton.css";
 
 function VoteButton({ card, remainingVotes, onVoteChange }) {
     const { auth } = useAuth();
+    const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleVote = async () => {
@@ -15,7 +17,7 @@ function VoteButton({ card, remainingVotes, onVoteChange }) {
             const data = await voteCard(card.id, auth.token);
             onVoteChange(data);
         } catch (error) {
-            alert(error.message);
+            showToast(error.message);
         } finally {
             setIsLoading(false);
         }
@@ -29,7 +31,7 @@ function VoteButton({ card, remainingVotes, onVoteChange }) {
             const data = await removeVote(card.id, auth.token);
             onVoteChange(data);
         } catch (error) {
-            alert(error.message);
+            showToast(error.message);
         } finally {
             setIsLoading(false);
         }

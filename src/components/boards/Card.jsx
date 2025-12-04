@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../hooks/use-auth";
+import { useToast } from "../ToastProvider";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
 import VoteButton from "./VoteButton";
@@ -26,6 +27,7 @@ function Card({
     const textRef = useRef(null);
     const contentRef = useRef(null);
     const { auth } = useAuth();
+    const { showToast } = useToast;
 
     // Auto-resize font to fit content
     useEffect(() => {
@@ -101,7 +103,7 @@ function Card({
                 onDelete(); //call the existing onDelete prop to update parent state
             } catch (error) {
                 console.error("Failed to delete card:", error);
-                alert("Failed to delete card. Please try again");
+                showToast("Failed to delete card. Please try again");
             }
         }
     };
@@ -120,7 +122,7 @@ function Card({
             }
         } catch (error) {
             console.error("Failed to update tags:", error);
-            alert("Failed to update tags. Please try again.");
+            showToast("Failed to update tags. Please try again.");
         }
     };
 

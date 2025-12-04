@@ -10,10 +10,12 @@ import getTags from "../../api/get-tags";
 import startNewRound from "../../api/start-new-round";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
+import { useToast } from "../ToastProvider";
 import "./Board.css";
 
 function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const { auth } = useAuth();
+    const { showToast } = useToast();
     
     // State management
     const [dragState, setDragState] = useState({
@@ -274,7 +276,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             setRemainingVotes(maxVotesPerUser);
         } catch (error) {
             console.error('Failed to start new voting round:', error);
-            alert(`Failed to start new round: ${error.message}`);
+            showToast(`Failed to start new round: ${error.message}`);
         }
     };
 
@@ -300,7 +302,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             onBoardUpdate(updatedBoard);
         } catch (error) {
             console.error("Failed to create column:", error);
-            alert(`Failed to create column: ${error.message}`);
+            showToast(`Failed to create column: ${error.message}`);
         }
     };
 
@@ -324,7 +326,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             onBoardUpdate(updatedBoard);
         } catch (error) {
             console.error("Failed to delete column:", error);
-            alert(`Failed to delete column: ${error.message}`);
+            showToast(`Failed to delete column: ${error.message}`);
         }
     };
 

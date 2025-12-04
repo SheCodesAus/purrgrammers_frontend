@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
+import { useToast } from "../components/ToastProvider";
 import getTeams from "../api/get-teams";
 import getTeamBoards from "../api/get-team-boards";
 import deleteBoard from "../api/delete-board";
@@ -114,6 +115,7 @@ function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
 function Dashboard() {
   const navigate = useNavigate();
   const { auth } = useAuth();
+  const { showToast } = useToast();
 
   // State to track create board modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -172,7 +174,7 @@ function Dashboard() {
       }));
     } catch (error) {
       console.error("Failed to delete board:", error);
-      alert(`Failed to delete board: ${error.message}`);
+      showToast(`Failed to delete board: ${error.message}`);
     }
   };
 
@@ -257,7 +259,7 @@ function Dashboard() {
       setSelectedTeam(newTeam);
     } catch (error) {
       console.error('Failed to create team:', error);
-      alert(`Failed to create team: ${error.message}`);
+      showToast(`Failed to create team: ${error.message}`);
     } finally {
       setCreateTeamLoading(false);
     }

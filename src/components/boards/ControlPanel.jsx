@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useToast } from '../ToastProvider';
 import './ControlPanel.css';
 
 function ControlPanel({
@@ -14,15 +15,16 @@ function ControlPanel({
     onStartNewRound,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const { showToast } = useToast();
 
     const handleExport = (format) => {
         // Placeholder for export functionality
-        alert(`Export to ${format.toUpperCase()} coming soon!`);
+        showToast(`Export to ${format.toUpperCase()} coming soon!`);
     };
 
     const handleViewReports = () => {
         // Placeholder - will navigate to reports page
-        alert('Reports page coming soon!');
+        showToast('Reports page coming soon!');
     };
 
     if (isCollapsed) {

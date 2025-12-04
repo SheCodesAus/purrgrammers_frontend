@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/use-auth';
+import { useToast } from '../ToastProvider';
 import createActionItem from '../../api/create-action-item';
 import patchActionItem from '../../api/patch-action-item';
 import deleteActionItem from '../../api/delete-action-item';
@@ -17,6 +18,7 @@ function ActionBar({
     onActionItemDelete
 }) {
     const { auth } = useAuth();
+    const { showToast } = useToast(); 
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState({});
     const [newItemText, setNewItemText] = useState('');
@@ -35,7 +37,7 @@ function ActionBar({
             onActionItemUpdate(updated);
         } catch (error) {
             console.error('Failed to update status:', error);
-            alert(`Failed to update status: ${error.message}`);
+            showToast(`Failed to update status: ${error.message}`);
         } finally {
             setLoading(prev => ({ ...prev, [actionItemId]: false }));
         }
@@ -53,7 +55,7 @@ function ActionBar({
             setEditingId(null);
         } catch (error) {
             console.error('Failed to update assignee:', error);
-            alert(`Failed to update assignee: ${error.message}`);
+            showToast(`Failed to update assignee: ${error.message}`);
         } finally {
             setLoading(prev => ({ ...prev, [actionItemId]: false }));
         }
@@ -70,7 +72,7 @@ function ActionBar({
             setNewItemText('');
         } catch (error) {
             console.error('Failed to create action item:', error);
-            alert(`Failed to create action item: ${error.message}`);
+            showToast(`Failed to create action item: ${error.message}`);
         } finally {
             setIsCreating(false);
         }
@@ -85,7 +87,7 @@ function ActionBar({
             onActionItemDelete(actionItemId);
         } catch (error) {
             console.error('Failed to delete action item:', error);
-            alert(`Failed to delete: ${error.message}`);
+            showToast(`Failed to delete: ${error.message}`);
         } finally {
             setLoading(prev => ({ ...prev, [actionItemId]: false }));
         }

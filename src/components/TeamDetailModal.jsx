@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
+import { useToast } from './ToastProvider';
 import getTeam from '../api/get-team';
 import getTeamBoards from '../api/get-team-boards';
 import addTeamMember from '../api/add-team-member';
@@ -11,13 +12,19 @@ import Avatar from './Avatar';
 import './TeamDetailModal.css';
 
 function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
-    const navigate = useNavigate();
-    const { auth } = useAuth();
+    // React hooks
     const [teamDetails, setTeamDetails] = useState(null);
     const [boards, setBoards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedMember, setSelectedMember] = useState(null);
+
+    // Router hooks
+    const navigate = useNavigate();
+
+    // Context hooks
+    const { auth } = useAuth();
+    const { showToast } = useToast();
 
     // Add member state
     const [newMemberUsername, setNewMemberUsername] = useState('');
@@ -81,7 +88,7 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
             setTeamDetails(details);
         } catch (err) {
             console.error('Failed to remove member:', err);
-            alert(`Failed to remove member: ${err.message}`);
+            showToast(`Failed to remove member: ${err.message}`);
         }
     };
 
@@ -98,7 +105,7 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
             window.location.reload();
         } catch (err) {
             console.error('Failed to delete team:', err);
-            alert(`Failed to delete team: ${err.message}`);
+            showToast(`Failed to delete team: ${err.message}`);
         }
     };
 
