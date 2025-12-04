@@ -201,6 +201,7 @@ function Column({
                             card={card}
                             columnType={column.column_type}
                             columnColor={column.color}
+                            columnTitle={column.title}
                             currentUser={currentUser}
                             isEditing={editingCard === card.id}
                             remainingVotes={remainingVotes}

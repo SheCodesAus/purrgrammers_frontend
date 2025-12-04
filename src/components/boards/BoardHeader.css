@@ -7,7 +7,7 @@
   padding: 4px 16px;
   background-color: white;
   border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 16px;
+  margin-bottom: 0px;
 }
 
 /* Left side - Back button */
@@ -17,19 +17,24 @@
 }
 
 .back-button {
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
   cursor: pointer;
-  font-size: 0.75rem;
-  color: #374151;
-  transition: all 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #000;
+  backdrop-filter: blur(4px);
+  transition: all 0.15s;
 }
 
 .back-button:hover {
-  background-color: #e5e7eb;
-  border-color: #9ca3af;
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
 }
 
 /* Board title section */
@@ -334,13 +339,22 @@
   color: #374151;
 }
 
-.toggle-status-btn.closed {
+.toggle-status-btn.open {
   color: #22c55e;
 }
 
-.toggle-status-btn.closed:hover {
+.toggle-status-btn.open:hover {
   background: #dcfce7;
   color: #16a34a;
+}
+
+.toggle-status-btn.closed {
+  color: #6b7280;
+}
+
+.toggle-status-btn.closed:hover {
+  background: #f3f4f6;
+  color: #374151;
 }
 
 .toggle-status-btn:disabled {

@@ -163,9 +163,10 @@ function BoardHeader({
         const newStatus = !boardData?.is_active;
         const action = newStatus ? 'reopen' : 'close';
         
-        const confirmed = confirm({
+        const confirmed = await confirm({
             title: `${newStatus ? 'Reopen' : 'Close'} Board`,
-            message: `Are you sure you want to ${action} this board?`
+            message: `Are you sure you want to ${action} this board?`,
+            confirmLabel: 'Yes'
         })
         
         if (!confirmed) return;
@@ -288,13 +289,13 @@ function BoardHeader({
                                 <span className="material-icons">delete</span>
                             </button>
                             <button 
-                                className={`toggle-status-btn ${boardData?.is_active === false ? 'closed' : ''}`}
+                                className={`toggle-status-btn ${boardData?.is_active ? 'open' : 'closed'}`}
                                 onClick={handleToggleActive}
                                 disabled={isToggling}
-                                title={boardData?.is_active === false ? 'Reopen board' : 'Close board'}
+                                title={boardData?.is_active ? 'Close board' : 'Reopen board'}
                             >
                                 <span className="material-icons">
-                                    {boardData?.is_active === false ? 'lock_open' : 'lock'}
+                                    {boardData?.is_active ? 'lock_open' : 'lock'}
                                 </span>
                             </button>
                         </div>

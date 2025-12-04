@@ -6,10 +6,12 @@ function TagSelector({
     selectedTags = [], 
     availableTags = [], 
     onTagsChange,
-    disabled = false 
+    disabled = false,
+    maxTags = 2
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const isAtLimit = selectedTags.length >= maxTags;
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -37,6 +39,8 @@ function TagSelector({
         if (isSelected) {
             newTags = selectedTags.filter(t => t.id !== tag.id);
         } else {
+            // Don't add if at limit
+            if (isAtLimit) return;
             newTags = [...selectedTags, tag];
         }
         
@@ -56,12 +60,10 @@ function TagSelector({
             {/* Selected Tags Display */}
             <div className="tag-selector__tags">
                 {selectedTags.map(tag => {
-                    const colors = getTagColor(tag.name);
                     return (
                         <span 
                             key={tag.id}
                             className="tag-selector__tag"
-                            style={{ backgroundColor: colors.bg, color: colors.text }}
                         >
                             {tag.display_name}
                             {!disabled && (
@@ -77,7 +79,7 @@ function TagSelector({
                     );
                 })}
                 
-                {!disabled && (
+                {!disabled && !isAtLimit && (
                     <button
                         className="tag-selector__add-btn"
                         onClick={() => setIsOpen(!isOpen)}

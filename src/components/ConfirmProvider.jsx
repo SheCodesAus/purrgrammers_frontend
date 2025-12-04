@@ -9,16 +9,18 @@ export function ConfirmProvider({ children }) {
     isOpen: false,
     title: '',
     message: '',
+    confirmLabel: 'Confirm',
     onConfirm: null,
   });
 
   // function to show the confirm dialog - returns a Promise (placeholder for a future value)
-  const confirm = useCallback(({ title = 'Confirm', message }) => {
+  const confirm = useCallback(({ title = 'Confirm', message, confirmLabel = 'Confirm' }) => {
     return new Promise((resolve) => {
       setConfirmState({
         isOpen: true,
         title,
         message,
+        confirmLabel,
         onConfirm: resolve,  // store the resolve function
       });
     });
@@ -51,7 +53,7 @@ export function ConfirmProvider({ children }) {
                 Cancel
               </button>
               <button className="btn btn-danger" onClick={handleConfirm}>
-                Delete
+                {confirmState.confirmLabel}
               </button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import { useToast } from "../ToastProvider";
 import { useConfirm } from "../ConfirmProvider";
@@ -6,6 +6,7 @@ import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
 import VoteButton from "./VoteButton";
 import TagSelector from "./TagSelector";
+import CardModal from "./CardModal";
 import { getTagColor } from "../../utils/tag-colors";
 import "./Card.css";
 
@@ -13,6 +14,7 @@ function Card({
     card,
     columnType,
     columnColor,
+    columnTitle,
     isEditing,
     remainingVotes,
     availableTags = [],
@@ -24,39 +26,38 @@ function Card({
     onCancelEdit
 }) {
     const [editText, setEditText] = useState("");
-    const [fontSize, setFontSize] = useState(0.8); // rem
-    const textRef = useRef(null);
-    const contentRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isTagSelectorOpen, setIsTagSelectorOpen] = useState(false);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+    const tagDropdownRef = useRef(null);
+    const addButtonRef = useRef(null);
     const { auth } = useAuth();
     const { showToast } = useToast;
     const { confirm } = useConfirm();
 
-    // Auto-resize font to fit content
+    // Close tag dropdown when clicking outside
     useEffect(() => {
-        if (!textRef.current || !contentRef.current || isEditing) return;
-        
-        const resizeText = () => {
-            const container = contentRef.current;
-            const text = textRef.current;
-            
-            // Reset to max size first
-            let currentSize = 0.8;
-            text.style.fontSize = `${currentSize}rem`;
-            
-            // Reduce font size until text fits (min 0.5rem)
-            while (
-                text.scrollHeight > container.clientHeight && 
-                currentSize > 0.5
-            ) {
-                currentSize -= 0.05;
-                text.style.fontSize = `${currentSize}rem`;
+        const handleClickOutside = (e) => {
+            if (tagDropdownRef.current && !tagDropdownRef.current.contains(e.target)) {
+                setIsTagSelectorOpen(false);
             }
-            
-            setFontSize(currentSize);
         };
-        
-        resizeText();
-    }, [card.content, isEditing]);
+
+        if (isTagSelectorOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isTagSelectorOpen]);
+
+    // Truncate text to ~120 characters with "... see more"
+    const MAX_LENGTH = 120;
+    const shouldTruncate = card.content && card.content.length > MAX_LENGTH;
+    const displayText = shouldTruncate 
+        ? card.content.slice(0, MAX_LENGTH).trim()
+        : (card.content || "Click to view");
 
     // Start editing mode
     const handleStartEdit = () => {
@@ -168,18 +169,19 @@ function Card({
     }
 
     return (
-        <div 
-            className={`card ${columnType} ${isOwner ? 'editable' : ''}`}
-            style={{
-                backgroundColor: columnColor || undefined
-            }}
-            draggable={true}
-            onDragStart={(e) => {
-                e.dataTransfer.setData('cardId', card.id.toString());
-                e.dataTransfer.effectAllowed = 'move';
-            }}
-        >
-            {isOwner && (
+        <>
+            <div 
+                className={`card ${columnType} ${isOwner ? 'editable' : ''}`}
+                style={{
+                    backgroundColor: columnColor || undefined
+                }}
+                draggable={true}
+                onDragStart={(e) => {
+                    e.dataTransfer.setData('cardId', card.id.toString());
+                    e.dataTransfer.effectAllowed = 'move';
+                }}
+                onClick={() => setIsModalOpen(true)}
+            >
                 <button 
                     className="card-delete-btn"
                     onClick={(e) => {
@@ -190,82 +192,116 @@ function Card({
                 >
                     <span className="material-icons">close</span>
                 </button>
-            )}
-            
-            <div 
-                className="card-content" 
-                ref={contentRef}
-                onClick={isOwner ? handleStartEdit : undefined}
-                title={isOwner ? "Click to edit" : ""}
-            >
-                <p className="card-text" ref={textRef}>
-                    {card.content || (isOwner ? "Click to edit" : "")}
-                </p>
-            </div>
+                
+                <div className="card-content">
+                    <p className="card-text">
+                        {displayText}
+                        {shouldTruncate && (
+                            <span className="card-read-more"> ... see more</span>
+                        )}
+                    </p>
+                </div>
 
-            {/* Tags Section */}
-            {(card.tags?.length > 0 || isOwner) && (
-                <div className="card-tags" onClick={(e) => e.stopPropagation()}>
-                    {isOwner ? (
-                        <TagSelector
-                            selectedTags={card.tags || []}
-                            availableTags={availableTags}
-                            onTagsChange={handleTagsChange}
-                        />
-                    ) : (
-                        <div className="card-tags__display">
-                            {card.tags?.map(tag => {
-                                const colors = getTagColor(tag.name);
-                                return (
-                                    <span
-                                        key={tag.id}
-                                        className="card-tags__tag"
-                                        style={{ backgroundColor: colors.bg, color: colors.text }}
-                                    >
-                                        {tag.display_name}
-                                    </span>
-                                );
-                            })}
+                {/* Tags as pills - above footer */}
+                <div className="card-tags-bar" onClick={(e) => e.stopPropagation()}>
+                    {card.tags?.map(tag => (
+                        <span
+                            key={tag.id}
+                            className="card-tag-pill"
+                            onClick={() => {
+                                if (isOwner) {
+                                    // Remove tag when clicked
+                                    const newTags = card.tags.filter(t => t.id !== tag.id);
+                                    handleTagsChange(newTags);
+                                }
+                            }}
+                            style={{ cursor: isOwner ? 'pointer' : 'default' }}
+                            title={isOwner ? 'Click to remove' : ''}
+                        >
+                            {tag.display_name}
+                        </span>
+                    ))}
+                    {isOwner && (card.tags?.length || 0) < 2 && (
+                        <div className="card-tag-selector-wrapper" ref={tagDropdownRef}>
+                            <button 
+                                ref={addButtonRef}
+                                className={`card-tag-add ${(card.tags?.length || 0) === 0 ? 'card-tag-add--empty' : ''}`}
+                                onClick={() => {
+                                    if (!isTagSelectorOpen && addButtonRef.current) {
+                                        const rect = addButtonRef.current.getBoundingClientRect();
+                                        setDropdownPosition({
+                                            top: rect.bottom + 6,
+                                            left: rect.left
+                                        });
+                                    }
+                                    setIsTagSelectorOpen(!isTagSelectorOpen);
+                                }}
+                                title="Add tag"
+                            >
+                                {(card.tags?.length || 0) === 0 ? 'add tags' : '+'}
+                            </button>
+                            {isTagSelectorOpen && (
+                                <div 
+                                    className="card-tag-dropdown"
+                                    style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
+                                >
+                                    {availableTags.filter(tag => 
+                                        !card.tags?.some(t => t.id === tag.id)
+                                    ).length === 0 ? (
+                                        <span className="card-tag-dropdown-empty">All tags added</span>
+                                    ) : (
+                                        availableTags
+                                            .filter(tag => !card.tags?.some(t => t.id === tag.id))
+                                            .map(tag => (
+                                                <button
+                                                    key={tag.id}
+                                                    className="card-tag-option"
+                                                    onClick={() => {
+                                                        const newTags = [...(card.tags || []), tag];
+                                                        handleTagsChange(newTags);
+                                                        setIsTagSelectorOpen(false);
+                                                    }}
+                                                >
+                                                    {tag.display_name}
+                                                </button>
+                                            ))
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
-            )}
 
-            <div className="card-footer" onClick={(e) => e.stopPropagation()}>
-                <div className="card-meta">
-                    <span className={`card-author ${card.is_anonymous ? 'anonymous' : ''}`}>
-                        {card.is_anonymous ? "Anonymous" : (card.created_by?.username || card.created_by?.initials || card.author || "Anonymous")}
-                    </span>
-                </div>
-
-                <VoteButton
-                    card={card}
-                    remainingVotes={remainingVotes}
-                    onVoteChange={onVoteChange}
-                />
-
-                {isOwner && (
-                    <div className="card-actions">
-                        <button 
-                            onClick={handleStartEdit}
-                            className="edit-btn"
-                        >
-                            Edit
-                        </button>
-                        
-                        <button 
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete();
-                            }}
-                            className="delete-btn"
-                        >
-                            Delete
-                        </button>
+                <div className="card-footer" onClick={(e) => e.stopPropagation()}>
+                    <div className="card-meta">
+                        <span className={`card-author ${card.is_anonymous ? 'anonymous' : ''}`}>
+                            {card.is_anonymous ? "Anonymous" : (card.created_by?.username || card.created_by?.initials || card.author || "Anonymous")}
+                        </span>
                     </div>
-                )}
+
+                    <VoteButton
+                        card={card}
+                        remainingVotes={remainingVotes}
+                        onVoteChange={onVoteChange}
+                    />
+                </div>
             </div>
-        </div>
+
+            {/* Card Modal */}
+            <CardModal
+                card={card}
+                columnColor={columnColor}
+                columnTitle={columnTitle}
+                isOpen={isModalOpen}
+                remainingVotes={remainingVotes}
+                availableTags={availableTags}
+                onClose={() => setIsModalOpen(false)}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onVoteChange={onVoteChange}
+                onTagsChange={onTagsChange}
+            />
+        </>
     );
 }
 

@@ -1,18 +1,25 @@
 /* Action Bar Container */
 .action-bar {
     position: relative;
-    width: 320px;
-    height: 100%; /* Fill parent height */
-    background: #f9fafb;
+    width: 280px;
+    background: white;
     border-left: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    border-bottom-left-radius: 12px;
     display: flex;
     flex-direction: column;
     transition: width 0.3s ease;
     flex-shrink: 0;
+    overflow: visible;
 }
 
 .action-bar.collapsed {
     width: 48px;
+}
+
+.action-bar.collapsed .action-bar-content {
+    opacity: 0;
+    visibility: hidden;
 }
 
 /* Toggle Button */

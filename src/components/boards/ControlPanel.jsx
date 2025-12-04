@@ -29,9 +29,9 @@ function ControlPanel({
 
     if (isCollapsed) {
         return (
-            <div className="control-panel control-panel--collapsed">
+            <div className="control-panel-wrapper">
                 <button 
-                    className="control-panel__expand-btn"
+                    className="control-panel__expand-tab"
                     onClick={() => setIsCollapsed(false)}
                 >
                     <span className="material-icons">expand_less</span>
@@ -42,15 +42,42 @@ function ControlPanel({
     }
 
     return (
-        <div className="control-panel">
-            {/* Collapse Button */}
+        <div className="control-panel-wrapper">
+            {/* Collapse Tab */}
             <button 
-                className="control-panel__collapse-btn"
+                className="control-panel__collapse-tab"
                 onClick={() => setIsCollapsed(true)}
                 title="Collapse panel"
             >
                 <span className="material-icons">expand_more</span>
             </button>
+            
+            <div className="control-panel">
+                {/* Voting Section */}
+            <div className="control-panel__section">
+                <h4 className="control-panel__section-title">Voting</h4>
+                <div className="control-panel__voting-info">
+                    <div className="control-panel__voting-round">
+                        <span className="material-icons">how_to_vote</span>
+                        <span>Round {currentVotingRound?.round_number ?? currentVotingRound ?? 1}</span>
+                    </div>
+                    <div className="control-panel__votes-remaining">
+                        <span className="votes-count">{remainingVotes ?? maxVotes ?? 5}</span>
+                        <span className="votes-label">/ {maxVotes ?? 5} votes left</span>
+                    </div>
+                </div>
+                <button 
+                    className="control-panel__btn control-panel__btn--accent"
+                    onClick={onStartNewRound}
+                    title="Start a new voting round - everyone gets fresh votes!"
+                >
+                    <span className="material-icons">restart_alt</span>
+                    New Round
+                </button>
+            </div>
+
+            {/* Divider */}
+            <div className="control-panel__divider" />
 
             {/* Cards Section */}
             <div className="control-panel__section">
@@ -92,32 +119,6 @@ function ControlPanel({
             {/* Divider */}
             <div className="control-panel__divider" />
 
-            {/* Voting Section */}
-            <div className="control-panel__section">
-                <h4 className="control-panel__section-title">Voting</h4>
-                <div className="control-panel__voting-info">
-                    <div className="control-panel__voting-round">
-                        <span className="material-icons">how_to_vote</span>
-                        <span>Round {currentVotingRound?.round_number ?? currentVotingRound ?? 1}</span>
-                    </div>
-                    <div className="control-panel__votes-remaining">
-                        <span className="votes-count">{remainingVotes ?? maxVotes ?? 5}</span>
-                        <span className="votes-label">/ {maxVotes ?? 5} votes left</span>
-                    </div>
-                </div>
-                <button 
-                    className="control-panel__btn control-panel__btn--accent"
-                    onClick={onStartNewRound}
-                    title="Start a new voting round - everyone gets fresh votes!"
-                >
-                    <span className="material-icons">restart_alt</span>
-                    New Round
-                </button>
-            </div>
-
-            {/* Divider */}
-            <div className="control-panel__divider" />
-
             {/* Reports Section */}
             <div className="control-panel__section">
                 <h4 className="control-panel__section-title">Reports</h4>
@@ -147,6 +148,7 @@ function ControlPanel({
                         Reports
                     </button>
                 </div>
+            </div>
             </div>
         </div>
     );
