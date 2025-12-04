@@ -17,7 +17,6 @@ function NavBar() {
             <div className='nav-bar'>
                 <ul className='nav-links'>
                     <li><NavLink to="/">Home</NavLink></li>
-                    <li><NavLink to="/about">About</NavLink></li>
 
                     {/* Show login only when not logged in */}
                     {!auth?.token && (

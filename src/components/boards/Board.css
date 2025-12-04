@@ -126,13 +126,14 @@
 }
 
 .anon-btn.with-name {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #7c3aed;
   color: white;
 }
 
 .anon-btn.with-name:hover {
+  background: #6d28d9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
 }
 
 .anon-btn.anonymous {

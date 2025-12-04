@@ -1,12 +1,10 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
+import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import TeamsPage from "./pages/TeamsPage";
-import SignUpForm from "./components/SignUpForm";
 import RetroBoardPage from "./pages/RetroBoardPage";
-import About from "./pages/About";
 
 // Layout component keeps navigation and page structure consistent across the whole site
 
@@ -29,11 +27,10 @@ const router = createBrowserRouter([
     element: <Layout />, // Layout wraps all routes
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "/about", element: <About /> },
-      { path: "/login", element: <LoginPage /> },
+      { path: "/login", element: <AuthPage /> },
+      { path: "/signup", element: <AuthPage /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/teams", element: <TeamsPage /> },
-      { path: "/signup", element: <SignUpForm /> },
       { path: "/retro-board/:id", element: <RetroBoardPage /> },
     ],
   },

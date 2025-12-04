@@ -42,7 +42,7 @@
     align-items: center;
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid #e5e7eb;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #7c3aed;
 }
 
 .team-detail-header h2 {
@@ -173,14 +173,14 @@
 
 .add-member-form button {
     padding: 0.625rem 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #7c3aed;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: background 0.2s;
 }
 
 .add-member-form button:hover:not(:disabled) {
@@ -284,8 +284,12 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #7c3aed;
     color: white;
+}
+
+.btn-primary:hover {
+    background: #6d28d9;
 }
 
 .btn-danger {

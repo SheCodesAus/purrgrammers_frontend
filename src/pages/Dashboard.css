@@ -236,7 +236,7 @@
 }
 
 .sidebar-create-team-actions .btn-create {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #7c3aed;
   color: white;
   border: none;
 }
@@ -311,7 +311,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #7c3aed;
   color: white;
   display: flex;
   align-items: center;
@@ -799,17 +799,6 @@
 
 .error-text {
   color: #dc2626;
-}
-
-/* ====================================
-   BUTTON STYLES
-   ==================================== */
-
-/* Small Button Variant */
-.btn-small {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
 }
 
 /* ====================================
