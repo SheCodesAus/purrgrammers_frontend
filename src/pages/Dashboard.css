@@ -419,10 +419,51 @@
   margin: 0;
 }
 
-.boards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+/* Carousel */
+.boards-carousel-wrapper {
+  display: flex;
+  align-items: center;
   gap: 1rem;
+}
+
+.boards-carousel {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.25rem 0;
+  -ms-overflow-style: none;  /* hides scrollbar on internet explorer or edge*/
+  scrollbar-width: none;  /* hides scrollbar for firefox */
+}
+
+.boards-carousel::-webkit-scrollbar {
+  display: none;  /* hide scrollbar on chrome and safari */
+}
+
+.carousel-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  background: #fff;
+  color: #6b7280;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.carousel-arrow:hover {
+  background: #f3f4f6;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.carousel-arrow .material-icons {
+  font-size: 1.25rem;
 }
 
 .board-card {
@@ -433,6 +474,17 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 200px;
+  min-width: 250px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.board-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .board-card.board-closed {
@@ -444,7 +496,34 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.25rem;
+}
+
+.board-name {
+  flex: 1;
+}
+
+.board-delete-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #9ca3af;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.board-delete-btn:hover {
+  color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.board-delete-btn .material-icons {
+  font-size: 1.1rem;
 }
 
 .board-closed-badge {
@@ -464,6 +543,30 @@
   font-size: 1rem;
   margin: 0;
   color: #1f2937;
+}
+
+.board-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.board-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.board-status--active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.board-status--closed {
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 .board-date {
@@ -492,6 +595,27 @@
 
 .error-text {
   color: #dc2626;
+}
+
+/* Mini Board Preview */
+.board-preview {
+  display: flex;
+  gap: 6px;
+  padding: 12px 0;
+  justify-content: center;
+}
+
+.board-preview-bar {
+  width: 32px;
+  height: 40px;
+  border-radius: 4px;
+  opacity: 0.85;
+}
+
+.board-preview-count {
+  font-size: 0.7rem;
+  color: #6b7280;
+  font-weight: 500;
 }
 
 /* Responsive: 2 columns on smaller screens */
@@ -550,16 +674,6 @@
   min-height: 180px;
 }
 
-/* ====================================
-   GRID LAYOUTS
-   ==================================== */
-
-/* Boards Grid */
-.boards-grid-preview {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
 
 /* ====================================
    CARD COMPONENTS

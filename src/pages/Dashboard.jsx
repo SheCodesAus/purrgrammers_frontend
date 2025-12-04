@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import getTeams from "../api/get-teams";
@@ -10,6 +10,106 @@ import TeamDetailModal from "../components/TeamDetailModal";
 import ProfileModal from "../components/ProfileModal";
 import Avatar from "../components/Avatar";
 import "./Dashboard.css";
+
+// Carousel component for boards
+function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
+  const carouselRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScrollability = useCallback(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+    
+    setCanScrollLeft(container.scrollLeft > 0);
+    setCanScrollRight(
+      container.scrollLeft < container.scrollWidth - container.clientWidth - 1
+    );
+  }, []);
+
+  useEffect(() => {
+    checkScrollability();
+    window.addEventListener('resize', checkScrollability);
+    return () => window.removeEventListener('resize', checkScrollability);
+  }, [checkScrollability, boards]);
+
+  const scrollLeft = () => {
+    carouselRef.current?.scrollBy({ left: -220, behavior: 'smooth' });
+  };
+
+  const scrollRight = () => {
+    carouselRef.current?.scrollBy({ left: 220, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="boards-carousel-wrapper">
+      {canScrollLeft && (
+        <button 
+          className="carousel-arrow carousel-arrow--left"
+          onClick={scrollLeft}
+        >
+          <span className="material-icons">chevron_left</span>
+        </button>
+      )}
+      
+      <div 
+        className="boards-carousel"
+        ref={carouselRef}
+        onScroll={checkScrollability}
+      >
+        {boards.map(board => (
+          <div 
+            key={board.id} 
+            className={`board-card ${board.is_active === false ? 'board-closed' : ''}`}
+            onClick={() => navigate(`/retro-board/${board.id}`)}
+          >
+            <div className="board-card-header">
+              <h4 className="board-name">{board.title}</h4>
+              <button 
+                className="board-delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteBoard(board.id, board.title);
+                }}
+                title="Delete board"
+              >
+                <span className="material-icons">delete</span>
+              </button>
+            </div>
+            
+            {/* Mini board preview */}
+            <div className="board-preview">
+              {board.columns?.slice(0, 4).map(column => (
+                <div 
+                  key={column.id}
+                  className="board-preview-bar"
+                  style={{ backgroundColor: column.color }}
+                  title={column.title}
+                />
+              ))}
+            </div>
+            
+            <div className="board-card-footer">
+              <span className={`board-status ${board.is_active ? 'board-status--active' : 'board-status--closed'}`}>
+                {board.is_active ? 'Active' : 'Closed'}
+              </span>
+              <span className="board-date">{formatDate(board.created_at)}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {canScrollRight && (
+        <button 
+          className="carousel-arrow carousel-arrow--right"
+          onClick={scrollRight}
+        >
+          <span className="material-icons">chevron_right</span>
+        </button>
+      )}
+    </div>
+  );
+}
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -330,33 +430,12 @@ function Dashboard() {
                   {boards.length === 0 ? (
                     <p className="no-boards-text">No boards yet</p>
                   ) : (
-                    <div className="boards-grid">
-                      {boards.map(board => (
-                        <div key={board.id} className={`board-card ${board.is_active === false ? 'board-closed' : ''}`}>
-                          <div className="board-card-header">
-                            <h4 className="board-name">{board.title}</h4>
-                            {board.is_active === false && (
-                              <span className="board-closed-badge">Closed</span>
-                            )}
-                          </div>
-                          <p className="board-date">{formatDate(board.created_at)}</p>
-                          <div className="board-card-actions">
-                            <button 
-                              className="btn btn-small btn-primary"
-                              onClick={() => navigate(`/retro-board/${board.id}`)}
-                            >
-                              Open
-                            </button>
-                            <button 
-                              className="btn btn-small btn-danger"
-                              onClick={() => handleDeleteBoard(board.id, board.title)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <BoardsCarousel 
+                      boards={boards}
+                      navigate={navigate}
+                      handleDeleteBoard={handleDeleteBoard}
+                      formatDate={formatDate}
+                    />
                   )}
                 </div>
               ))}
