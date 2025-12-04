@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import { useToast } from "../components/ToastProvider";
+import { useConfirm } from "../components/ConfirmProvider";
 import getTeams from "../api/get-teams";
 import getTeamBoards from "../api/get-team-boards";
 import deleteBoard from "../api/delete-board";
@@ -17,6 +18,7 @@ function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
   const carouselRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+
 
   const checkScrollability = useCallback(() => {
     const container = carouselRef.current;
@@ -116,6 +118,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const { auth } = useAuth();
   const { showToast } = useToast();
+  const { confirm } = useConfirm();
 
   // State to track create board modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -153,9 +156,10 @@ function Dashboard() {
 
   // Function to handle board deletion
   const handleDeleteBoard = async (boardId, boardTitle) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete "${boardTitle}"? This action cannot be undone.`
-    );
+    const confirmDelete = await confirm({
+      title: 'Delete Board',
+      message: `Are you sure you want to delete ${boardData.title}? This action cannot be undone.`
+    });
     
     if (!confirmDelete) {
       return;

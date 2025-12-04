@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
 import { useToast } from '../ToastProvider';
+import { useConfirm } from '../ConfirmProvider';
 import patchBoard from '../../api/patch-board';
 import deleteBoard from '../../api/delete-board';
 import getTeam from '../../api/get-team';
 import addTeamMember from '../../api/add-team-member';
+import deleteTeamMember from '../../api/delete-team-member';
 import './BoardHeader.css';
 import './CardPool.css';
 
@@ -21,11 +23,31 @@ function BoardHeader({
     const navigate = useNavigate();
     const { auth } = useAuth();
     const { showToast } = useToast();
+    const { confirm } = useConfirm();
     const [showTeamSettings, setShowTeamSettings] = useState(false);
     const [teamDetails, setTeamDetails] = useState(null);
     const [newMemberUsername, setNewMemberUsername] = useState('');
     const [addMemberError, setAddMemberError] = useState('');
     const [addMemberLoading, setAddMemberLoading] = useState(false);
+    const teamDropdownRef = useRef(null);
+
+    // Close team dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                showTeamSettings &&
+                teamDropdownRef.current &&
+                !teamDropdownRef.current.contains(event.target)
+            ) {
+                setShowTeamSettings(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showTeamSettings]);
 
     // Fetch team details when board has a team
     useEffect(() => {
@@ -67,13 +89,13 @@ function BoardHeader({
     };
 
     const handleDeleteBoard = async () => {
-        const confirmDelete = window.confirm(
-            `Are you sure you want to delete "${boardData?.title}"? This action cannot be undone.`
-        );
+        const confirmDelete = await confirm({
+            title: 'Delete Board',
+            message: `Are you sure you want to delete ${boardData.title}? This action cannot be undone.`
+        });
         
-        if (!confirmDelete) {
-            return;
-        }
+        
+        if (!confirmDelete) return;
 
         try {
             await deleteBoard(boardData.id, auth.token);
@@ -118,15 +140,35 @@ function BoardHeader({
         }
     };
 
+    const handleRemoveMember = async (userId, username) => {
+        const confirmRemove = await confirm({
+            title: 'Remove Team Member',
+            message: `Are you sure you want to remove "${username}" from this team?`
+        });
+
+        if (!confirmRemove) return;
+
+        try {
+            await deleteTeamMember(boardData.team.id, userId, auth.token);
+            const team = await getTeam(boardData.team.id, auth.token);
+            setTeamDetails(team);
+            showToast(`${username} removed from team`, 'success');
+        } catch (error) {
+            console.error('Failed to remove member', error);
+            showToast(`Failed to remove member: ${error.message}`, 'error');
+        }
+    };
+
     const handleToggleActive = async () => {
         const newStatus = !boardData?.is_active;
         const action = newStatus ? 'reopen' : 'close';
         
-        const confirmToggle = window.confirm(
-            `Are you sure you want to ${action} this board?`
-        );
+        const confirmed = confirm({
+            title: `${newStatus ? 'Reopen' : 'Close'} Board`,
+            message: `Are you sure you want to ${action} this board?`
+        })
         
-        if (!confirmToggle) return;
+        if (!confirmed) return;
         
         setIsToggling(true);
         try {
@@ -180,7 +222,7 @@ function BoardHeader({
             <div className="board-header-right">
                 {/* Team Settings Section */}
                 {boardData?.team && (
-                    <div className="team-settings-section">
+                    <div className="team-settings-section" ref={teamDropdownRef}>
                         <button 
                             className="team-settings-btn"
                             onClick={() => setShowTeamSettings(!showTeamSettings)}
@@ -194,7 +236,16 @@ function BoardHeader({
                                 <h4>Team Members</h4>
                                 <ul className="team-members-list">
                                     {teamDetails?.members?.map((member) => (
-                                        <li key={member.id}>{member.username}</li>
+                                        <li key={member.id}>
+                                            <span>{member.username}</span>
+                                            <button
+                                                className='remove-member-btn'
+                                                onClick={() => handleRemoveMember(member.id, member.username)}
+                                                title='Remove member'
+                                            >
+                                                <span className='material-icons'>close</span>
+                                            </button>
+                                            </li>
                                     ))}
                                 </ul>
                                 

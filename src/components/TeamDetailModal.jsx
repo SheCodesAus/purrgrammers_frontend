@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import { useToast } from './ToastProvider';
+import { useConfirm } from './ConfirmProvider';
 import getTeam from '../api/get-team';
 import getTeamBoards from '../api/get-team-boards';
 import addTeamMember from '../api/add-team-member';
@@ -25,6 +26,7 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
     // Context hooks
     const { auth } = useAuth();
     const { showToast } = useToast();
+    const { confirm } = useConfirm();
 
     // Add member state
     const [newMemberUsername, setNewMemberUsername] = useState('');
@@ -76,9 +78,10 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
     };
 
     const handleRemoveMember = async (userId, username) => {
-        const confirmRemove = window.confirm(
-            `Are you sure you want to remove "${username}" from this team?`
-        );
+        const confirmRemove = await confirm({
+            title: 'Remove Team Member',
+            message: `Are you sure you want to remove "${username}" from this team?`
+        });
 
         if (!confirmRemove) return;
 
@@ -93,9 +96,10 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
     };
 
     const handleDeleteTeam = async () => {
-        const confirmDelete = window.confirm(
-            `Are you sure you want to delete "${teamName}"? This action cannot be undone.`
-        );
+        const confirmDelete = await confirm({
+            title: 'Delete Team',
+            message: `Are you sure you want to delete "${teamName}"? This action cannot be undone.`
+        });
 
         if (!confirmDelete) return;
 

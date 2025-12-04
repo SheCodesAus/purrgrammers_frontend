@@ -95,7 +95,6 @@ function AuthPage() {
         <div className="form-container sign-up-container">
           <form onSubmit={handleSignup}>
             <h1>Create Account</h1>
-            <span>Use your email for registration</span>
             <input
               type="text"
               placeholder="Username"
@@ -157,7 +156,6 @@ function AuthPage() {
         <div className="form-container sign-in-container">
           <form onSubmit={handleLogin}>
             <h1>Sign In</h1>
-            <span>Use your account</span>
             <input
               type="text"
               placeholder="Username or Email"
@@ -185,26 +183,38 @@ function AuthPage() {
         <div className="overlay-container">
           <div className="overlay">
             <div className="overlay-panel overlay-left">
-              <h1>Welcome Back!</h1>
-              <p>To keep connected with us please login with your personal info</p>
-              <button 
-                className="ghost" 
-                onClick={() => setIsRightPanelActive(false)}
-                type="button"
-              >
-                Sign In
-              </button>
+              <div className="overlay-top">
+                <h1>New here?</h1>
+                <p>Sign up and unlock your first board</p>
+              </div>
+              <div className="overlay-bottom">
+                <hr className="overlay-divider" />
+                <p>Already have an account?</p>
+                <button 
+                  className="ghost" 
+                  onClick={() => setIsRightPanelActive(false)}
+                  type="button"
+                >
+                  Sign In
+                </button>
+              </div>
             </div>
             <div className="overlay-panel overlay-right">
-              <h1>Hello, Friend!</h1>
-              <p>Enter your personal details and start your journey with us</p>
-              <button 
-                className="ghost" 
-                onClick={() => setIsRightPanelActive(true)}
-                type="button"
-              >
-                Sign Up
-              </button>
+              <div className="overlay-top">
+                <h1>Welcome Back!</h1>
+                <p>Ready to jump back in to your boards?</p>
+              </div>
+              <div className="overlay-bottom">
+                <hr className="overlay-divider" />
+                <p>Don't have an account with us?</p>
+                <button 
+                  className="ghost" 
+                  onClick={() => setIsRightPanelActive(true)}
+                  type="button"
+                >
+                  Sign Up
+                </button>
+              </div>
             </div>
           </div>
         </div>

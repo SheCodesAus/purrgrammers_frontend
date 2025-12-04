@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/use-auth';
 import { useToast } from '../ToastProvider';
+import { useConfirm } from '../ConfirmProvider';
 import createActionItem from '../../api/create-action-item';
 import patchActionItem from '../../api/patch-action-item';
 import deleteActionItem from '../../api/delete-action-item';
@@ -19,6 +20,7 @@ function ActionBar({
 }) {
     const { auth } = useAuth();
     const { showToast } = useToast(); 
+    const { confirm } = useConfirm();
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState({});
     const [newItemText, setNewItemText] = useState('');
@@ -79,7 +81,12 @@ function ActionBar({
     };
 
     const handleDelete = async (actionItemId) => {
-        if (!window.confirm('Delete this action item? This cannot be undone.')) return;
+        const confirmDelete = await confirm({
+            title: 'Delete Action Item',
+            message: 'Are you sure you want to delete this action item?'
+        });
+
+        if (!confirmDelete) return;
         
         setLoading(prev => ({ ...prev, [actionItemId]: true }));
         try {

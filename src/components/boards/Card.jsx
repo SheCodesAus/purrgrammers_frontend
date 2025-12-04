@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../hooks/use-auth";
 import { useToast } from "../ToastProvider";
+import { useConfirm } from "../ConfirmProvider";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
 import VoteButton from "./VoteButton";
@@ -28,6 +29,7 @@ function Card({
     const contentRef = useRef(null);
     const { auth } = useAuth();
     const { showToast } = useToast;
+    const { confirm } = useConfirm();
 
     // Auto-resize font to fit content
     useEffect(() => {
@@ -95,7 +97,10 @@ function Card({
 
     // delete card
     const handleDelete = async () => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this card?');
+        const confirmDelete = await confirm({
+            title: 'Delete Card',
+            message: 'Delete card?'
+        });
 
         if (confirmDelete) {
             try {

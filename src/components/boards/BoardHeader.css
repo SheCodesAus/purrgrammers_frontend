@@ -190,6 +190,9 @@
 }
 
 .team-members-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 6px 0;
     border-bottom: 1px solid #eee;
     font-size: 0.9rem;
@@ -235,6 +238,24 @@
     color: #dc3545;
     font-size: 0.85rem;
     margin: 8px 0 0 0;
+}
+
+.remove-member-btn {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.remove-member-btn:hover {
+    color: #ef4444;
+}
+
+.remove-member-btn .material-icons {
+    font-size: 1rem;
 }
 
 /* ====================================

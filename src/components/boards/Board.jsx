@@ -497,7 +497,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         }
     };
 
-    // CRITICAL FIX #3: Robust drag state management
+    // Robust drag state management
     const handleDrop = async (e, columnId) => {
         e.preventDefault();
         
