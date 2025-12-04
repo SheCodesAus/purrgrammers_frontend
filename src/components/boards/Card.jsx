@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useAuth } from "../../hooks/use-auth";
 import { useToast } from "../ToastProvider";
 import { useConfirm } from "../ConfirmProvider";
@@ -287,20 +288,23 @@ function Card({
                 </div>
             </div>
 
-            {/* Card Modal */}
-            <CardModal
-                card={card}
-                columnColor={columnColor}
-                columnTitle={columnTitle}
-                isOpen={isModalOpen}
-                remainingVotes={remainingVotes}
-                availableTags={availableTags}
-                onClose={() => setIsModalOpen(false)}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onVoteChange={onVoteChange}
-                onTagsChange={onTagsChange}
-            />
+            {/* Card Modal - rendered via portal to escape column overflow */}
+            {isModalOpen && createPortal(
+                <CardModal
+                    card={card}
+                    columnColor={columnColor}
+                    columnTitle={columnTitle}
+                    isOpen={isModalOpen}
+                    remainingVotes={remainingVotes}
+                    availableTags={availableTags}
+                    onClose={() => setIsModalOpen(false)}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onVoteChange={onVoteChange}
+                    onTagsChange={onTagsChange}
+                />,
+                document.body
+            )}
         </>
     );
 }
