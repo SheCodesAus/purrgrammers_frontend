@@ -21,7 +21,7 @@
   --font-stack-sans-text: "Stack Sans Text", sans-serif;
 
   /* color variables */
-  --primary-color: #7c67e7;
+  --primary-color: #9869f6;
   --primary-color-dark: #24127b; /* Darker shade for hover states */
   --white: #ffffff;
 }
@@ -54,7 +54,7 @@
 
 /* Primary Button - Solid Purple */
 .btn-primary {
-  background-color: #7c3aed;
+  background-color: #9869f6;
   color: #ffffff;
 }
 

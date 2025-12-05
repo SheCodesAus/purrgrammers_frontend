@@ -137,7 +137,7 @@
 }
 
 .auth-container button:hover {
-  background-color: var(--primary-color-dark, #059669);
+  background-color: var(--primary-color-dark);
 }
 
 .auth-container button:disabled {
@@ -179,7 +179,7 @@
 
 .overlay {
   background: var(--primary-color);
-  background: linear-gradient(135deg, #d3bdff 0%, #ffd3a8 100%);
+  background: linear-gradient(135deg, #7dd3fc 0%, #c084fc 50%, #f0abfc 100%);
   background-repeat: no-repeat;
   background-size: cover;
   color: #fff;
