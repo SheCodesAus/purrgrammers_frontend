@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet, useLocation } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
@@ -6,12 +6,16 @@ import Dashboard from "./pages/Dashboard";
 import TeamsPage from "./pages/TeamsPage";
 import RetroBoardPage from "./pages/RetroBoardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
 // Layout component keeps navigation and page structure consistent across the whole site
 
 const Layout = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+  
   return (
-    <div className="app">
+    <div className={`app ${isHomePage ? 'homepage-gradient' : ''}`}>
       <NavBar />
       <main className="main-content">
         <Outlet /> {/* child routes render here */}

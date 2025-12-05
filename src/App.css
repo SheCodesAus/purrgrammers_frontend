@@ -2,7 +2,11 @@
   min-height: 100vh;
 }
 
+.app.homepage-gradient {
+  background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 45%, #f0abfc 70%, #f472b6 100%);
+  min-height: 100vh;
+}
+
 .main-content {
   width: 100%;
-  background-color: white;
 }
