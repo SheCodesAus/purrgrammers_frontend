@@ -31,15 +31,20 @@ function Card({
     const [isTagSelectorOpen, setIsTagSelectorOpen] = useState(false);
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
     const tagDropdownRef = useRef(null);
+    const dropdownPortalRef = useRef(null);
     const addButtonRef = useRef(null);
     const { auth } = useAuth();
-    const { showToast } = useToast;
+    const { showToast } = useToast();
     const { confirm } = useConfirm();
 
     // Close tag dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (tagDropdownRef.current && !tagDropdownRef.current.contains(e.target)) {
+            // Check both the wrapper ref and the portal dropdown ref
+            const clickedInWrapper = tagDropdownRef.current && tagDropdownRef.current.contains(e.target);
+            const clickedInDropdown = dropdownPortalRef.current && dropdownPortalRef.current.contains(e.target);
+            
+            if (!clickedInWrapper && !clickedInDropdown) {
                 setIsTagSelectorOpen(false);
             }
         };
@@ -227,7 +232,8 @@ function Card({
                             <button 
                                 ref={addButtonRef}
                                 className={`card-tag-add ${(card.tags?.length || 0) === 0 ? 'card-tag-add--empty' : ''}`}
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     if (!isTagSelectorOpen && addButtonRef.current) {
                                         const rect = addButtonRef.current.getBoundingClientRect();
                                         setDropdownPosition({
@@ -241,37 +247,53 @@ function Card({
                             >
                                 {(card.tags?.length || 0) === 0 ? 'add tags' : '+'}
                             </button>
-                            {isTagSelectorOpen && (
-                                <div 
-                                    className="card-tag-dropdown"
-                                    style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
-                                >
-                                    {availableTags.filter(tag => 
-                                        !card.tags?.some(t => t.id === tag.id)
-                                    ).length === 0 ? (
-                                        <span className="card-tag-dropdown-empty">All tags added</span>
-                                    ) : (
-                                        availableTags
-                                            .filter(tag => !card.tags?.some(t => t.id === tag.id))
-                                            .map(tag => (
-                                                <button
-                                                    key={tag.id}
-                                                    className="card-tag-option"
-                                                    onClick={() => {
-                                                        const newTags = [...(card.tags || []), tag];
-                                                        handleTagsChange(newTags);
-                                                        setIsTagSelectorOpen(false);
-                                                    }}
-                                                >
-                                                    {tag.display_name}
-                                                </button>
-                                            ))
-                                    )}
-                                </div>
-                            )}
                         </div>
                     )}
                 </div>
+
+                {/* Tag dropdown - rendered via portal */}
+                {isTagSelectorOpen && createPortal(
+                    <div 
+                        ref={dropdownPortalRef}
+                        className="card-tag-dropdown"
+                        style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {availableTags.length === 0 ? (
+                            <span className="card-tag-dropdown-empty">No tags available</span>
+                        ) : (
+                            availableTags.map(tag => {
+                                const isSelected = card.tags?.some(t => t.id === tag.id);
+                                const canAddMore = (card.tags?.length || 0) < 2;
+                                
+                                return (
+                                    <button
+                                        key={tag.id}
+                                        className={`card-tag-option ${isSelected ? 'selected' : ''}`}
+                                        disabled={!isSelected && !canAddMore}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            
+                                            if (isSelected) {
+                                                // Remove tag
+                                                const newTags = card.tags.filter(t => t.id !== tag.id);
+                                                handleTagsChange(newTags);
+                                            } else if (canAddMore) {
+                                                // Add tag
+                                                const newTags = [...(card.tags || []), tag];
+                                                handleTagsChange(newTags);
+                                            }
+                                        }}
+                                    >
+                                        {tag.display_name}
+                                    </button>
+                                );
+                            })
+                        )}
+                    </div>,
+                    document.body
+                )}
 
                 <div className="card-footer" onClick={(e) => e.stopPropagation()}>
                     <div className="card-meta">
