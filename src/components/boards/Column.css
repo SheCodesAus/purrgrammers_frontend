@@ -1,8 +1,8 @@
 /* Main column container */
 .retro-column {
   flex: 1 0 auto; /* Grow to fill height */
-  width: 500px; /* Fixed width for consistent centering */
-  min-width: 400px; /* Keep minimum for readability */
+  width: 450px; /* Fixed width for consistent centering */
+  min-width: 450px; /* Keep minimum for readability */
   max-width: 600px; /* Cap maximum width */
   background: color-mix(in srgb, var(--column-color, white) 15%, white);
   border-radius: 8px;
@@ -295,7 +295,7 @@
 .cards-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
   flex: 1;
   align-items: start;
 }
