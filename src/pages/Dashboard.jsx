@@ -158,7 +158,7 @@ function Dashboard() {
   const handleDeleteBoard = async (boardId, boardTitle) => {
     const confirmDelete = await confirm({
       title: 'Delete Board',
-      message: `Are you sure you want to delete ${boardData.title}? This action cannot be undone.`
+      message: `Are you sure you want to delete "${boardTitle}"? This action cannot be undone.`
     });
     
     if (!confirmDelete) {

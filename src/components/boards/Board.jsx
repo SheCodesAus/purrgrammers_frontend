@@ -336,7 +336,10 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             setIsCreatingCard(true);
             
             const targetColumn = boardData?.columns?.find(col => col.id === columnId);
-            const nextPosition = targetColumn?.cards?.length || 0;
+            // Find the max position in the column and add 1 (handles gaps from deleted cards)
+            const maxPosition = targetColumn?.cards?.reduce((max, card) => 
+                Math.max(max, card.position || 0), -1) ?? -1;
+            const nextPosition = maxPosition + 1;
             
             const cardData = {
                 content: cardText || "",
