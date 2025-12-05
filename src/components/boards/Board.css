@@ -17,18 +17,23 @@
   min-height: 0;
 }
 
-/* Columns container - layout for all columns */
+/* Columns container - scrollable area */
 .columns-container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  padding: 20px 20px 20px 20px;
-  flex: 1 1 100%; /* Take full available width/height */
-  gap: 20px;
-  align-items: flex-start;
-  align-content: flex-start;
+  flex: 1 1 100%;
   overflow-x: auto;
   overflow-y: auto;
+  padding: 20px;
+}
+
+/* Inner wrapper for centering columns */
+.columns-inner {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  align-items: flex-start;
+  min-width: min-content;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 /* Add column button */
