@@ -5,7 +5,7 @@
 /* Base card styling */
 .card {
   position: relative;
-  border-radius: 6px;
+  border-radius: 0;
   border: 1px solid #e2e8f0;
   padding: 12px;
   margin-bottom: 8px;

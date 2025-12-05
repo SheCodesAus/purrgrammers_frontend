@@ -30,8 +30,9 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 20px;
-  align-items: flex-start;
+  align-items: stretch;
   min-width: min-content;
+  min-height: 100%;
   margin: 0 auto;
   width: fit-content;
 }
