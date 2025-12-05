@@ -111,17 +111,18 @@
 .action-bar__form {
     display: flex;
     gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem;
     background: white;
     border-bottom: 1px solid #e5e7eb;
 }
 
 .action-bar__input {
     flex: 1;
-    padding: 0.5rem 0.75rem;
+    min-width: 0;
+    padding: 0.5rem 0.6rem;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #374151;
     transition: border-color 0.2s;
 }

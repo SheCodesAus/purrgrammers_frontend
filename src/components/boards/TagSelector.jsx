@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { getTagColor } from '../../utils/tag-colors';
 import './TagSelector.css';
 
 function TagSelector({ 
@@ -100,17 +99,12 @@ function TagSelector({
                     ) : (
                         availableTags.map(tag => {
                             const isSelected = selectedTags.some(t => t.id === tag.id);
-                            const colors = getTagColor(tag.name);
                             return (
                                 <button
                                     key={tag.id}
                                     className={`tag-selector__option ${isSelected ? 'selected' : ''}`}
                                     onClick={() => handleTagToggle(tag)}
                                 >
-                                    <span 
-                                        className="tag-selector__option-color"
-                                        style={{ backgroundColor: colors.bg }}
-                                    />
                                     <span className="tag-selector__option-name">
                                         {tag.display_name}
                                     </span>

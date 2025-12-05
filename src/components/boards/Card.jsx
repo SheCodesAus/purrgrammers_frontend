@@ -6,9 +6,7 @@ import { useConfirm } from "../ConfirmProvider";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
 import VoteButton from "./VoteButton";
-import TagSelector from "./TagSelector";
 import CardModal from "./CardModal";
-import { getTagColor } from "../../utils/tag-colors";
 import "./Card.css";
 
 function Card({

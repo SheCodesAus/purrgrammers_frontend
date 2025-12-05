@@ -4,9 +4,7 @@ import { useToast } from "../ToastProvider";
 import { useConfirm } from "../ConfirmProvider";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
-import VoteButton from "./VoteButton";
 import TagSelector from "./TagSelector";
-import { getTagColor } from "../../utils/tag-colors";
 import "./CardModal.css";
 
 function CardModal({

@@ -134,10 +134,6 @@
     color: #6b21a8;
 }
 
-.tag-selector__option-color {
-    display: none;
-}
-
 .tag-selector__option-name {
     font-weight: 500;
 }
