@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import './NavBar.css';
-import logo from '../assets/logo-15.svg';
+import logo from '../assets/logo-duo3.svg';
 
 function NavBar() {
     const { auth, setAuth } = useAuth();
