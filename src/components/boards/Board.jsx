@@ -336,7 +336,10 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             setIsCreatingCard(true);
             
             const targetColumn = boardData?.columns?.find(col => col.id === columnId);
-            const nextPosition = targetColumn?.cards?.length || 0;
+            // Find the max position in the column and add 1 (handles gaps from deleted cards)
+            const maxPosition = targetColumn?.cards?.reduce((max, card) => 
+                Math.max(max, card.position || 0), -1) ?? -1;
+            const nextPosition = maxPosition + 1;
             
             const cardData = {
                 content: cardText || "",
@@ -558,28 +561,30 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             
             <div className="board-content">
                 <div className="columns-container">
-                    {boardData.columns?.map(column => (
-                        <Column
-                            key={column.id}
-                            column={column}
-                            currentUser={currentUser}
-                            dragState={dragState}
-                            editingCard={editingCard}
-                            remainingVotes={remainingVotes}
-                            availableTags={availableTags}
-                            onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
-                            onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
-                            onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
-                            onCardTagsChange={handleCardTagsChange}
-                            onSetEditingCard={setEditingCard}
-                            onColumnUpdate={handleColumnUpdate}
-                            onDeleteColumn={handleDeleteColumn}
-                            onDragOver={(e) => handleDragOver(e, column.id)}
-                            onDrop={(e) => handleDrop(e, column.id)}
-                            onDragEnter={() => handleDragEnter(column.id)}
-                            onDragLeave={(e) => handleDragLeave(e, column.id)}
-                        />
-                    )) || <div>No columns found - check backend API</div>}
+                    <div className="columns-inner">
+                        {boardData.columns?.map(column => (
+                            <Column
+                                key={column.id}
+                                column={column}
+                                currentUser={currentUser}
+                                dragState={dragState}
+                                editingCard={editingCard}
+                                remainingVotes={remainingVotes}
+                                availableTags={availableTags}
+                                onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
+                                onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
+                                onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
+                                onCardTagsChange={handleCardTagsChange}
+                                onSetEditingCard={setEditingCard}
+                                onColumnUpdate={handleColumnUpdate}
+                                onDeleteColumn={handleDeleteColumn}
+                                onDragOver={(e) => handleDragOver(e, column.id)}
+                                onDrop={(e) => handleDrop(e, column.id)}
+                                onDragEnter={() => handleDragEnter(column.id)}
+                                onDragLeave={(e) => handleDragLeave(e, column.id)}
+                            />
+                        )) || <div>No columns found - check backend API</div>}
+                    </div>
                 </div>
 
                 <ActionBar

@@ -1,6 +1,7 @@
 /* Main page container */
 .retro-board-page {
-  background-color: white;
+  background: transparent;
+  min-height: calc(100vh - 60px);
 }
 
 /* Loading state */

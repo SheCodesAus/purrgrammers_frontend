@@ -26,8 +26,14 @@
 }
 
 .vote-button:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    opacity: 1;
+    color: black;
+}
+
+.vote-button:disabled .vote-icon,
+.vote-button:disabled .vote-count {
+    color: black;
 }
 
 .vote-icon {

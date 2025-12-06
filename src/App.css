@@ -2,7 +2,30 @@
   min-height: 100vh;
 }
 
+/* Hide scrollbar on Dashboard and RetroBoard but allow scrolling */
+.app.dashboard-page,
+.app.retroboard-gradient {
+  overflow-y: auto;
+  height: 100vh;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.app.dashboard-page::-webkit-scrollbar,
+.app.retroboard-gradient::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.app.homepage-gradient {
+  background: linear-gradient(135deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%);
+  min-height: 100vh;
+}
+
+.app.retroboard-gradient {
+  background: linear-gradient(135deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%);
+  min-height: 100vh;
+}
+
 .main-content {
   width: 100%;
-  background-color: white;
 }
