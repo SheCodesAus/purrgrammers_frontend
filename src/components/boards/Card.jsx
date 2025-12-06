@@ -140,6 +140,15 @@ function Card({
                 <textarea
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault(); // stop enter from adding new line
+                            handleSave();
+                        }
+                        if (e.key === 'Escape') {
+                            handleCancel();
+                        }
+                    }}
                     onBlur={handleSave}
                     autoFocus
                     placeholder="Enter your card text..."
