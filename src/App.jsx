@@ -12,10 +12,17 @@ import "./App.css";
 
 const Layout = () => {
   const location = useLocation();
-  const isHomePage = location.pathname === "/";
+  const isGradientPage = location.pathname === "/" || location.pathname === "/dashboard";
+  const isRetroBoardPage = location.pathname.startsWith("/retro-board");
+  const isDashboard = location.pathname === "/dashboard";
+  
+  let appClass = "app";
+  if (isGradientPage) appClass += " homepage-gradient";
+  if (isRetroBoardPage) appClass += " retroboard-gradient";
+  if (isDashboard) appClass += " dashboard-page";
   
   return (
-    <div className={`app ${isHomePage ? 'homepage-gradient' : ''}`}>
+    <div className={appClass}>
       <NavBar />
       <main className="main-content">
         <Outlet /> {/* child routes render here */}

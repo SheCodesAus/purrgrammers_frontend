@@ -149,6 +149,12 @@ function AuthPage() {
             <button type="submit" disabled={isLoading}>
               {isLoading ? "Creating..." : "Sign Up"}
             </button>
+            <p className="mobile-toggle">
+              Already have an account?{" "}
+              <button type="button" onClick={() => setIsRightPanelActive(false)}>
+                Sign In
+              </button>
+            </p>
           </form>
         </div>
 
@@ -176,6 +182,12 @@ function AuthPage() {
             <button type="submit" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </button>
+            <p className="mobile-toggle">
+              Don't have an account?{" "}
+              <button type="button" onClick={() => setIsRightPanelActive(true)}>
+                Sign Up
+              </button>
+            </p>
           </form>
         </div>
 

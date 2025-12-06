@@ -1,73 +1,172 @@
-/*
-.login-signup-page-title {
-  font-size: 40px;
-  text-align: center;
-  margin: 2rem;
+/* Login Form Container */
+.login-form-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
-form {
-  max-width: 400px;
-  margin: 8vh auto;
-  padding: 2rem 2.5rem;
-  background-color: #ffffff;
-  border-radius: 1rem;
+.login-signup-page-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #24127b;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-container form {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  text-align: center;
+  box-shadow: 
+    0 8px 32px rgba(152, 105, 246, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-form div {
+.form-group {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
 }
 
-input {
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ccc;
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.login-form-container input {
+  padding: 0.875rem 1rem;
+  border-radius: 0.625rem;
+  border: 1.5px solid rgba(200, 200, 200, 0.6);
   font-size: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.8);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-input:focus {
-  border-color: #7c7c7c;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+.login-form-container input:focus {
+  border-color: #9869f6;
+  box-shadow: 0 0 0 3px rgba(152, 105, 246, 0.2);
+  background: #fff;
   outline: none;
 }
 
-form button {
-  padding: 0.8rem 1rem;
-  background-color: #6b6b6b;
+.login-form-container input::placeholder {
+  color: #9ca3af;
+}
+
+.login-form-container input:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.login-form-container form button {
+  padding: 0.9rem 1.25rem;
+  background: linear-gradient(135deg, #9869f6 0%, #c4b5fd 100%);
   color: white;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.625rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 4px 12px rgba(152, 105, 246, 0.3);
 }
 
-form button:hover {
-  background-color: #595959;
+.login-form-container form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(152, 105, 246, 0.4);
 }
 
-form button:active {
-  transform: scale(0.98);
+.login-form-container form button:active {
+  transform: translateY(0) scale(0.98);
 }
 
-/* Style the link inside the signup button */
-form button a {
-  text-decoration: none;
-  color: inherit;
+.login-form-container form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
-/* Optional responsive styling 
-@media (max-width: 480px) {
-  form {
+/* Sign Up button - secondary style */
+.login-form-container form button:last-of-type {
+  background: transparent;
+  color: #9869f6;
+  border: 2px solid #9869f6;
+  box-shadow: none;
+}
+
+.login-form-container form button:last-of-type:hover {
+  background: rgba(152, 105, 246, 0.1);
+  box-shadow: none;
+}
+
+/* Tablet responsive */
+@media (max-width: 768px) {
+  .login-form-container {
     padding: 1.5rem;
-    margin: 4vh 1rem;
+  }
+
+  .login-signup-page-title {
+    font-size: 2rem;
+  }
+
+  .login-form-container form {
+    padding: 2rem;
+    max-width: 380px;
   }
 }
 
-*/
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .login-form-container {
+    padding: 1rem;
+    justify-content: flex-start;
+    padding-top: 15vh;
+  }
+
+  .login-signup-page-title {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .login-form-container form {
+    padding: 1.5rem;
+    gap: 1.25rem;
+    border-radius: 1rem;
+    max-width: 100%;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .login-form-container input {
+    padding: 0.75rem 0.875rem;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .login-form-container form button {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+}

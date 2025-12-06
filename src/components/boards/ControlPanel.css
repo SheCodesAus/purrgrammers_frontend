@@ -3,24 +3,30 @@
    ==================================== */
 
 .control-panel-wrapper {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex-shrink: 0;
-    padding-bottom: 16px;
+    z-index: 50;
 }
 
 .control-panel {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    gap: 1.5rem;
-    padding: 1rem 1.5rem;
-    background: #ffffff;
+    gap: 2rem;
+    padding: 1rem 2.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
     border: 1px solid #e5e7eb;
-    width: fit-content;
+    width: auto;
+    max-width: 90vw;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    flex-wrap: nowrap;
 }
 
 /* Expand Tab (collapsed state) */
@@ -109,7 +115,11 @@
     align-items: center;
     justify-content: center;
     width: 48px;
+    min-width: 48px;
     height: 48px;
+    min-height: 48px;
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
     background: linear-gradient(135deg, #d3bdff 0%, #ffd3a8 100%);
     border-radius: 8px;
     cursor: grab;
@@ -216,9 +226,9 @@
 /* Voting Section */
 .control-panel__voting-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 0.25rem;
+    gap: 1rem;
 }
 
 .control-panel__voting-round {
@@ -228,6 +238,7 @@
     font-size: 0.85rem;
     font-weight: 600;
     color: #374151;
+    white-space: nowrap;
 }
 
 .control-panel__voting-round .material-icons {
@@ -239,6 +250,7 @@
     display: flex;
     align-items: baseline;
     gap: 0.25rem;
+    white-space: nowrap;
 }
 
 .control-panel__votes-remaining .votes-count {

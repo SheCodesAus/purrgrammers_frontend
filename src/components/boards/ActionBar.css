@@ -4,13 +4,12 @@
     width: 280px;
     background: white;
     border-left: 1px solid #e5e7eb;
-    border-bottom: 1px solid #e5e7eb;
-    border-bottom-left-radius: 12px;
     display: flex;
     flex-direction: column;
     transition: width 0.3s ease;
     flex-shrink: 0;
     overflow: visible;
+    border-radius: 0 12px 12px 0;
 }
 
 .action-bar.collapsed {

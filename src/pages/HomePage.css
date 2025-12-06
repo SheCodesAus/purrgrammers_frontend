@@ -22,7 +22,7 @@
 
 .hero-title {
   font-size: 3.5rem;
-  color: #1e1b4b;
+  color: #24127b;
   margin-bottom: 1.5rem;
   font-weight: 700;
   font-family: var(--font-heading);
@@ -30,7 +30,7 @@
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: #1e1b4b;
+  color: #24127b;
   margin-bottom: 0rem;
   font-family: var(--font-stack-sans-text);
 }
@@ -50,7 +50,7 @@
 }
 
 .feature-card {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
@@ -68,7 +68,7 @@
 
 .feature-icon {
   font-size: 2.5rem;
-  color: #1e1b4b;
+  color: var(--primary-color);
   margin-bottom: 1.25rem;
   display: inline-block;
 }
@@ -76,7 +76,7 @@
 .feature-title {
   font-family: var(--font-stack-sans-text);
   font-size: 1.25rem;
-  color: #1e1b4b;
+  color: #24127b;
   margin-bottom: 0.75rem;
 }
 
@@ -96,7 +96,7 @@
 
 .cta-text {
   font-size: 1.5rem;
-  color: #1e1b4b;
+  color: #24127b;
   margin-bottom: 2rem;
   max-width: 500px;
   margin-left: auto;

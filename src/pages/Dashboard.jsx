@@ -131,8 +131,29 @@ function Dashboard() {
   const [newTeamName, setNewTeamName] = useState('');
   const [createTeamLoading, setCreateTeamLoading] = useState(false);
 
-  // Sidebar collapse state
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Mobile tab state
+  const [activeTab, setActiveTab] = useState('boards');
+
+  // Sidebar collapse state - check initial window size
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
+
+  // Update sidebar on resize
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth <= 768) {
+        setSidebarCollapsed(true);
+      }
+    };
+    
+    // Check on resize
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const openCreateModal = (teamId = null) => {
     setCreateModalTeamId(teamId);
@@ -269,56 +290,92 @@ function Dashboard() {
     }
   };
 
+  // Check if we're on mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  
+  // On mobile, only allow expanded state after data is loaded
+  const showExpanded = !sidebarCollapsed && (!isMobile || !teamsWithBoards.isLoading);
+
   return (
     <div className="dashboard-layout">
       {/* Sidebar */}
-      <aside className={`dashboard-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-        <button
-          className="sidebar-toggle-btn"
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {sidebarCollapsed ? '»' : '«'}
-        </button>
+      <aside className={`dashboard-sidebar ${showExpanded ? 'expanded' : 'collapsed'}`}>
+        <div className="sidebar-header-row">
+          {showExpanded && <h3 className="sidebar-heading desktop-only">Latest Boards</h3>}
+          <button
+            className="sidebar-toggle-btn"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <span className="toggle-icon-desktop">{sidebarCollapsed ? '»' : '«'}</span>
+            <span className="toggle-icon-mobile">{sidebarCollapsed ? '⌄' : '⌃'}</span>
+          </button>
+        </div>
 
-        {!sidebarCollapsed && (
+        {showExpanded && (
           <>
+        {/* Mobile Tabs */}
+        <div className="mobile-tabs">
+          <button 
+            className={`mobile-tab-btn ${activeTab === 'boards' ? 'active' : ''}`}
+            onClick={() => setActiveTab('boards')}
+          >
+            Boards
+          </button>
+          <button 
+            className={`mobile-tab-btn ${activeTab === 'teams' ? 'active' : ''}`}
+            onClick={() => setActiveTab('teams')}
+          >
+            Teams
+          </button>
+          <button 
+            className={`mobile-tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
+            onClick={() => setActiveTab('profile')}
+          >
+            Profile
+          </button>
+        </div>
+
         {/* Latest Boards */}
-        <div className="sidebar-boards">
-          <h3 className="sidebar-heading">Latest Boards</h3>
+        <div className={`sidebar-boards ${activeTab === 'boards' ? 'active' : ''}`}>
           {teamsWithBoards.isLoading ? (
             <p className="sidebar-loading">Loading...</p>
           ) : (
-            <ul className="sidebar-board-list">
-              {teamsWithBoards.data
-                .flatMap(({ team, boards }) => 
-                  boards.map(board => ({ ...board, teamName: team.name }))
-                )
-                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                .slice(0, 5)
-                .map(board => (
-                  <li key={board.id}>
-                    <button 
-                      className={`sidebar-board-btn ${board.is_active === false ? 'sidebar-board-closed' : ''}`}
-                      onClick={() => navigate(`/retro-board/${board.id}`)}
-                      title={`${board.title} (${board.teamName})${board.is_active === false ? ' - Closed' : ''}`}
-                    >
-                      <div className="sidebar-board-title-row">
-                        <span className="sidebar-board-title">{board.title}</span>
-                        {board.is_active === false && (
-                          <span className="sidebar-board-closed-badge">Closed</span>
-                        )}
-                      </div>
-                      <span className="sidebar-board-team">{board.teamName}</span>
-                    </button>
-                  </li>
-                ))
-              }
-              {teamsWithBoards.data.flatMap(({ boards }) => boards).length === 0 && (
-                <li className="sidebar-empty">No boards yet</li>
-              )}
-            </ul>
+            <div className="sidebar-board-list-scroll">
+              <ul className="sidebar-board-list">
+                {teamsWithBoards.data
+                  .flatMap(({ team, boards }) => 
+                    boards.map(board => ({ ...board, teamName: team.name }))
+                  )
+                  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                  .slice(0, 3)
+                  .map(board => (
+                    <li key={board.id}>
+                      <button 
+                        className={`sidebar-board-btn ${board.is_active === false ? 'sidebar-board-closed' : ''}`}
+                        onClick={() => navigate(`/retro-board/${board.id}`)}
+                        title={`${board.title} (${board.teamName})${board.is_active === false ? ' - Closed' : ''}`}
+                      >
+                        <div className="sidebar-board-title-row">
+                          <span className="sidebar-board-title">{board.title}</span>
+                          {board.is_active === false && (
+                            <span className="sidebar-board-closed-badge">Closed</span>
+                          )}
+                        </div>
+                        <span className="sidebar-board-team">{board.teamName}</span>
+                      </button>
+                    </li>
+                  ))
+                }
+                {teamsWithBoards.data.flatMap(({ boards }) => boards).length === 0 && (
+                  <li className="sidebar-empty">No boards yet</li>
+                )}
+              </ul>
+            </div>
           )}
+        </div>
+
+        <div className={`sidebar-new-board-wrapper ${activeTab === 'boards' ? 'active' : ''}`}>
           <button 
             className="sidebar-new-board-btn"
             onClick={() => openCreateModal()}
@@ -327,7 +384,7 @@ function Dashboard() {
           </button>
         </div>
 
-        <div className="sidebar-teams">
+        <div className={`sidebar-teams ${activeTab === 'teams' ? 'active' : ''}`}>
           <div className="sidebar-teams-header">
             <h3 className="sidebar-heading">Teams</h3>
             <button 
@@ -389,7 +446,7 @@ function Dashboard() {
         </div>
 
         {/* User Profile */}
-        <div className="sidebar-user" onClick={() => setShowProfileModal(true)}>
+        <div className={`sidebar-user ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setShowProfileModal(true)}>
           <Avatar initials={auth?.user?.initials} size={40} />
           <div className="sidebar-user-info">
             <span className="sidebar-user-name">{auth?.user?.username || 'User'}</span>
@@ -404,10 +461,13 @@ function Dashboard() {
       <main className="dashboard-main">
         {/* Welcome Header */}
         <div className="dashboard-header-section">
-          <h1 className="dashboard-header">
-            Welcome, {auth?.user?.username || 'User'}!
+          <h1 className="dashboard-header typewriter">
+            Welcome, {auth?.user?.first_name || auth?.user?.username || 'User'}!
           </h1>
         </div>
+
+        {/* Mobile Sidebar - rendered here on small screens */}
+        <div className="mobile-sidebar-placeholder"></div>
 
         {/* Teams and Boards */}
         <div className="dashboard-content">
