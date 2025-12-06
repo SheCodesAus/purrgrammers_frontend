@@ -1,9 +1,9 @@
 /* Main column container */
 .retro-column {
   flex: 1 0 auto; /* Grow to fill height */
-  width: 450px; /* Fixed width for consistent centering */
-  min-width: 450px; /* Keep minimum for readability */
-  max-width: 600px; /* Cap maximum width */
+  width: 380px; /* Fixed width for consistent centering */
+  min-width: 380px; /* Keep minimum for readability */
+  max-width: 500px; /* Cap maximum width */
   background: color-mix(in srgb, var(--column-color, white) 15%, white);
   border-radius: 8px;
   padding: 1rem;
