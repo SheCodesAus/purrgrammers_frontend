@@ -63,13 +63,7 @@ function Card({
         ? card.content.slice(0, MAX_LENGTH).trim()
         : (card.content || "Click to view");
 
-    // Start editing mode
-    const handleStartEdit = () => {
-        if (!isOwner) return; // Only owner can edit
-        setEditText(card.content || "");
-        onStartEdit();
-    };
-
+    
     // Check if current user is the card creator
     const isOwner = auth.user?.id === card.created_by?.id || 
                     auth.user?.username === card.created_by?.username;
