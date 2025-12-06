@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/use-auth';
 import './HomePage.css';
 
 function HomePage() {
     const navigate = useNavigate();
+    const { auth } = useAuth();
 
     const scrollToFeatures = () => {
         document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
@@ -40,8 +42,8 @@ function HomePage() {
             {/* CTA Section */}
             <section className='cta-section'>
                 <p className='cta-text'>Because your team deserves more than a wall of sad Post-it notes</p>
-                <button className='btn btn-primary' onClick={() => navigate('/login')}>
-                    Get Started
+                <button className='btn btn-primary' onClick={() => navigate(auth?.token ? '/dashboard' : '/login')}>
+                    {auth?.token ? 'Go to Dashboard' : 'Get Started'}
                 </button>
             </section>
         </div>
