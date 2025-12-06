@@ -21,7 +21,6 @@ function Card({
     onDelete,
     onVoteChange,
     onTagsChange,
-    onStartEdit,
     onCancelEdit
 }) {
     const [editText, setEditText] = useState("");

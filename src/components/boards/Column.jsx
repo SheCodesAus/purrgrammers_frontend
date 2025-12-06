@@ -262,7 +262,6 @@ function Column({
                             onDelete={() => onDeleteCard(card.id)}
                             onVoteChange={(voteData) => onVoteChange(card.id, voteData)}
                             onTagsChange={(updatedCard) => onCardTagsChange(column.id, updatedCard)}
-                            onStartEdit={() => onSetEditingCard(card.id)}
                             onCancelEdit={() => onSetEditingCard(null)}
                         />
                     ))}
