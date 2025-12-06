@@ -293,11 +293,10 @@
 
 /* Cards list */
 .cards-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  flex: 1;
-  align-items: start;
+  align-content: flex-start;
 }
 
 /* Drop zone hint during drag */

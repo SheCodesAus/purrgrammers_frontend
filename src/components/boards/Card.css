@@ -6,7 +6,6 @@
 .card {
   position: relative;
   padding: 12px;
-  margin-bottom: 8px;
   cursor: pointer;
   aspect-ratio: 1/1;
   width: 200px;
