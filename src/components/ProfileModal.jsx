@@ -43,7 +43,6 @@ function ProfileModal({ isOpen, onClose, userId = null, username = null }) {
                 console.log('Profile response:', data);  // Debug: check what backend returns
                 setProfile(data);
                 setFormData({
-                    bio: data.bio || '',
                     location: data.location || '',
                     job_role: data.job_role || '',
                 });
@@ -67,8 +66,10 @@ function ProfileModal({ isOpen, onClose, userId = null, username = null }) {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const updated = await patchProfile(formData, auth.token);
-            setProfile(updated);
+            await patchProfile(formData, auth.token);
+            // Re-fetch profile to get complete data including teams
+            const refreshed = await getProfile(auth.token);
+            setProfile(refreshed);
             setIsEditing(false);
         } catch (error) {
             showToast(`Failed to save: ${error.message}`);
@@ -80,7 +81,6 @@ function ProfileModal({ isOpen, onClose, userId = null, username = null }) {
     // cancel editing
     const handleCancel = () => {
         setFormData({
-            bio: profile?.bio || '',
             location: profile?.location || '',
             job_role: profile?.job_role || '',
         });
@@ -103,162 +103,101 @@ function ProfileModal({ isOpen, onClose, userId = null, username = null }) {
     const displayEmail = isOwnProfile ? auth?.user?.email : null;
 
     return (
-        <div className="cyber-profile-overlay" onClick={onClose}>
-            <div className="cyber-profile-modal" onClick={(event) => event.stopPropagation()}>
-                {/* Scanline effect overlay */}
-                <div className="cyber-profile-scanlines"></div>
-                
-                {/* Top glow bar */}
-                <div className="cyber-profile-glow-bar top"></div>
-                
-                <button className="cyber-profile-close" onClick={onClose}>×</button>
+        <div className="profile-overlay" onClick={onClose}>
+            <div className="profile-modal" onClick={(event) => event.stopPropagation()}>
+                <button className="profile-close" onClick={onClose}>×</button>
 
-                {loading && <div className="cyber-profile-loading">LOADING...</div>}
+                {loading && <div className="profile-loading">Loading...</div>}
                 
-                {error && <div className="cyber-profile-error">ERROR: {error}</div>}
+                {error && <div className="profile-error">{error}</div>}
 
                 {!loading && !error && profile && (
                     <>
-                        {/* User Info */}
-                        {(profile.first_name || profile.last_name) && (
-                            <h2 className="cyber-profile-fullname">
-                                {profile.first_name} {profile.last_name}
-                            </h2>
-                        )}
-                        <p className="cyber-profile-username">{profile.username}</p>
-                        
-                        {profile.created_at && (
-                            <p className="cyber-profile-joined">
-                                ONLINE SINCE {formatDate(profile.created_at)}
-                            </p>
-                        )}
+                        {/* Full Name */}
+                        <h2 className="profile-fullname">
+                            {profile.first_name || profile.last_name 
+                                ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim()
+                                : profile.username}
+                        </h2>
 
-                        {/* Profile Details */}
-                        <div className="cyber-profile-details">
+                        {/* Job Role - editable or display */}
+                        <div className="profile-job-role">
                             {isEditing ? (
-                                // Edit Mode
-                                <div className="cyber-profile-edit-form">
-                                    <div className="cyber-profile-form-group">
-                                        <label htmlFor="job_role">Job Role</label>
-                                        <input
-                                            id="job_role"
-                                            type="text"
-                                            name="job_role"
-                                            value={formData.job_role}
-                                            onChange={handleChange}
-                                            placeholder="What do you do?"
-                                            maxLength={100}
-                                        />
-                                    </div>
+                                <input
+                                    type="text"
+                                    name="job_role"
+                                    value={formData.job_role}
+                                    onChange={handleChange}
+                                    placeholder="Add job role"
+                                    className="profile-inline-input"
+                                    maxLength={100}
+                                />
+                            ) : (
+                                <span>{profile.job_role || 'No job role'}</span>
+                            )}
+                        </div>
 
-                                    <div className="cyber-profile-form-group">
-                                        <label htmlFor="location">Location</label>
-                                        <input
-                                            id="location"
-                                            type="text"
-                                            name="location"
-                                            value={formData.location}
-                                            onChange={handleChange}
-                                            placeholder="Where are you based?"
-                                            maxLength={100}
-                                        />
-                                    </div>
-                                    
-                                    <div className="cyber-profile-form-group">
-                                        <label htmlFor="bio">Bio</label>
-                                        <textarea
-                                            id="bio"
-                                            name="bio"
-                                            value={formData.bio}
-                                            onChange={handleChange}
-                                            placeholder="Tell us about yourself..."
-                                            maxLength={500}
-                                            rows={4}
-                                        />
-                                        <span className="cyber-profile-char-count">
-                                            {formData.bio.length}/500
+                        {/* Location - editable or display */}
+                        <div className="profile-location">
+                            <span className="material-icons">location_on</span>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleChange}
+                                    placeholder="Add location"
+                                    className="profile-inline-input"
+                                    maxLength={100}
+                                />
+                            ) : (
+                                <span>{profile.location || 'No location'}</span>
+                            )}
+                        </div>
+
+                        {/* Teams */}
+                        {profile.teams && profile.teams.length > 0 && (
+                            <div className="profile-teams">
+                                <p className="profile-teams-label">Teams</p>
+                                <div className="profile-teams-list">
+                                    {profile.teams.map((team) => (
+                                        <span key={team.id} className="profile-team-chip">
+                                            {team.name}
                                         </span>
-                                    </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
-                                    <div className="cyber-profile-actions">
+                        {/* Edit / Save / Cancel Buttons */}
+                        {isOwnProfile && (
+                            <div className="profile-actions">
+                                {isEditing ? (
+                                    <>
                                         <button
-                                            className="cyber-profile-btn cyber-profile-btn-primary"
+                                            className="profile-btn profile-btn-edit"
                                             onClick={handleSave}
                                             disabled={saving}
                                         >
                                             {saving ? 'Saving...' : 'Save'}
                                         </button>
                                         <button
-                                            className="cyber-profile-btn cyber-profile-btn-secondary"
+                                            className="profile-btn profile-btn-secondary"
                                             onClick={handleCancel}
                                         >
                                             Cancel
                                         </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                // View Mode
-                                <>
-                                    {profile.job_role && (
-                                        <p className="cyber-profile-job-role">
-                                            {profile.job_role}
-                                        </p>
-                                    )}
-
-                                    <div className="cyber-profile-stats">
-                                        {profile.location && (
-                                            <div className="cyber-profile-stat-item">
-                                                <span className="cyber-profile-stat-label">LOCATION</span>
-                                                <span className="cyber-profile-stat-value">{profile.location}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                    {profile.bio ? (
-                                        <div className="cyber-profile-bio-section">
-                                            <span className="cyber-profile-bio-label">// SYSTEM.BIO</span>
-                                            <p className="cyber-profile-bio">&gt; {profile.bio}<span className="cyber-profile-cursor">_</span></p>
-                                        </div>
-                                    ) : isOwnProfile ? (
-                                        <div className="cyber-profile-bio-section">
-                                            <span className="cyber-profile-bio-label">// SYSTEM.BIO</span>
-                                            <p className="cyber-profile-bio-empty">&gt; No data found. Initialize bio?<span className="cyber-profile-cursor">_</span></p>
-                                        </div>
-                                    ) : (
-                                        <div className="cyber-profile-bio-section">
-                                            <span className="cyber-profile-bio-label">// SYSTEM.BIO</span>
-                                            <p className="cyber-profile-bio-empty">&gt; No data found.<span className="cyber-profile-cursor">_</span></p>
-                                        </div>
-                                    )}
-
-                                    {/* Teams Section */}
-                                    {profile.teams && profile.teams.length > 0 && (
-                                        <div className="cyber-profile-teams">
-                                            <h4 className="cyber-profile-teams-label">NETWORKS</h4>
-                                            <div className="cyber-profile-teams-list">
-                                                {profile.teams.map((team) => (
-                                                    <span key={team.id} className="cyber-profile-team-chip">
-                                                        {team.name}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {isOwnProfile && (
-                                        <button
-                                            className="cyber-profile-btn cyber-profile-btn-edit"
-                                            onClick={() => setIsEditing(true)}
-                                        >
-                                            EDIT PROFILE
-                                        </button>
-                                    )}
-                                </>
-                            )}
-                        </div>
-                        
-                        {/* Bottom glow bar */}
-                        <div className="cyber-profile-glow-bar bottom"></div>
+                                    </>
+                                ) : (
+                                    <button
+                                        className="profile-btn profile-btn-edit"
+                                        onClick={() => setIsEditing(true)}
+                                    >
+                                        Edit Profile
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </>
                 )}
             </div>
