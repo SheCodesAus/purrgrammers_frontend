@@ -56,8 +56,51 @@
 
 .title-input-container {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
+/* Board title - display mode */
+.board-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111827;
+  font-family: var(--font-heading);
+}
+
+.board-title.clickable {
+  cursor: pointer;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  border-radius: 6px;
+}
+
+.board-title.clickable:hover {
+  text-decoration: underline dotted;
+  text-decoration-color: #a78bfa;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+/* Board title - edit mode */
+.board-title-input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111827;
+  font-family: var(--font-heading);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  outline: none;
+}
+
+/* Legacy - keeping for reference */
 .board-title-inline {
   margin: 0;
   font-size: 1.8rem;

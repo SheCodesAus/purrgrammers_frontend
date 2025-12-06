@@ -27,6 +27,7 @@ function Column({
     const [editTitle, setEditTitle] = useState(column.title || '');
     const [showColorPicker, setShowColorPicker] = useState(false);
     const [showEditOptions, setShowEditOptions] = useState(false);
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
     const { auth } = useAuth();
 
     // handles title editing
@@ -111,52 +112,106 @@ function Column({
             onDragEnter={onDragEnter}
         >
             <div className="column-header">
-                {/* Editable Title */}
-                    <div className="title-and-edit">
-                        <div className="title-input-container">
-                            <input
-                                type="text"
-                                value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                                onBlur={handleTitleSave}
-                                onKeyDown={handleKeyPress}
-                                onFocus={() => setEditTitle(column.title || '')}
-                                className={`column-title-inline ${showEditOptions ? 'editable-indicator' : ''}`}
-                                maxLength={50}
-                                placeholder={column.title || 'Column title'}
-                                style={{ paddingRight: showEditOptions ? '20px' : '4px' }}
+                {/* Column Title - Click to Edit */}
+                {isEditingTitle ? (
+                    <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onBlur={() => {
+                            handleTitleSave();
+                            setIsEditingTitle(false);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleTitleSave();
+                                setIsEditingTitle(false);
+                            } else if (e.key === 'Escape') {
+                                setEditTitle(column.title || '');
+                                setIsEditingTitle(false);
+                            }
+                        }}
+                        className="column-title-input"
+                        maxLength={50}
+                        autoFocus
+                    />
+                ) : (
+                    <h3 
+                        className="column-title clickable"
+                        onClick={() => {
+                            setEditTitle(column.title || '');
+                            setIsEditingTitle(true);
+                        }}
+                        title="Click to edit"
+                    >
+                        {column.title}
+                    </h3>
+                )}
+                
+                {/* Edit Menu Button */}
+                <div className="column-menu-wrapper">
+                    <button 
+                        className="column-menu-btn" 
+                        onClick={() => {
+                            if (!showEditOptions) {
+                                setEditTitle(column.title || '');
+                            }
+                            setShowEditOptions(!showEditOptions);
+                        }}
+                        title="Column options"
+                    >
+                        <span className="material-icons">more_vert</span>
+                    </button>
+                    
+                    {/* Dropdown Menu */}
+                    {showEditOptions && (
+                        <>
+                            <div 
+                                className="column-menu-overlay"
+                                onClick={() => {
+                                    setShowEditOptions(false);
+                                    setShowColorPicker(false);
+                                }}
                             />
-                        </div>
-                        
-                        {showEditOptions && (
-                            <>
-                                <button onClick={handleResetColor} className="edit-option-btn reset-btn" title="Reset color">
+                            <div className="column-menu-dropdown">
+                                {/* Color Option */}
+                                <button 
+                                    className="menu-item"
+                                    onClick={() => setShowColorPicker(!showColorPicker)}
+                                    title="Change Color"
+                                >
+                                    <span className="material-icons">palette</span>
+                                </button>
+                                
+                                {/* Reset Color Option */}
+                                <button 
+                                    className="menu-item"
+                                    onClick={() => {
+                                        handleResetColor();
+                                        setShowEditOptions(false);
+                                    }}
+                                    title="Reset Color"
+                                >
                                     <span className="material-icons">refresh</span>
                                 </button>
-                                <button onClick={() => setShowColorPicker(!showColorPicker)} className="edit-option-btn" title="Change color">
-                                    <span className="material-symbols-outlined">colors</span>
-                                </button>
-                                <button onClick={() => onDeleteColumn(column.id)} className="edit-option-btn delete-btn" title="Delete column">
+                                
+                                <div className="menu-divider" />
+                                
+                                {/* Delete Option */}
+                                <button 
+                                    className="menu-item menu-item-danger"
+                                    onClick={() => {
+                                        onDeleteColumn(column.id);
+                                        setShowEditOptions(false);
+                                    }}
+                                    title="Delete Column"
+                                >
                                     <span className="material-icons">delete</span>
                                 </button>
-                            </>
-                        )}
-                        
-                       
-                        <button 
-                            className="edit-toggle-btn" 
-                            onClick={() => {
-                                setShowEditOptions(!showEditOptions);
-                                if (!showEditOptions) {
-                                    setEditTitle(column.title || '');
-                                }
-                            }}
-                            title="Edit column"
-                        >
-                            <span className="material-icons">edit</span>
-                        </button>
-                        
-                    </div>
+                            </div>
+                        </>
+                    )}
+                </div>
 
                 {/* Color Picker */}
                 {showColorPicker && showEditOptions && (

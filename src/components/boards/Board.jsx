@@ -44,10 +44,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
 
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
+        console.log('WebSocket message received:', message.type, message.data);
         switch (message.type) {
 
             // board
             case 'board_updated':
+                console.log('Board updated via WebSocket:', message.data);
                 onBoardUpdate(prevBoard => ({
                     ...prevBoard,
                     ...message.data

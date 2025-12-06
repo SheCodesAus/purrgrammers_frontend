@@ -18,6 +18,7 @@ function BoardHeader({
     onBoardStatusChange  // function to handle board active status change
 }) {
     const [editTitle, setEditTitle] = useState(boardData?.title || '');
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [showEditOptions, setShowEditOptions] = useState(false);
     const [isToggling, setIsToggling] = useState(false);
     const navigate = useNavigate();
@@ -30,6 +31,11 @@ function BoardHeader({
     const [addMemberError, setAddMemberError] = useState('');
     const [addMemberLoading, setAddMemberLoading] = useState(false);
     const teamDropdownRef = useRef(null);
+
+    // Sync editTitle when boardData.title changes from WebSocket
+    useEffect(() => {
+        setEditTitle(boardData?.title || '');
+    }, [boardData?.title]);
 
     // Close team dropdown when clicking outside
     useEffect(() => {
@@ -83,8 +89,10 @@ function BoardHeader({
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleTitleSave();
+            e.target.blur();
         } else if (e.key === 'Escape') {
             setEditTitle(boardData?.title || '');
+            e.target.blur();
         }
     };
 
@@ -203,17 +211,42 @@ function BoardHeader({
 
             <div className="board-title-section">
                 <div className="title-input-container">
-                    <input
-                        type="text"
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        onBlur={handleTitleSave}
-                        onKeyDown={handleKeyPress}
-                        onFocus={() => setShowEditOptions(true)}
-                        className={`board-title-inline ${showEditOptions ? 'editable-indicator' : ''}`}
-                        maxLength={100}
-                        placeholder={boardData?.title || 'Board title'}
-                    />
+                    {isEditingTitle ? (
+                        <input
+                            type="text"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onBlur={() => {
+                                handleTitleSave();
+                                setIsEditingTitle(false);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleTitleSave();
+                                    setIsEditingTitle(false);
+                                    e.target.blur();
+                                } else if (e.key === 'Escape') {
+                                    setEditTitle(boardData?.title || '');
+                                    setIsEditingTitle(false);
+                                    e.target.blur();
+                                }
+                            }}
+                            className="board-title-input"
+                            maxLength={100}
+                            autoFocus
+                        />
+                    ) : (
+                        <h1 
+                            className="board-title clickable"
+                            onClick={() => {
+                                setEditTitle(boardData?.title || '');
+                                setIsEditingTitle(true);
+                            }}
+                            title="Click to edit"
+                        >
+                            {boardData?.title}
+                        </h1>
+                    )}
                     {boardData?.is_active === false && (
                         <span className="board-closed-badge">CLOSED</span>
                     )}

@@ -16,16 +16,17 @@ export function useBoardWebSocket(boardId, onMessage) {
         const ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
-            // WebSocket connected
+            console.log('WebSocket connected to board:', boardId);
         };
 
         ws.onmessage = (event) => {
+            console.log('Raw WebSocket message:', event.data);
             const data = JSON.parse(event.data);
             onMessage(data);
         };
 
         ws.onclose = () => {
-            // WebSocket disconnected
+            console.log('WebSocket disconnected from board:', boardId);
         };
 
         ws.onerror = (error) => {
