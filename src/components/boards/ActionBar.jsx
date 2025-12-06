@@ -205,7 +205,7 @@ function ActionBar({
                                                     title={item.assignee ? item.assignee.username : 'Assign someone'}
                                                 >
                                                     {item.assignee ? (
-                                                        <Avatar initials={item.assignee.initials} size={24} />
+                                                        <Avatar initials={item.assignee.initials} userId={item.assignee.id} size={24} />
                                                     ) : (
                                                         <span className="material-icons">person_add</span>
                                                     )}

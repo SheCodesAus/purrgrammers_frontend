@@ -447,7 +447,7 @@ function Dashboard() {
 
         {/* User Profile */}
         <div className={`sidebar-user ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setShowProfileModal(true)}>
-          <Avatar initials={auth?.user?.initials} size={40} />
+          <Avatar initials={auth?.user?.initials} userId={auth?.user?.id} size={40} />
           <div className="sidebar-user-info">
             <span className="sidebar-user-name">{auth?.user?.username || 'User'}</span>
             <span className="sidebar-user-email">{auth?.user?.email || ''}</span>

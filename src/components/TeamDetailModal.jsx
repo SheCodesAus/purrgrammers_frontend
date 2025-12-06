@@ -153,7 +153,7 @@ function TeamDetailModal({ isOpen, onClose, teamId, teamName }) {
                                                 className="member-name-link"
                                                 onClick={() => setSelectedMember(member)}
                                             >
-                                                <Avatar initials={member.initials} size={24} />
+                                                <Avatar initials={member.initials} userId={member.id} size={24} />
                                                 {member.username}
                                             </span>
                                             {member.id !== auth.user.id && (

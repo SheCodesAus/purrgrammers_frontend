@@ -10,9 +10,25 @@ const AVATAR_COLORS = [
     'F87171', 'EC4899', 'D946EF', 'A855F7'
 ];
 
-function Avatar({ initials, size = 40, className = '' }) {
-    const colors = AVATAR_COLORS.join(',');
-    const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${initials || 'U'}&radius=50&backgroundColor=${colors}`;
+// Simple hash function to get consistent index from userId
+function getColorIndex(userId) {
+    if (!userId) return 0;
+    const str = String(userId);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return Math.abs(hash) % AVATAR_COLORS.length;
+}
+
+function Avatar({ initials, userId, size = 40, className = '' }) {
+    // Pick a consistent color based on userId, fallback to initials-based
+    const colorIndex = getColorIndex(userId || initials);
+    const backgroundColor = AVATAR_COLORS[colorIndex];
+    
+    // Use initials as seed so DiceBear shows the correct letters
+    const seed = initials || 'U';
+    const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${seed}&radius=50&backgroundColor=${backgroundColor}`;
 
     return (
         <img
