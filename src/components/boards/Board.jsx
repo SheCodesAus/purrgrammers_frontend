@@ -45,6 +45,53 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
         switch (message.type) {
+
+            // board
+            case 'board_updated':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    ...message.data
+                }));
+                break;
+
+            // columns
+
+            case 'column_created':
+                onBoardUpdate(prevBoard => {
+                    // check if column exists - prevent duplicates
+                    const columnExists = prevBoard.columns?.some(col =>
+                        col.id === message.data.id
+                    );
+
+                    // exists, cancels and returns previous board
+                    if (columnExists) {
+                        return prevBoard;
+                    }
+
+                    return {
+                        ...prevBoard,
+                        columns: [...(prevBoard.columns || []), message.data]
+                    };
+                });
+                break;
+
+            // finds the column by ID and merges the updated data into it
+            case 'column_updated':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    columns: prevBoard.columns?.map(col =>
+                        col.id === message.data.id ? { ...col, ...message.data } : col
+                    ) || []
+                }));
+                break;
+
+            case 'column_deleted':
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    columns: prevBoard.columns?.filter(col => col.id !== message.data.id) || []
+                }));
+                break;
+
             case 'card_created':
                 onBoardUpdate(prevBoard => {
                     // Check if card already exists (prevent duplicates)
