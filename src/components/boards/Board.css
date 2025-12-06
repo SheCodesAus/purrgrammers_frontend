@@ -5,7 +5,7 @@
   flex-direction: column;
   overflow: visible;
   position: relative;
-  padding: 12px 20px 0 20px; /* Gradient shows on top and sides */
+  padding: 30px 20px 0 20px; /* Gradient shows on top and sides */
 }
 
 /* Board content area - takes full height */
