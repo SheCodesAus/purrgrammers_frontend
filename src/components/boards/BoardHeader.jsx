@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
 import { useToast } from '../ToastProvider';
 import { useConfirm } from '../ConfirmProvider';
+import Avatar from '../Avatar';
+import ProfileModal from '../ProfileModal';
 import patchBoard from '../../api/patch-board';
 import deleteBoard from '../../api/delete-board';
 import getTeam from '../../api/get-team';
@@ -31,6 +33,7 @@ function BoardHeader({
     const [newMemberUsername, setNewMemberUsername] = useState('');
     const [addMemberError, setAddMemberError] = useState('');
     const [addMemberLoading, setAddMemberLoading] = useState(false);
+    const [selectedMember, setSelectedMember] = useState(null);
     const teamDropdownRef = useRef(null);
 
     // Sync editTitle when boardData.title changes from WebSocket
@@ -208,6 +211,7 @@ function BoardHeader({
     };
 
     return (
+        <>
         <header className="board-header">
             <div className="board-header-left">
                 <button 
@@ -271,17 +275,26 @@ function BoardHeader({
                             className="team-settings-btn"
                             onClick={() => setShowTeamSettings(!showTeamSettings)}
                         >
-                            <span className="material-icons">group</span>
                             {teamDetails?.name || boardData.team.name || 'Team'}
+                            <span className="material-icons">group</span>
+                            {teamDetails?.members?.length || 0}
                         </button>
+                       
                         
                         {showTeamSettings && (
                             <div className="team-settings-dropdown">
-                                <h4>Team Members</h4>
+                                <h4>Team Members ({teamDetails?.members?.length || 0})</h4>
                                 <ul className="team-members-list">
                                     {teamDetails?.members?.map((member) => (
                                         <li key={member.id}>
-                                            <span>{member.username}</span>
+                                            <div 
+                                                className="member-info clickable"
+                                                onClick={() => setSelectedMember(member)}
+                                                title="View profile"
+                                            >
+                                                <Avatar initials={member.initials} userId={member.id} size={24} />
+                                                <span>{member.username}</span>
+                                            </div>
                                             <button
                                                 className='remove-member-btn'
                                                 onClick={() => handleRemoveMember(member.id, member.username)}
@@ -346,6 +359,15 @@ function BoardHeader({
                 </div>
             </div>
         </header>
+
+            {/* Member Profile Modal */}
+            <ProfileModal
+                isOpen={!!selectedMember}
+                onClose={() => setSelectedMember(null)}
+                userId={selectedMember?.id}
+                username={selectedMember?.username}
+            />
+        </>
     );
 }
 
