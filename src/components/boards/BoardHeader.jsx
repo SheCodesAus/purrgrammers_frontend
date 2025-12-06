@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
 import { useToast } from '../ToastProvider';
@@ -15,7 +15,8 @@ function BoardHeader({
     boardData, 
     onTitleUpdate,  // function to update board title
     onBoardDelete,  // function to handle board deletion
-    onBoardStatusChange  // function to handle board active status change
+    onBoardStatusChange,  // function to handle board active status change
+    onTeamRefreshReady, // function to update team on team member addtion or deletion
 }) {
     const [editTitle, setEditTitle] = useState(boardData?.title || '');
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -56,19 +57,28 @@ function BoardHeader({
     }, [showTeamSettings]);
 
     // Fetch team details when board has a team
-    useEffect(() => {
-        const fetchTeamDetails = async () => {
-            if (boardData?.team?.id && auth.token) {
-                try {
-                    const team = await getTeam(boardData.team.id, auth.token);
-                    setTeamDetails(team);
-                } catch (error) {
-                    console.error("Failed to fetch team details:", error);
-                }
+    const fetchTeamDetails = useCallback(async () => {
+        if (boardData?.team?.id && auth.token) {
+            try {
+                const team = await getTeam(boardData.team.id, auth.token);
+                setTeamDetails(team);
+            } catch (error) {
+                console.error("Failed to fetch team details", error);
             }
-        };
-        fetchTeamDetails();
+        }
     }, [boardData?.team?.id, auth.token]);
+
+    // calls on mount and when dependencies change
+    useEffect(() => {
+        fetchTeamDetails();
+    }, [fetchTeamDetails]);
+
+    // pass the refresh function up to a parent
+    useEffect(() => {
+        if (onTeamRefreshReady) {
+            onTeamRefreshReady(fetchTeamDetails);
+        }
+    }, [onTeamRefreshReady, fetchTeamDetails]);
 
     const handleTitleSave = async () => {
         if (editTitle.trim() && editTitle !== boardData?.title) {

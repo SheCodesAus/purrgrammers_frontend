@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import ControlPanel from "./ControlPanel";
@@ -42,6 +42,14 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Tags state
     const [availableTags, setAvailableTags] = useState([]);
 
+    // Team refresh ref
+    const teamRefreshRef = useRef(null);
+
+    // Callback to receive team refresh function from BoardHeader
+    const handleTeamRefreshReady = useCallback((refreshFn) => {
+        teamRefreshRef.current = refreshFn;
+    }, []);
+
     // Websocket message handler
     const handleWebSocketMessage = useCallback((message) => {
         console.log('WebSocket message received:', message.type, message.data);
@@ -49,7 +57,6 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
 
             // board
             case 'board_updated':
-                console.log('Board updated via WebSocket:', message.data);
                 onBoardUpdate(prevBoard => ({
                     ...prevBoard,
                     ...message.data
@@ -196,6 +203,14 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     user_remaining_votes: maxVotesPerUser,
                     user_vote_count: 0
                 }));
+                break;
+
+            // Teams
+            case 'team_updated':
+                console.log('Team updated', message.data);
+                if (teamRefreshRef.current) {
+                    teamRefreshRef.current();
+                }
                 break;
 
             default:
@@ -606,6 +621,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onTitleUpdate={handleTitleUpdate}
                 onBoardDelete={handleBoardDelete}
                 onBoardStatusChange={handleBoardStatusChange}
+                onTeamRefreshReady={handleTeamRefreshReady}
             />
             
             <div className="board-content">
