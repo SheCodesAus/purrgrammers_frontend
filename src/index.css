@@ -7,7 +7,7 @@
   font-family: var(--font-stack-sans-text);
   /* Firefox scrollbar */
   scrollbar-width: auto;
-  scrollbar-color: #c4b5fd #f0abfc;
+  scrollbar-color: #8b5cf6 #ec4899;
 }
 
 /* Hide scrollbar on Dashboard */
@@ -30,7 +30,7 @@ body::-webkit-scrollbar,
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track,
 *::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%) !important;
+  background: linear-gradient(180deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%) !important;
   border-radius: 4px !important;
 }
 

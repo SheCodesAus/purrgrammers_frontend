@@ -5,7 +5,7 @@
   align-items: flex-start;
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%);
+  background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
   margin-top: -60px; /* Pull up behind navbar */
   padding-top: 140px; /* Push content below navbar */
 }
@@ -189,7 +189,7 @@
 
 .overlay {
   background: var(--primary-color);
-  background: linear-gradient(135deg, #7dd3fc 0%, #c084fc 50%, #f0abfc 100%);
+  background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
   background-repeat: no-repeat;
   background-size: cover;
   color: #fff;

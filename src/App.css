@@ -17,12 +17,12 @@
 }
 
 .app.homepage-gradient {
-  background: linear-gradient(135deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%);
+  background: linear-gradient(90deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
   min-height: 100vh;
 }
 
 .app.retroboard-gradient {
-  background: linear-gradient(135deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%);
+  background: linear-gradient(90deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
   min-height: 100vh;
 }
 

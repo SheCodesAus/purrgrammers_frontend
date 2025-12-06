@@ -9,11 +9,11 @@
 
 /* Gradient with opacity when scrolled */
 .nav-container.scrolled {
-  background: linear-gradient(135deg, rgba(196, 181, 253, 0.95) 0%, rgba(221, 214, 254, 0.95) 35%, rgba(240, 171, 252, 0.95) 65%, rgba(251, 207, 232, 0.95) 100%) !important;
+  background: linear-gradient(90deg, rgba(192, 132, 252, 0.95) 0%, rgba(167, 139, 250, 0.95) 50%, rgba(244, 114, 182, 0.95) 100%) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
-  border-bottom: 1px solid rgba(167, 139, 250, 0.4);
+  box-shadow: 0 4px 20px rgba(192, 132, 252, 0.15);
+  border-bottom: 1px solid rgba(192, 132, 252, 0.4);
 }
 
 .nav-container.nav-gradient {
@@ -21,7 +21,7 @@
 }
 
 .nav-container.nav-gradient.scrolled {
-  background: linear-gradient(135deg, rgba(196, 181, 253, 0.95) 0%, rgba(221, 214, 254, 0.95) 35%, rgba(240, 171, 252, 0.95) 65%, rgba(251, 207, 232, 0.95) 100%) !important;
+  background: linear-gradient(90deg, rgba(192, 132, 252, 0.95) 0%, rgba(167, 139, 250, 0.95) 50%, rgba(244, 114, 182, 0.95) 100%) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -61,31 +61,20 @@
   padding: 0.5rem 1rem;
   display: inline-block;
   position: relative;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background 0.2s ease;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .nav-links a:hover {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .nav-links a.active {
-  color: var(--primary-color);
-}
-
-/* Slide-in underline only for logged-in user links */
-.nav-links .auth-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
-}
-
-.nav-links .auth-link:hover::after {
-  width: 100%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
 }
 
 .nav-links a.login-btn {
@@ -95,13 +84,6 @@
   padding: 0.5rem 1.5rem;
   font-weight: 500;
   transition: background 0.2s ease, transform 0.1s ease;
-  overflow: hidden;
-}
-
-.nav-links a.login-btn::after {
-  bottom: 0;
-  height: 3px;
-  background-color: white;
 }
 
 .nav-links a.login-btn:hover {
@@ -109,44 +91,27 @@
   color: white;
 }
 
-.nav-links a.login-btn:hover::after {
-  width: 100%;
-}
-
 .nav-links a.login-btn.active {
   color: white;
 }
 
 .logout-btn {
-  background: none;
+  background: rgba(255, 255, 255, 0.3);
   border: none;
-  color: #333;
+  color: #24127b;
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
   text-decoration: none;
   padding: 0.5rem 1rem;
   position: relative;
-  transition: color 0.2s ease;
-}
-
-.logout-btn::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
+  transition: color 0.2s ease, background 0.2s ease;
+  border-radius: 20px;
 }
 
 .logout-btn:hover {
-  color: var(--primary-color);
-}
-
-.logout-btn:hover::after {
-  width: 100%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .nav-btn {
@@ -222,7 +187,7 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: linear-gradient(135deg, #c4b5fd 0%, #ddd6fe 35%, #f0abfc 65%, #fbcfe8 100%);
+    background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -274,13 +239,13 @@
   }
 
   .nav-links a.login-btn {
-    background: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+    background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
     color: white;
     margin-top: 0.5rem;
   }
 
   .nav-links a.login-btn:hover {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #ec4899 100%);
     color: white;
   }
 }
