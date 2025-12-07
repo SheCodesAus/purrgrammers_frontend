@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
 import BoardPanel from "./BoardPanel";
+import ActionBar from "./ActionBar";
+import ControlPanel from "./ControlPanel";
 import CardModal from "./CardModal";
 import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
@@ -32,6 +34,9 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     const [showAnonModal, setShowAnonModal] = useState(false);
     const [pendingCardColumn, setPendingCardColumn] = useState(null);
     const [newCardModalId, setNewCardModalId] = useState(null); // For opening modal on mobile after card creation
+    
+    // Mobile controls panel state
+    const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(false);
     
     // Voting state - tracks remaining votes for current user
     const [remainingVotes, setRemainingVotes] = useState(boardData?.user_remaining_votes ?? 5);
@@ -627,40 +632,79 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onBoardDelete={handleBoardDelete}
                 onBoardStatusChange={handleBoardStatusChange}
                 onTeamRefreshReady={handleTeamRefreshReady}
+                onAddColumn={handleAddColumn}
+                mobileControls={
+                    <button 
+                        className="board-panel__mobile-btn"
+                        onClick={() => setIsMobileControlsOpen(!isMobileControlsOpen)}
+                    >
+                        <span className="material-icons">tune</span>
+                        <span className="mobile-btn-text">Controls</span>
+                        {(boardData?.action_items?.length > 0) && (
+                            <span className="board-panel__mobile-badge">{boardData.action_items.length}</span>
+                        )}
+                    </button>
+                }
             />
             
-            <div className="board-content">
-                <div className="columns-container">
-                    <div className="columns-inner">
-                        {boardData.columns?.map(column => (
-                            <Column
-                                key={column.id}
-                                column={column}
-                                currentUser={currentUser}
-                                dragState={dragState}
-                                editingCard={editingCard}
-                                remainingVotes={remainingVotes}
-                                availableTags={availableTags}
-                                onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
-                                onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
-                                onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
-                                onCardTagsChange={handleCardTagsChange}
-                                onSetEditingCard={setEditingCard}
-                                onColumnUpdate={handleColumnUpdate}
-                                onDeleteColumn={handleDeleteColumn}
-                                onDragOver={(e) => handleDragOver(e, column.id)}
-                                onDrop={(e) => handleDrop(e, column.id)}
-                                onDragEnter={() => handleDragEnter(column.id)}
-                                onDragLeave={(e) => handleDragLeave(e, column.id)}
-                                onAddCard={() => {
-                                    setPendingCardColumn(column.id);
-                                    setShowAnonModal(true);
-                                }}
-                            />
-                        )) || <div>No columns found - check backend API</div>}
+            <div className="board-main">
+                <div className="board-content">
+                    <div className="columns-container">
+                        <div className="columns-inner">
+                            {boardData.columns?.map(column => (
+                                <Column
+                                    key={column.id}
+                                    column={column}
+                                    currentUser={currentUser}
+                                    dragState={dragState}
+                                    editingCard={editingCard}
+                                    remainingVotes={remainingVotes}
+                                    availableTags={availableTags}
+                                    onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
+                                    onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
+                                    onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
+                                    onCardTagsChange={handleCardTagsChange}
+                                    onSetEditingCard={setEditingCard}
+                                    onColumnUpdate={handleColumnUpdate}
+                                    onDeleteColumn={handleDeleteColumn}
+                                    onDragOver={(e) => handleDragOver(e, column.id)}
+                                    onDrop={(e) => handleDrop(e, column.id)}
+                                    onDragEnter={() => handleDragEnter(column.id)}
+                                    onDragLeave={(e) => handleDragLeave(e, column.id)}
+                                    onAddCard={() => {
+                                        setPendingCardColumn(column.id);
+                                        setShowAnonModal(true);
+                                    }}
+                                />
+                            )) || <div>No columns found - check backend API</div>}
+                        </div>
                     </div>
                 </div>
 
+                {/* Desktop: Original separate panels */}
+                <div className="desktop-panels">
+                    <ActionBar
+                        actionItems={boardData?.action_items || []}
+                        teamMembers={teamMembers}
+                        boardId={boardData?.id}
+                        onActionItemCreate={handleActionItemCreate}
+                        onActionItemUpdate={handleActionItemUpdate}
+                        onActionItemDelete={handleActionItemDelete}
+                    />
+                    <ControlPanel
+                        dragState={dragState}
+                        isCreatingCard={isCreatingCard}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onAddColumn={handleAddColumn}
+                        currentVotingRound={currentVotingRound}
+                        remainingVotes={remainingVotes}
+                        maxVotes={maxVotesPerUser}
+                        onStartNewRound={handleStartNewRound}
+                    />
+                </div>
+
+                {/* Mobile: Combined panel as dropdown */}
                 <BoardPanel
                     actionItems={boardData?.action_items || []}
                     teamMembers={teamMembers}
@@ -677,6 +721,13 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     remainingVotes={remainingVotes}
                     maxVotes={maxVotesPerUser}
                     onStartNewRound={handleStartNewRound}
+                    boardTitle={boardData?.title}
+                    isActive={boardData?.is_active}
+                    onBoardStatusChange={handleBoardStatusChange}
+                    onBoardDelete={handleBoardDelete}
+                    isMobileOpen={isMobileControlsOpen}
+                    onMobileClose={() => setIsMobileControlsOpen(false)}
+                    mobileOnly={true}
                 />
             </div>
 

@@ -86,15 +86,30 @@
   font-family: inherit;
 }
 
-/* Collapse Button */
+/* Edit title button - hidden on desktop, shown on mobile */
+.column-edit-title-btn.mobile-only {
+  display: none;
+}
+
+/* Confirm title button - hidden on desktop, shown on mobile */
+.column-confirm-title-btn.mobile-only {
+  display: none;
+}
+
+/* Cancel title button - hidden on desktop, shown on mobile */
+.column-cancel-title-btn.mobile-only {
+  display: none;
+}
+
+/* Collapse Button - hidden on desktop, shown on mobile */
 .column-collapse-btn {
+  display: none;
   background: none;
   border: none;
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
   transition: background-color 0.2s ease;
-  display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
@@ -618,6 +633,90 @@
     min-width: unset;
     max-width: 100%;
     padding: 12px;
+  }
+
+  /* Show collapse button on mobile */
+  .column-collapse-btn {
+    display: flex;
+  }
+
+  /* Show edit title button on mobile */
+  .column-edit-title-btn.mobile-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #9ca3af;
+    transition: all 0.15s;
+    margin-left: 4px;
+  }
+
+  .column-edit-title-btn.mobile-only:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #6b7280;
+  }
+
+  .column-edit-title-btn.mobile-only .material-icons {
+    font-size: 1rem;
+  }
+
+  /* Show confirm title button on mobile (in edit mode) */
+  .column-confirm-title-btn.mobile-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #22c55e;
+    transition: all 0.15s;
+    margin-left: 4px;
+  }
+
+  .column-confirm-title-btn.mobile-only:hover {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+  }
+
+  .column-confirm-title-btn.mobile-only .material-icons {
+    font-size: 1rem;
+  }
+
+  /* Show cancel title button on mobile (in edit mode) */
+  .column-cancel-title-btn.mobile-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #9ca3af;
+    transition: all 0.15s;
+    margin-left: 4px;
+  }
+
+  .column-cancel-title-btn.mobile-only:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #6b7280;
+  }
+
+  .column-cancel-title-btn.mobile-only .material-icons {
+    font-size: 1rem;
+  }
+
+  /* Shrink input width on mobile to make room for cancel + confirm buttons */
+  .column-title-input {
+    flex: 0 1 auto;
+    width: calc(100% - 60px);
+    max-width: calc(100% - 60px);
   }
   
   .column-header {

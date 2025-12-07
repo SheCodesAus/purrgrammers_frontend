@@ -12,8 +12,6 @@ function ActionBar({
     actionItems = [], 
     teamMembers = [],
     boardId,
-    isCollapsed, 
-    onToggleCollapse,
     onActionItemCreate,
     onActionItemUpdate,
     onActionItemDelete
@@ -21,6 +19,7 @@ function ActionBar({
     const { auth } = useAuth();
     const { showToast } = useToast(); 
     const { confirm } = useConfirm();
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState({});
     const [newItemText, setNewItemText] = useState('');
@@ -110,7 +109,7 @@ function ActionBar({
             {/* Toggle Button */}
             <button 
                 className="action-bar-toggle"
-                onClick={onToggleCollapse}
+                onClick={() => setIsCollapsed(!isCollapsed)}
                 title={isCollapsed ? 'Show Actions' : 'Hide Actions'}
             >
                 <span className="material-icons">

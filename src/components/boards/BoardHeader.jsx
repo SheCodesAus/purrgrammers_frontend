@@ -19,6 +19,8 @@ function BoardHeader({
     onBoardDelete,  // function to handle board deletion
     onBoardStatusChange,  // function to handle board active status change
     onTeamRefreshReady, // function to update team on team member addtion or deletion
+    onAddColumn, // function to add a new column (mobile)
+    mobileControls, // render prop for mobile controls button
 }) {
     const [editTitle, setEditTitle] = useState(boardData?.title || '');
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -213,7 +215,8 @@ function BoardHeader({
     return (
         <>
         <header className="board-header">
-            <div className="board-header-left">
+            {/* Desktop only: Back button in separate section */}
+            <div className="board-header-left desktop-only">
                 <button 
                     className="back-button"
                     onClick={() => navigate('/dashboard')}
@@ -224,45 +227,97 @@ function BoardHeader({
             </div>
 
             <div className="board-title-section">
-                <div className="title-input-container">
-                    {isEditingTitle ? (
-                        <input
-                            type="text"
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                            onBlur={() => {
-                                handleTitleSave();
-                                setIsEditingTitle(false);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleTitleSave();
-                                    setIsEditingTitle(false);
-                                    e.target.blur();
-                                } else if (e.key === 'Escape') {
-                                    setEditTitle(boardData?.title || '');
-                                    setIsEditingTitle(false);
-                                    e.target.blur();
-                                }
-                            }}
-                            className="board-title-input"
-                            maxLength={100}
-                            autoFocus
-                        />
-                    ) : (
-                        <h1 
-                            className="board-title clickable"
-                            onClick={() => {
-                                setEditTitle(boardData?.title || '');
-                                setIsEditingTitle(true);
-                            }}
-                            title="Click to edit"
-                        >
-                            {boardData?.title}
-                        </h1>
-                    )}
-                    {boardData?.is_active === false && (
-                        <span className="board-closed-badge">CLOSED</span>
+                {/* Mobile only: Back button inline with title */}
+                <button 
+                    className="back-button mobile-only"
+                    onClick={() => navigate('/dashboard')}
+                    title="Back to Dashboard"
+                >
+                    <span className="material-icons">arrow_back</span>
+                </button>
+                <div className="title-wrapper">
+                    <div className="title-input-container">
+                        {isEditingTitle ? (
+                            <>
+                                <input
+                                    type="text"
+                                    value={editTitle}
+                                    onChange={(e) => setEditTitle(e.target.value)}
+                                    onBlur={() => {
+                                        handleTitleSave();
+                                        setIsEditingTitle(false);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleTitleSave();
+                                            setIsEditingTitle(false);
+                                            e.target.blur();
+                                        } else if (e.key === 'Escape') {
+                                            setEditTitle(boardData?.title || '');
+                                            setIsEditingTitle(false);
+                                            e.target.blur();
+                                        }
+                                    }}
+                                    className="board-title-input"
+                                    maxLength={100}
+                                    autoFocus
+                                />
+                                <button
+                                    className="board-cancel-title-btn mobile-only"
+                                    onMouseDown={(e) => {
+                                        e.preventDefault();
+                                        setEditTitle(boardData?.title || '');
+                                        setIsEditingTitle(false);
+                                    }}
+                                    title="Cancel"
+                                >
+                                    <span className="material-icons">close</span>
+                                </button>
+                                <button
+                                    className="board-confirm-title-btn mobile-only"
+                                    onMouseDown={(e) => {
+                                        e.preventDefault();
+                                        handleTitleSave();
+                                        setIsEditingTitle(false);
+                                    }}
+                                    title="Confirm title"
+                                >
+                                    <span className="material-icons">check</span>
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <h1 
+                                    className="board-title clickable"
+                                    onClick={() => {
+                                        setEditTitle(boardData?.title || '');
+                                        setIsEditingTitle(true);
+                                    }}
+                                    title="Click to edit"
+                                >
+                                    {boardData?.title}
+                                </h1>
+                                <button
+                                    className="board-edit-title-btn mobile-only"
+                                    onClick={() => {
+                                        setEditTitle(boardData?.title || '');
+                                        setIsEditingTitle(true);
+                                    }}
+                                    title="Edit board title"
+                                >
+                                    <span className="material-icons">edit</span>
+                                </button>
+                            </>
+                        )}
+                        {boardData?.is_active === false && (
+                            <span className="board-closed-badge">CLOSED</span>
+                        )}
+                    </div>
+                    {/* Mobile only: Created date below title */}
+                    {boardData?.created_at && (
+                        <span className="mobile-date">
+                            Created {formatDate(boardData.created_at)}
+                        </span>
                     )}
                 </div>
             </div>
@@ -283,6 +338,13 @@ function BoardHeader({
                         
                         {showTeamSettings && (
                             <div className="team-settings-dropdown">
+                                <button 
+                                    className="team-dropdown-close mobile-only"
+                                    onClick={() => setShowTeamSettings(false)}
+                                    title="Close"
+                                >
+                                    <span className="material-icons">close</span>
+                                </button>
                                 <h4>Team Members ({teamDetails?.members?.length || 0})</h4>
                                 <ul className="team-members-list">
                                     {teamDetails?.members?.map((member) => (
@@ -300,7 +362,8 @@ function BoardHeader({
                                                 onClick={() => handleRemoveMember(member.id, member.username)}
                                                 title='Remove member'
                                             >
-                                                <span className='material-icons'>close</span>
+                                                <span className='material-icons desktop-only'>close</span>
+                                                <span className='remove-text mobile-only'>Remove</span>
                                             </button>
                                             </li>
                                     ))}
@@ -338,14 +401,7 @@ function BoardHeader({
                                 </span>
                             </div>
                             <button 
-                                className="delete-board-btn" 
-                                onClick={handleDeleteBoard}
-                                title="Delete board"
-                            >
-                                <span className="material-icons">delete</span>
-                            </button>
-                            <button 
-                                className={`toggle-status-btn ${boardData?.is_active ? 'open' : 'closed'}`}
+                                className={`toggle-status-btn ${boardData?.is_active ? 'unlocked' : 'locked'}`}
                                 onClick={handleToggleActive}
                                 disabled={isToggling}
                                 title={boardData?.is_active ? 'Close board' : 'Reopen board'}
@@ -354,8 +410,30 @@ function BoardHeader({
                                     {boardData?.is_active ? 'lock_open' : 'lock'}
                                 </span>
                             </button>
+                            <button 
+                                className="delete-board-btn" 
+                                onClick={handleDeleteBoard}
+                                title="Delete board"
+                            >
+                                <span className="material-icons">delete</span>
+                            </button>
                         </div>
                     )}
+                </div>
+
+                {/* Mobile Controls Button - rightmost */}
+                <div className="mobile-action-buttons">
+                    {onAddColumn && (
+                        <button 
+                            className="add-column-btn mobile-only"
+                            onClick={onAddColumn}
+                            title="Add new column"
+                        >
+                            <span className="material-icons">add</span>
+                            <span className="add-column-text">Column</span>
+                        </button>
+                    )}
+                    {mobileControls}
                 </div>
             </div>
         </header>

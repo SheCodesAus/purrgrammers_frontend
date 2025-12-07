@@ -8,6 +8,16 @@
   padding: 30px 20px 0 20px; /* Gradient shows on top and sides */
 }
 
+/* Main wrapper - holds content and panel side by side */
+.board-main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  min-height: 0;
+  position: relative;
+}
+
 /* Board content area - takes full height */
 .board-content {
   flex: 1;
@@ -30,7 +40,7 @@
   overflow-y: visible;
   padding: 20px;
   background: white;
-  border-radius: 12px 0 0 12px;
+  border-radius: 0 0 12px 12px;
 }
 
 /* Inner wrapper for centering columns */
@@ -162,6 +172,26 @@
 }
 
 /* ====================================
+   DESKTOP PANELS WRAPPER
+   ==================================== */
+
+/* Desktop panels - overlay container for ActionBar and ControlPanel */
+.desktop-panels {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.desktop-panels > * {
+  pointer-events: auto;
+}
+
+/* ====================================
    RESPONSIVE STYLES
    ==================================== */
 
@@ -193,11 +223,20 @@
     overflow: visible;
   }
 
+  .board-main {
+    flex-direction: column;
+  }
+
+  .board-content {
+    border-radius: 0 0 10px 10px;
+  }
+
   .columns-container {
     padding: 12px;
     padding-bottom: 24px;
     overflow-y: auto;
     overflow-x: hidden;
+    border-radius: 0 0 12px 12px;
   }
 
   .columns-inner {
@@ -219,5 +258,10 @@
 
   .anon-modal-buttons {
     flex-direction: column;
+  }
+
+  /* Hide desktop panels on mobile */
+  .desktop-panels {
+    display: none;
   }
 }

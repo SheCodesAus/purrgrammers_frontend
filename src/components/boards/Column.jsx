@@ -127,41 +127,77 @@ function Column({
 
                 {/* Column Title - Click to Edit */}
                 {isEditingTitle ? (
-                    <input
-                        type="text"
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        onBlur={() => {
-                            handleTitleSave();
-                            setIsEditingTitle(false);
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
+                    <>
+                        <input
+                            type="text"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onBlur={() => {
                                 handleTitleSave();
                                 setIsEditingTitle(false);
-                            } else if (e.key === 'Escape') {
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleTitleSave();
+                                    setIsEditingTitle(false);
+                                } else if (e.key === 'Escape') {
+                                    setEditTitle(column.title || '');
+                                    setIsEditingTitle(false);
+                                }
+                            }}
+                            className="column-title-input"
+                            maxLength={50}
+                            autoFocus
+                        />
+                        <button
+                            className="column-cancel-title-btn mobile-only"
+                            onMouseDown={(e) => {
+                                e.preventDefault(); // Prevent blur from firing first
                                 setEditTitle(column.title || '');
                                 setIsEditingTitle(false);
-                            }
-                        }}
-                        className="column-title-input"
-                        maxLength={50}
-                        autoFocus
-                    />
+                            }}
+                            title="Cancel"
+                        >
+                            <span className="material-icons">close</span>
+                        </button>
+                        <button
+                            className="column-confirm-title-btn mobile-only"
+                            onMouseDown={(e) => {
+                                e.preventDefault(); // Prevent blur from firing first
+                                handleTitleSave();
+                                setIsEditingTitle(false);
+                            }}
+                            title="Confirm title"
+                        >
+                            <span className="material-icons">check</span>
+                        </button>
+                    </>
                 ) : (
-                    <h3 
-                        className="column-title clickable"
-                        onClick={() => {
-                            setEditTitle(column.title || '');
-                            setIsEditingTitle(true);
-                        }}
-                        title="Click to edit"
-                    >
-                        {column.title}
-                        {isCollapsed && column.cards?.length > 0 && (
-                            <span className="column-card-count">({column.cards.length})</span>
-                        )}
-                    </h3>
+                    <>
+                        <h3 
+                            className="column-title clickable"
+                            onClick={() => {
+                                setEditTitle(column.title || '');
+                                setIsEditingTitle(true);
+                            }}
+                            title="Click to edit"
+                        >
+                            {column.title}
+                            {isCollapsed && column.cards?.length > 0 && (
+                                <span className="column-card-count">({column.cards.length})</span>
+                            )}
+                        </h3>
+                        <button
+                            className="column-edit-title-btn mobile-only"
+                            onClick={() => {
+                                setEditTitle(column.title || '');
+                                setIsEditingTitle(true);
+                            }}
+                            title="Edit column title"
+                        >
+                            <span className="material-icons">edit</span>
+                        </button>
+                    </>
                 )}
 
                 {/* Add Card Button - Mobile only */}

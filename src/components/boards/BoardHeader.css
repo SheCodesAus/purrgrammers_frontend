@@ -12,7 +12,6 @@
   margin-bottom: 0px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  
   box-shadow: 
     0 -4px 8px rgba(0, 0, 0, 0.04),
     -4px 0 8px rgba(0, 0, 0, 0.04),
@@ -46,20 +45,47 @@
   color: #1e1b4b;
 }
 
+/* Mobile-only back button (inline with title) - hidden on desktop */
+.back-button.mobile-only {
+  display: none;
+}
+
+/* Mobile-only lock toggle (inline with title) - hidden on desktop */
+.toggle-status-btn.mobile-only {
+  display: none;
+}
+
+/* Mobile-only add column button - hidden on desktop */
+.add-column-btn.mobile-only {
+  display: none;
+}
+
 /* Board title section */
 .board-title-section {
   position: static;
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   flex: 1;
   margin-left: 1rem;
+  gap: 0.5rem;
+}
+
+.title-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .title-input-container {
-  flex: 1;
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* Mobile date - hidden on desktop */
+.mobile-date {
+  display: none;
 }
 
 /* Board title - display mode */
@@ -67,8 +93,8 @@
   margin: 0;
   font-size: 1.8rem;
   font-weight: 600;
-  color: #111827;
-  font-family: var(--font-stack-sans-text);
+  color: var(--primary-color-dark);
+  font-family: var(--font-hea);
 }
 
 .board-title.clickable {
@@ -99,6 +125,21 @@
   border-radius: 6px;
   background: transparent;
   outline: none;
+}
+
+/* Board title edit button - hidden on desktop, shown on mobile */
+.board-edit-title-btn.mobile-only {
+  display: none;
+}
+
+/* Board title confirm button - hidden on desktop, shown on mobile */
+.board-confirm-title-btn.mobile-only {
+  display: none;
+}
+
+/* Board title cancel button - hidden on desktop, shown on mobile */
+.board-cancel-title-btn.mobile-only {
+  display: none;
 }
 
 /* Legacy - keeping for reference */
@@ -201,22 +242,25 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px dashed rgba(236, 72, 153, 0.6);
     border-radius: 6px;
     padding: 8px 12px;
-    color: inherit;
+    color: var(--primary-color-dark);
     cursor: pointer;
     font-size: 0.9rem;
-    transition: background 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .team-settings-btn .material-icons {
     font-size: 1.25rem;
+    color: var(--primary-color-dark);
 }
 
 .team-settings-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(236, 72, 153, 0.6);
 }
 
 .team-settings-dropdown {
@@ -232,6 +276,11 @@
     min-width: 220px;
     z-index: 100;
     color: #333;
+}
+
+/* Close button for team dropdown - hidden on desktop */
+.team-dropdown-close.mobile-only {
+    display: none;
 }
 
 .team-settings-dropdown h4 {
@@ -333,6 +382,11 @@
     font-size: 1rem;
 }
 
+/* Hide mobile-only text on desktop */
+.remove-member-btn .remove-text.mobile-only {
+    display: none;
+}
+
 /* ====================================
    RESPONSIVE DESIGN
    ==================================== */
@@ -359,32 +413,202 @@
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
+    z-index: 50; /* Lower z-index on mobile so nav menu covers it */
+    margin-top: 16px; /* More space from navbar on mobile */
   }
   
-  .board-header-left {
-    width: 100%;
+  /* Hide the desktop back button section on mobile */
+  .board-header-left.desktop-only {
+    display: none;
+  }
+  
+  /* Show mobile back button inline with title */
+  .back-button.mobile-only {
+    display: inline-flex;
+    padding: 4px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    margin-top: 8px;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+  }
+  
+  .back-button.mobile-only:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #6b7280;
+  }
+  
+  .back-button.mobile-only .material-icons {
+    font-size: 1.1rem;
   }
   
   .board-header-right {
     width: 100%;
-    justify-content: flex-start;
-  }
-  
-  .board-metadata {
-    align-items: flex-start;
-  }
-  
-  .board-date {
-    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
   }
 
-  .back-button span:not(.material-icons) {
-    display: none; /* Hide "Back" text, keep icon */
+  /* Subtle divider after Team button on mobile */
+  .team-settings-section::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Wrapper for Add Column + Controls buttons */
+  .mobile-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  /* Show mobile Add Column button - solid purple style matching Controls */
+  .add-column-btn.mobile-only {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.45rem 0.675rem;
+    background: #7c3aed;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.775rem;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    margin-right: 0px;
+    transition: all 0.15s;
+    box-shadow: 0 2px 7px rgba(124, 58, 237, 0.275);
+  }
+  
+  .add-column-btn.mobile-only:hover {
+    background: #6d28d9;
+  }
+  
+  .add-column-btn.mobile-only .material-icons {
+    font-size: 0.95rem;
+    color: white;
+  }
+  
+  /* Hide the original date on mobile */
+  .board-metadata .board-date {
+    display: none;
+  }
+  
+  /* Show mobile date below title */
+  .mobile-date {
+    display: block;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 2px;
   }
 
   .board-title-section {
     width: 100%;
     margin-left: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  /* Board title edit button - shown on mobile */
+  .board-edit-title-btn.mobile-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #9ca3af;
+    transition: all 0.15s;
+    margin-left: 8px;
+  }
+
+  .board-edit-title-btn.mobile-only:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #6b7280;
+  }
+
+  .board-edit-title-btn.mobile-only .material-icons {
+    font-size: 1.1rem;
+  }
+
+  /* Board title cancel button - shown on mobile */
+  .board-cancel-title-btn.mobile-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #9ca3af;
+    transition: all 0.15s;
+    margin-left: 8px;
+  }
+
+  .board-cancel-title-btn.mobile-only:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #6b7280;
+  }
+
+  .board-cancel-title-btn.mobile-only .material-icons {
+    font-size: 1.1rem;
+  }
+
+  /* Board title confirm button - shown on mobile */
+  .board-confirm-title-btn.mobile-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: #22c55e;
+    transition: all 0.15s;
+    margin-left: 4px;
+  }
+
+  .board-confirm-title-btn.mobile-only:hover {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+  }
+
+  .board-confirm-title-btn.mobile-only .material-icons {
+    font-size: 1.1rem;
+  }
+
+  /* Shrink board title input on mobile to make room for cancel + confirm buttons */
+  .board-title-input {
+    flex: 0 1 auto;
+    width: calc(100% - 70px);
+    max-width: calc(100% - 70px);
+    font-size: 1.4rem;
+  }
+  
+  /* Show mobile lock toggle in title row */
+  .toggle-status-btn.mobile-only {
+    display: flex;
+    margin-left: auto;
+    align-self: flex-start;
+    margin-top: 3px;
+    padding-top: 0px;
+  }
+  
+  .toggle-status-btn.mobile-only .material-icons {
+    font-size: 1.5rem;
   }
 
   .board-title-inline {
@@ -399,6 +623,18 @@
     position: static; /* Remove relative positioning */
   }
 
+  /* Scale down team button for mobile */
+  .team-settings-btn {
+    gap: 0.3rem;
+    padding: 0.45rem 0.675rem;
+    font-size: 0.825rem;
+    border-radius: 6px;
+  }
+
+  .team-settings-btn .material-icons {
+    font-size: 1.075rem;
+  }
+
   .team-settings-dropdown {
     position: fixed;
     top: auto;
@@ -409,6 +645,57 @@
     max-width: calc(100vw - 24px);
     max-height: 60vh;
     overflow-y: auto;
+  }
+
+  /* Show close button on mobile */
+  .team-dropdown-close.mobile-only {
+    display: flex;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(124, 58, 237, 0.1);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #7c3aed;
+    transition: all 0.15s;
+  }
+
+  .team-dropdown-close.mobile-only:hover {
+    background: rgba(124, 58, 237, 0.2);
+  }
+
+  .team-dropdown-close.mobile-only .material-icons {
+    font-size: 1.1rem;
+  }
+
+  /* Remove member button - show text instead of icon on mobile */
+  .remove-member-btn .material-icons.desktop-only {
+    display: none;
+  }
+
+  .remove-member-btn .remove-text.mobile-only {
+    display: inline;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ef4444;
+    padding: 4px 8px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 4px;
+  }
+
+  .remove-member-btn:hover .remove-text.mobile-only {
+    background: rgba(239, 68, 68, 0.2);
+  }
+
+  /* Hide delete/lock buttons in metadata section on mobile - they're in Controls panel */
+  .delete-board-btn,
+  .board-metadata .toggle-status-btn {
+    display: none;
   }
 }
 
@@ -462,20 +749,20 @@
   color: #374151;
 }
 
-.toggle-status-btn.open {
+.toggle-status-btn.unlocked {
   color: #22c55e;
 }
 
-.toggle-status-btn.open:hover {
+.toggle-status-btn.unlocked:hover {
   background: #dcfce7;
   color: #16a34a;
 }
 
-.toggle-status-btn.closed {
+.toggle-status-btn.locked {
   color: #6b7280;
 }
 
-.toggle-status-btn.closed:hover {
+.toggle-status-btn.locked:hover {
   background: #f3f4f6;
   color: #374151;
 }

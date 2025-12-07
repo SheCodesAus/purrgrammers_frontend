@@ -1,5 +1,5 @@
 /* Board Panel Container */
-.board-panel {
+.board-panel--desktop {
     position: relative;
     width: 300px;
     background: white;
@@ -13,13 +13,18 @@
     height: 100%;
 }
 
-.board-panel.collapsed {
+.board-panel--desktop.collapsed {
     width: 48px;
 }
 
-.board-panel.collapsed .board-panel__content {
+.board-panel--desktop.collapsed .board-panel__content {
     opacity: 0;
     visibility: hidden;
+}
+
+/* Mobile wrapper - hidden on desktop */
+.board-panel--mobile {
+    display: none;
 }
 
 /* Toggle Button */
@@ -532,42 +537,181 @@
     flex: 1;
 }
 
+/* Board Status Section */
+.board-panel__status-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.board-panel__status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.board-panel__status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.board-panel__status-badge.closed {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.board-panel__status-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Danger Zone */
+.board-panel__section--danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 0.75rem !important;
+    margin-top: 0.5rem;
+}
+
+.board-panel__section--danger .board-panel__section-title {
+    color: #991b1b;
+}
+
+.board-panel__section--danger .board-panel__section-title .material-icons {
+    color: #dc2626;
+}
+
+.board-panel__danger-hint {
+    font-size: 0.75rem;
+    color: #991b1b;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.board-panel__btn--danger {
+    background: #ef4444;
+    color: white;
+    width: 100%;
+}
+
+.board-panel__btn--danger:hover {
+    background: #dc2626;
+}
+
+/* Mobile button - hidden by default, shown on mobile via header */
+.board-panel__mobile-btn {
+    display: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-    .board-panel {
+    /* Hide desktop panel on mobile */
+    .board-panel--desktop {
+        display: none;
+    }
+
+    /* Mobile wrapper for dropdown */
+    .board-panel--mobile {
+        display: block;
         position: fixed;
-        right: 0;
         top: 0;
+        left: 0;
+        right: 0;
         bottom: 0;
-        z-index: 100;
-        width: 300px;
-        border-radius: 12px 0 0 12px;
-        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        pointer-events: none;
     }
 
-    .board-panel.collapsed {
-        width: 0;
-        border: none;
-        box-shadow: none;
-    }
-
-    .board-panel.collapsed .board-panel__toggle {
-        left: -48px;
+    /* Mobile trigger button - shown in header */
+    .board-panel__mobile-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.45rem 0.675rem;
         background: #7c3aed;
-        border-color: #7c3aed;
-    }
-
-    .board-panel.collapsed .board-panel__toggle .material-icons {
+        border: none;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 0.775rem;
+        font-weight: 500;
         color: white;
+        transition: all 0.15s;
+        box-shadow: 0 2px 7px rgba(124, 58, 237, 0.275);
     }
 
-    .board-panel__toggle {
-        left: -16px;
+    .board-panel__mobile-btn:hover {
+        background: #6d28d9;
+    }
+
+    .board-panel__mobile-btn .material-icons {
+        font-size: 0.95rem;
+    }
+
+    .board-panel__mobile-btn .mobile-btn-text {
+        display: inline;
+    }
+
+    .board-panel__mobile-badge {
+        background: white;
+        color: #7c3aed;
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 1px 5px;
+        border-radius: 8px;
+        margin-left: 0.15rem;
+    }
+
+    /* Mobile dropdown - fixed position below header */
+    .board-panel__mobile-dropdown {
+        position: fixed;
+        top: 120px;
+        left: 12px;
+        right: 12px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-height: calc(100vh - 150px);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        pointer-events: auto;
+    }
+
+    .board-panel__mobile-dropdown .board-panel__content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: calc(100vh - 150px);
+    }
+
+    .board-panel__mobile-dropdown .board-panel__body {
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    /* Hide drag card section on mobile */
+    .board-panel__section--desktop-only {
+        display: none;
     }
 }
 
 @media (max-width: 480px) {
-    .board-panel {
-        width: 280px;
+    .board-panel__mobile-btn .mobile-btn-text {
+        display: none;
+    }
+
+    .board-panel__mobile-dropdown {
+        left: 8px;
+        right: 8px;
+        top: 100px;
+        max-height: calc(100vh - 120px);
     }
 }
