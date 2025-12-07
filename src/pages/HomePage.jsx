@@ -34,7 +34,7 @@ function HomePage() {
                     <div className='feature-card'>
                         <span className='feature-icon material-icons'>trending_up</span>
                         <h3 className='feature-title'>Improve Each Sprint</h3>
-                        <p className='feature-description'>See patterns, follow up on action items, and imrpove your team one sprint at a time</p>
+                        <p className='feature-description'>See patterns, follow up on action items, and improve your team one sprint at a time</p>
                     </div>
                 </div>
             </section>
