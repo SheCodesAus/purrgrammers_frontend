@@ -29,7 +29,6 @@
   overflow-x: auto;
   overflow-y: visible;
   padding: 20px;
-  padding-bottom: 100px; /* Space for floating control panel */
   background: white;
   border-radius: 12px 0 0 12px;
 }
@@ -160,4 +159,65 @@
 .anon-btn.anonymous:hover {
   background: #e5e7eb;
   transform: translateY(-2px);
+}
+
+/* ====================================
+   RESPONSIVE STYLES
+   ==================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .board {
+    padding: 20px 12px 0 12px;
+  }
+
+  .columns-container {
+    padding: 16px;
+  }
+
+  .columns-inner {
+    gap: 16px;
+  }
+
+  .add-column-button {
+    flex: 0 0 280px;
+    min-height: 250px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .board {
+    padding: 12px 8px 0 8px;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .columns-container {
+    padding: 12px;
+    padding-bottom: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .columns-inner {
+    flex-direction: column;
+    width: 100%;
+    gap: 24px;
+  }
+
+  .add-column-button {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 120px;
+  }
+
+  .anon-modal {
+    margin: 16px;
+    padding: 20px 24px;
+  }
+
+  .anon-modal-buttons {
+    flex-direction: column;
+  }
 }

@@ -311,3 +311,76 @@
         justify-content: center;
     }
 }
+
+/* Mobile: Slide-out drawer from left */
+@media (max-width: 768px) {
+    .control-panel-wrapper {
+        position: fixed;
+        bottom: auto;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%) translateX(-100%);
+        flex-direction: row;
+        align-items: stretch;
+        transition: transform 0.3s ease;
+        z-index: 100;
+    }
+
+    .control-panel-wrapper.open {
+        transform: translateY(-50%) translateX(0);
+    }
+
+    .control-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding: 1rem;
+        max-width: 280px;
+        max-height: 80vh;
+        overflow-y: auto;
+        border-radius: 0 12px 12px 0;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .control-panel__collapse-tab {
+        display: none;
+    }
+
+    /* Tab on right edge of drawer */
+    .control-panel-wrapper::after {
+        content: 'menu';
+        font-family: 'Material Icons';
+        font-size: 24px;
+        position: absolute;
+        right: -48px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid #e5e7eb;
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        padding: 12px 10px;
+        color: #7c3aed;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        pointer-events: none;
+    }
+
+    .control-panel-wrapper.open::after {
+        content: 'close';
+    }
+
+    .control-panel__section {
+        width: 100%;
+    }
+
+    .control-panel__section-title {
+        display: block;
+        font-size: 0.75rem;
+    }
+
+    .control-panel__draggable-card {
+        width: 100%;
+        justify-content: center;
+    }
+}

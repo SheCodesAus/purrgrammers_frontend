@@ -15,6 +15,7 @@ function ControlPanel({
     onStartNewRound,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
     const { showToast } = useToast();
 
     const handleExport = (format) => {
@@ -42,7 +43,16 @@ function ControlPanel({
     }
 
     return (
-        <div className="control-panel-wrapper">
+        <div 
+            className={`control-panel-wrapper ${isMobileOpen ? 'open' : ''}`}
+            onClick={(e) => {
+                // Toggle when clicking the tab area (::after pseudo-element region)
+                const rect = e.currentTarget.getBoundingClientRect();
+                if (e.clientX > rect.right - 48) {
+                    setIsMobileOpen(!isMobileOpen);
+                }
+            }}
+        >
             {/* Collapse Tab */}
             <button 
                 className="control-panel__collapse-tab"

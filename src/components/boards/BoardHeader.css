@@ -68,7 +68,7 @@
   font-size: 1.8rem;
   font-weight: 600;
   color: #111827;
-  font-family: var(--font-heading);
+  font-family: var(--font-stack-sans-text);
 }
 
 .board-title.clickable {
@@ -338,6 +338,21 @@
    ==================================== */
 
 /* Tablet */
+@media (max-width: 1024px) {
+  .board-header {
+    padding: 8px 12px;
+  }
+
+  .board-title-inline {
+    font-size: 1.25rem;
+  }
+
+  .team-members {
+    gap: 4px;
+  }
+}
+
+/* Small tablet / Large mobile */
 @media (max-width: 768px) {
   .board-header {
     padding: 8px 16px;
@@ -362,6 +377,39 @@
   .board-date {
     align-items: flex-start;
   }
+
+  .back-button span:not(.material-icons) {
+    display: none; /* Hide "Back" text, keep icon */
+  }
+
+  .board-title-section {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .board-title-inline {
+    width: 100%;
+  }
+
+  .title-input-container {
+    width: 100%;
+  }
+
+  .team-settings-section {
+    position: static; /* Remove relative positioning */
+  }
+
+  .team-settings-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: auto;
+    left: 12px;
+    right: 12px;
+    margin-top: 8px;
+    max-width: calc(100vw - 24px);
+    max-height: 60vh;
+    overflow-y: auto;
+  }
 }
 
 /* Mobile */
@@ -372,6 +420,11 @@
   
   .board-title-inline {
     font-size: 1.125rem;
+  }
+
+  .board-closed-badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
 }
 

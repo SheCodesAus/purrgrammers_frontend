@@ -16,6 +16,11 @@
   overflow: hidden; /* Prevent content overflow */
 }
 
+/* Collapsed state */
+.retro-column.collapsed {
+  flex: 0 0 auto;
+}
+
 /* Drag over state */
 .retro-column.drag-over {
   border-color: #667eea;
@@ -79,6 +84,41 @@
   background: transparent;
   outline: none;
   font-family: inherit;
+}
+
+/* Collapse Button */
+.column-collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.column-collapse-btn .material-icons {
+  font-size: 20px;
+  color: #6c757d;
+}
+
+.column-collapse-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.column-collapse-btn:hover .material-icons {
+  color: #495057;
+}
+
+/* Card count badge when collapsed */
+.column-card-count {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-left: 0.5rem;
 }
 
 .title-and-edit {
@@ -168,6 +208,32 @@
 }
 
 .column-menu-btn:hover .material-icons {
+  color: #495057;
+}
+
+/* Add Card Button - Hidden on desktop, shown on mobile */
+.column-add-card-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.column-add-card-btn .material-icons {
+  font-size: 20px;
+  color: #6c757d;
+}
+
+.column-add-card-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.column-add-card-btn:hover .material-icons {
   color: #495057;
 }
 
@@ -539,6 +605,8 @@
 /* Tablet */
 @media (max-width: 1024px) {
   .retro-column {
+    width: 340px;
+    min-width: 340px;
     max-width: 100%;
   }
 }
@@ -546,6 +614,9 @@
 /* Mobile */
 @media (max-width: 768px) {
   .retro-column {
+    width: 100%;
+    min-width: unset;
+    max-width: 100%;
     padding: 12px;
   }
   
@@ -557,9 +628,14 @@
   .column-title {
     font-size: 1.1rem;
   }
+
+  .column-add-card-btn {
+    display: flex;
+  }
   
   .cards-list {
     gap: 8px;
+    justify-content: center;
   }
   
   .drop-zone-hint {
@@ -576,9 +652,11 @@
   }
   
   .column-header {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
-    text-align: center;
+    padding: 0.4rem 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .column-title {
+    font-size: 1rem;
   }
 }

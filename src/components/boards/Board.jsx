@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import BoardHeader from "./BoardHeader";
 import Column from "./Column";
-import ControlPanel from "./ControlPanel";
-import ActionBar from "./ActionBar";
+import BoardPanel from "./BoardPanel";
+import CardModal from "./CardModal";
 import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
@@ -30,14 +31,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Anonymous modal state
     const [showAnonModal, setShowAnonModal] = useState(false);
     const [pendingCardColumn, setPendingCardColumn] = useState(null);
+    const [newCardModalId, setNewCardModalId] = useState(null); // For opening modal on mobile after card creation
     
     // Voting state - tracks remaining votes for current user
     const [remainingVotes, setRemainingVotes] = useState(boardData?.user_remaining_votes ?? 5);
     const [currentVotingRound, setCurrentVotingRound] = useState(boardData?.current_voting_round || null);
     const [maxVotesPerUser] = useState(boardData?.max_votes_per_user ?? 5);
-
-    // Action bar state
-    const [actionBarCollapsed, setActionBarCollapsed] = useState(false);
 
     // Tags state
     const [availableTags, setAvailableTags] = useState([]);
@@ -591,7 +590,13 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
             try {
                 const cardId = await handleAddCard(pendingCardColumn, "", isAnonymous);
                 if (cardId) {
-                    setEditingCard(cardId);
+                    // On mobile, open the card modal instead of inline editing
+                    const isMobile = window.innerWidth <= 768;
+                    if (isMobile) {
+                        setNewCardModalId(cardId);
+                    } else {
+                        setEditingCard(cardId);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to create card:", error);
@@ -647,35 +652,33 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                                 onDrop={(e) => handleDrop(e, column.id)}
                                 onDragEnter={() => handleDragEnter(column.id)}
                                 onDragLeave={(e) => handleDragLeave(e, column.id)}
+                                onAddCard={() => {
+                                    setPendingCardColumn(column.id);
+                                    setShowAnonModal(true);
+                                }}
                             />
                         )) || <div>No columns found - check backend API</div>}
                     </div>
                 </div>
 
-                <ActionBar
+                <BoardPanel
                     actionItems={boardData?.action_items || []}
                     teamMembers={teamMembers}
                     boardId={boardData?.id}
-                    isCollapsed={actionBarCollapsed}
-                    onToggleCollapse={() => setActionBarCollapsed(!actionBarCollapsed)}
                     onActionItemCreate={handleActionItemCreate}
                     onActionItemUpdate={handleActionItemUpdate}
                     onActionItemDelete={handleActionItemDelete}
+                    dragState={dragState}
+                    isCreatingCard={isCreatingCard}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    onAddColumn={handleAddColumn}
+                    currentVotingRound={currentVotingRound}
+                    remainingVotes={remainingVotes}
+                    maxVotes={maxVotesPerUser}
+                    onStartNewRound={handleStartNewRound}
                 />
             </div>
-            
-            <ControlPanel
-                dragState={dragState}
-                isCreatingCard={isCreatingCard}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onAddColumn={handleAddColumn}
-                boardId={boardData?.id}
-                currentVotingRound={currentVotingRound}
-                remainingVotes={remainingVotes}
-                maxVotes={maxVotesPerUser}
-                onStartNewRound={handleStartNewRound}
-            />
 
             {/* Anonymous Choice Modal */}
             {showAnonModal && (
@@ -699,6 +702,46 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     </div>
                 </div>
             )}
+
+            {/* New Card Modal - for mobile */}
+            {newCardModalId && (() => {
+                // Find the card and its column
+                let newCard = null;
+                let cardColumn = null;
+                for (const col of boardData.columns || []) {
+                    const found = col.cards?.find(c => c.id === newCardModalId);
+                    if (found) {
+                        newCard = found;
+                        cardColumn = col;
+                        break;
+                    }
+                }
+                
+                if (!newCard) return null;
+                
+                return createPortal(
+                    <CardModal
+                        card={newCard}
+                        columnColor={cardColumn?.color}
+                        columnTitle={cardColumn?.title}
+                        isOpen={true}
+                        remainingVotes={remainingVotes}
+                        availableTags={availableTags}
+                        startInEditMode={true}
+                        onClose={() => setNewCardModalId(null)}
+                        onEdit={(newContent) => {
+                            handleEditCard(cardColumn.id, newCardModalId, newContent);
+                        }}
+                        onDelete={() => {
+                            handleDeleteCard(cardColumn.id, newCardModalId);
+                            setNewCardModalId(null);
+                        }}
+                        onVoteChange={(voteData) => handleVoteChange(cardColumn.id, newCardModalId, voteData)}
+                        onTagsChange={(updatedCard) => handleCardTagsChange(cardColumn.id, updatedCard)}
+                    />,
+                    document.body
+                );
+            })()}
 
             {cardError && (
                 <div className="error-message">

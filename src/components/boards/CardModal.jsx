@@ -14,6 +14,7 @@ function CardModal({
     isOpen,
     remainingVotes,
     availableTags = [],
+    startInEditMode = false,
     onClose,
     onEdit,
     onDelete,
@@ -34,9 +35,9 @@ function CardModal({
     useEffect(() => {
         if (isOpen) {
             setEditText(card?.content || "");
-            setIsEditingContent(false);
+            setIsEditingContent(startInEditMode);
         }
-    }, [isOpen, card?.content]);
+    }, [isOpen, card?.content, startInEditMode]);
 
     // Close on escape key
     useEffect(() => {

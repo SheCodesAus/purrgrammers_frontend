@@ -22,12 +22,14 @@ function Column({
     onDrop,
     onDragEnter,
     onDragLeave,
-    onColumnUpdate
+    onColumnUpdate,
+    onAddCard
 }) {
     const [editTitle, setEditTitle] = useState(column.title || '');
     const [showColorPicker, setShowColorPicker] = useState(false);
     const [showEditOptions, setShowEditOptions] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth <= 768);
     const { auth } = useAuth();
 
     // handles title editing
@@ -104,7 +106,7 @@ function Column({
         <div 
             className={`retro-column ${column.column_type} ${
                 dragState.dragOverColumn === column.id ? 'drag-over' : ''
-            }`}
+            } ${isCollapsed ? 'collapsed' : ''}`}
             style={{ '--column-color': column.color || 'transparent' }}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
@@ -112,6 +114,17 @@ function Column({
             onDragEnter={onDragEnter}
         >
             <div className="column-header">
+                {/* Collapse Toggle Button - Left side */}
+                <button 
+                    className="column-collapse-btn"
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    title={isCollapsed ? "Expand column" : "Collapse column"}
+                >
+                    <span className="material-icons">
+                        {isCollapsed ? 'expand_more' : 'expand_less'}
+                    </span>
+                </button>
+
                 {/* Column Title - Click to Edit */}
                 {isEditingTitle ? (
                     <input
@@ -145,8 +158,20 @@ function Column({
                         title="Click to edit"
                     >
                         {column.title}
+                        {isCollapsed && column.cards?.length > 0 && (
+                            <span className="column-card-count">({column.cards.length})</span>
+                        )}
                     </h3>
                 )}
+
+                {/* Add Card Button - Mobile only */}
+                <button 
+                    className="column-add-card-btn"
+                    onClick={onAddCard}
+                    title="Add card"
+                >
+                    <span className="material-icons">add</span>
+                </button>
                 
                 {/* Edit Menu Button */}
                 <div className="column-menu-wrapper">
@@ -245,42 +270,45 @@ function Column({
                 )}
             </div>
 
-            <div className="column-content">
-                <div className="cards-list">
-                    {column.cards?.map(card => (
-                        <Card
-                            key={card.id}
-                            card={card}
-                            columnType={column.column_type}
-                            columnColor={column.color}
-                            columnTitle={column.title}
-                            currentUser={currentUser}
-                            isEditing={editingCard === card.id}
-                            remainingVotes={remainingVotes}
-                            availableTags={availableTags}
-                            onEdit={(newText) => onEditCard(card.id, newText)}
-                            onDelete={() => onDeleteCard(card.id)}
-                            onVoteChange={(voteData) => onVoteChange(card.id, voteData)}
-                            onTagsChange={(updatedCard) => onCardTagsChange(column.id, updatedCard)}
-                            onCancelEdit={() => onSetEditingCard(null)}
-                        />
-                    ))}
+            {/* Collapsible content */}
+            {!isCollapsed && (
+                <div className="column-content">
+                    <div className="cards-list">
+                        {column.cards?.map(card => (
+                            <Card
+                                key={card.id}
+                                card={card}
+                                columnType={column.column_type}
+                                columnColor={column.color}
+                                columnTitle={column.title}
+                                currentUser={currentUser}
+                                isEditing={editingCard === card.id}
+                                remainingVotes={remainingVotes}
+                                availableTags={availableTags}
+                                onEdit={(newText) => onEditCard(card.id, newText)}
+                                onDelete={() => onDeleteCard(card.id)}
+                                onVoteChange={(voteData) => onVoteChange(card.id, voteData)}
+                                onTagsChange={(updatedCard) => onCardTagsChange(column.id, updatedCard)}
+                                onCancelEdit={() => onSetEditingCard(null)}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Drop zone hint when dragging */}
+                    {dragState.isDragging && (
+                        <div className="drop-zone-hint">
+                            Drop your card here
+                        </div>
+                    )}
+
+                    {/* Empty state */}
+                    {!column.cards?.length && !dragState.isDragging && (
+                        <div className="empty-column">
+                            <p>No cards yet</p>
+                        </div>
+                    )}
                 </div>
-
-                {/* Drop zone hint when dragging */}
-                {dragState.isDragging && (
-                    <div className="drop-zone-hint">
-                        Drop your card here
-                    </div>
-                )}
-
-                {/* Empty state */}
-                {!column.cards?.length && !dragState.isDragging && (
-                    <div className="empty-column">
-                        <p>No cards yet</p>
-                    </div>
-                )}
-            </div>
+            )}
         </div>
     );
 }
