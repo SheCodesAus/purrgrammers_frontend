@@ -10,7 +10,7 @@ import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
 import getTags from "../../api/get-tags";
-import startNewRound from "../../api/start-new-round";
+import startVoting from "../../api/start-new-round";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
 import { useToast } from "../ToastProvider";
@@ -38,10 +38,23 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Mobile controls panel state
     const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(false);
     
+    // Helper to check if voting round is valid (not null, not empty object)
+    const isValidVotingRound = (round) => {
+        return round !== null && round !== undefined && 
+               (typeof round === 'number' || (typeof round === 'object' && round.round_number !== undefined));
+    };
+
+    // Normalize voting round from backend (could be null, number, object, or empty object)
+    const normalizeVotingRound = (round) => {
+        if (!isValidVotingRound(round)) return null;
+        return round;
+    };
+
     // Voting state - tracks remaining votes for current user
     const [remainingVotes, setRemainingVotes] = useState(boardData?.user_remaining_votes ?? 5);
-    const [currentVotingRound, setCurrentVotingRound] = useState(boardData?.current_voting_round || null);
-    const [maxVotesPerUser] = useState(boardData?.max_votes_per_user ?? 5);
+    const [currentVotingRound, setCurrentVotingRound] = useState(normalizeVotingRound(boardData?.current_voting_round));
+    const [maxVotesPerRound, setMaxVotesPerRound] = useState(boardData?.max_votes_per_round ?? boardData?.max_votes_per_user ?? 5);
+    const [maxVotesPerCard, setMaxVotesPerCard] = useState(boardData?.max_votes_per_card ?? null);
 
     // Tags state
     const [availableTags, setAvailableTags] = useState([]);
@@ -198,13 +211,13 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
 
             case 'voting_round_started':
                 // Update current voting round and reset votes
-                setCurrentVotingRound(message.data.current_voting_round);
-                setRemainingVotes(maxVotesPerUser); // Reset to full votes
+                setCurrentVotingRound(normalizeVotingRound(message.data.current_voting_round));
+                setRemainingVotes(maxVotesPerRound); // Reset to full votes
                 // Update board data with new round info
                 onBoardUpdate(prevBoard => ({
                     ...prevBoard,
                     current_voting_round: message.data.current_voting_round,
-                    user_remaining_votes: maxVotesPerUser,
+                    user_remaining_votes: maxVotesPerRound,
                     user_vote_count: 0
                 }));
                 break;
@@ -336,15 +349,38 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     };
 
     // Voting round management
-    const handleStartNewRound = async () => {
+    const handleStartVoting = async () => {
         try {
-            const result = await startNewRound(boardData?.id, auth.token);
+            const result = await startVoting(boardData?.id, auth.token);
             // WebSocket will handle the broadcast, but update locally too
-            setCurrentVotingRound(result.current_voting_round);
-            setRemainingVotes(maxVotesPerUser);
+            setCurrentVotingRound(normalizeVotingRound(result.current_voting_round));
+            setRemainingVotes(maxVotesPerRound);
         } catch (error) {
             console.error('Failed to start new voting round:', error);
             showToast(`Failed to start new round: ${error.message}`);
+        }
+    };
+
+    // Voting settings change handler
+    const handleVotingSettingsChange = async (settings) => {
+        try {
+            const response = await patchBoard(boardData?.id, settings, auth.token);
+            // Update local state
+            if (settings.max_votes_per_round !== undefined) {
+                setMaxVotesPerRound(settings.max_votes_per_round);
+            }
+            if (settings.max_votes_per_card !== undefined) {
+                setMaxVotesPerCard(settings.max_votes_per_card);
+            }
+            // Update board data
+            onBoardUpdate(prevBoard => ({
+                ...prevBoard,
+                ...settings
+            }));
+            showToast('Voting settings updated');
+        } catch (error) {
+            console.error('Failed to update voting settings:', error);
+            showToast(`Failed to update settings: ${error.message}`);
         }
     };
 
@@ -486,10 +522,14 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
 
     // Vote change handler - updates card vote count and remaining votes
     const handleVoteChange = (columnId, cardId, voteData) => {
-        // Update remaining votes from response
+        // Update remaining votes from response (only if server response)
         if (voteData.remaining_votes !== undefined) {
             setRemainingVotes(voteData.remaining_votes);
         }
+        
+        // Support both server response format and optimistic update format
+        const newVoteCount = voteData.total_card_votes ?? voteData.vote_count;
+        const newUserVoteCount = voteData.user_votes_on_card ?? voteData.user_vote_count;
         
         // Update the card's vote count and user_vote_count
         const updatedBoard = {
@@ -502,8 +542,8 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                             card.id === cardId 
                                 ? { 
                                     ...card, 
-                                    vote_count: voteData.total_card_votes,
-                                    user_vote_count: voteData.user_votes_on_card
+                                    vote_count: newVoteCount,
+                                    user_vote_count: newUserVoteCount
                                 } 
                                 : card
                         ) 
@@ -659,6 +699,8 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                                     dragState={dragState}
                                     editingCard={editingCard}
                                     remainingVotes={remainingVotes}
+                                    maxVotesPerCard={maxVotesPerCard}
+                                    votingEnabled={currentVotingRound !== null}
                                     availableTags={availableTags}
                                     onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
                                     onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
@@ -699,8 +741,11 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                         onAddColumn={handleAddColumn}
                         currentVotingRound={currentVotingRound}
                         remainingVotes={remainingVotes}
-                        maxVotes={maxVotesPerUser}
-                        onStartNewRound={handleStartNewRound}
+                        maxVotesPerRound={maxVotesPerRound}
+                        maxVotesPerCard={maxVotesPerCard}
+                        onVotingSettingsChange={handleVotingSettingsChange}
+                        onStartVoting={handleStartVoting}
+                        isBoardCreator={auth.user?.id === boardData?.created_by?.id}
                     />
                 </div>
 
@@ -719,8 +764,11 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     onAddColumn={handleAddColumn}
                     currentVotingRound={currentVotingRound}
                     remainingVotes={remainingVotes}
-                    maxVotes={maxVotesPerUser}
-                    onStartNewRound={handleStartNewRound}
+                    maxVotesPerRound={maxVotesPerRound}
+                    maxVotesPerCard={maxVotesPerCard}
+                    onVotingSettingsChange={handleVotingSettingsChange}
+                    onStartVoting={handleStartVoting}
+                    isBoardCreator={auth.user?.id === boardData?.created_by?.id}
                     boardTitle={boardData?.title}
                     isActive={boardData?.is_active}
                     onBoardStatusChange={handleBoardStatusChange}

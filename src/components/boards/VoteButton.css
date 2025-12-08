@@ -31,6 +31,14 @@
     color: black;
 }
 
+.vote-button.voting-disabled {
+    opacity: 0.5;
+}
+
+.vote-button.voting-disabled .vote-icon {
+    color: #999;
+}
+
 .vote-button:disabled .vote-icon,
 .vote-button:disabled .vote-count {
     color: black;

@@ -16,6 +16,8 @@ function Card({
     columnTitle,
     isEditing,
     remainingVotes,
+    maxVotesPerCard,
+    votingEnabled,
     availableTags = [],
     onEdit,
     onDelete,
@@ -305,6 +307,8 @@ function Card({
                     <VoteButton
                         card={card}
                         remainingVotes={remainingVotes}
+                        maxVotesPerCard={maxVotesPerCard}
+                        votingEnabled={votingEnabled}
                         onVoteChange={onVoteChange}
                     />
                 </div>
@@ -318,6 +322,7 @@ function Card({
                     columnTitle={columnTitle}
                     isOpen={isModalOpen}
                     remainingVotes={remainingVotes}
+                    votingEnabled={votingEnabled}
                     availableTags={availableTags}
                     onClose={() => setIsModalOpen(false)}
                     onEdit={onEdit}

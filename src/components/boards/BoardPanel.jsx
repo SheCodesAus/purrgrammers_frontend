@@ -26,8 +26,11 @@ function BoardPanel({
     onAddColumn,
     currentVotingRound,
     remainingVotes,
-    maxVotes,
-    onStartNewRound,
+    maxVotesPerRound,
+    maxVotesPerCard,
+    onVotingSettingsChange,
+    onStartVoting,
+    isBoardCreator,
     // Board management props
     boardTitle,
     isActive,
@@ -345,23 +348,33 @@ function BoardPanel({
                                 <span className="material-icons">how_to_vote</span>
                                 Voting
                             </h4>
-                            <div className="board-panel__voting-info">
-                                <div className="board-panel__voting-round">
-                                    Round {currentVotingRound?.round_number ?? currentVotingRound ?? 1}
+                            {currentVotingRound ? (
+                                <div className="board-panel__voting-info">
+                                    <div className="board-panel__voting-round">
+                                        Round {currentVotingRound?.round_number ?? (typeof currentVotingRound === 'number' ? currentVotingRound : 1)}
+                                    </div>
+                                    <div className="board-panel__votes-remaining">
+                                        <span className="votes-count">{remainingVotes ?? maxVotesPerRound ?? 5}</span>
+                                        <span className="votes-label">/ {maxVotesPerRound ?? 5} votes left</span>
+                                    </div>
                                 </div>
-                                <div className="board-panel__votes-remaining">
-                                    <span className="votes-count">{remainingVotes ?? maxVotes ?? 5}</span>
-                                    <span className="votes-label">/ {maxVotes ?? 5} votes left</span>
+                            ) : (
+                                <div className="board-panel__voting-info">
+                                    <div className="board-panel__voting-status">
+                                        Voting not started
+                                    </div>
                                 </div>
-                            </div>
-                            <button 
-                                className="board-panel__btn board-panel__btn--accent"
-                                onClick={onStartNewRound}
-                                title="Start a new voting round - everyone gets fresh votes!"
-                            >
-                                <span className="material-icons">restart_alt</span>
-                                New Round
-                            </button>
+                            )}
+                            {isBoardCreator && (
+                                <button 
+                                    className="board-panel__btn board-panel__btn--accent"
+                                    onClick={onStartVoting}
+                                    title={currentVotingRound ? "Start a new voting round - everyone gets fresh votes!" : "Start voting for this board"}
+                                >
+                                    <span className="material-icons">{currentVotingRound ? 'restart_alt' : 'play_arrow'}</span>
+                                    {currentVotingRound ? `Start Round ${(currentVotingRound?.round_number ?? (typeof currentVotingRound === 'number' ? currentVotingRound : 1)) + 1}` : 'Start Voting'}
+                                </button>
+                            )}
                         </div>
 
                         {/* Add Cards Section - Hidden on mobile */}

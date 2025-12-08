@@ -11,6 +11,8 @@ function Column({
     dragState,
     editingCard,
     remainingVotes,
+    maxVotesPerCard,
+    votingEnabled,
     availableTags,
     onEditCard,
     onDeleteCard,
@@ -177,8 +179,11 @@ function Column({
                         <h3 
                             className="column-title clickable"
                             onClick={() => {
-                                setEditTitle(column.title || '');
-                                setIsEditingTitle(true);
+                                // Only allow click-to-edit on desktop
+                                if (window.innerWidth > 768) {
+                                    setEditTitle(column.title || '');
+                                    setIsEditingTitle(true);
+                                }
                             }}
                             title="Click to edit"
                         >
@@ -320,6 +325,8 @@ function Column({
                                 currentUser={currentUser}
                                 isEditing={editingCard === card.id}
                                 remainingVotes={remainingVotes}
+                                maxVotesPerCard={maxVotesPerCard}
+                                votingEnabled={votingEnabled}
                                 availableTags={availableTags}
                                 onEdit={(newText) => onEditCard(card.id, newText)}
                                 onDelete={() => onDeleteCard(card.id)}

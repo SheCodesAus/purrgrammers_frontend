@@ -290,8 +290,11 @@ function BoardHeader({
                                 <h1 
                                     className="board-title clickable"
                                     onClick={() => {
-                                        setEditTitle(boardData?.title || '');
-                                        setIsEditingTitle(true);
+                                        // Only allow click-to-edit on desktop
+                                        if (window.innerWidth > 768) {
+                                            setEditTitle(boardData?.title || '');
+                                            setIsEditingTitle(true);
+                                        }
                                     }}
                                     title="Click to edit"
                                 >

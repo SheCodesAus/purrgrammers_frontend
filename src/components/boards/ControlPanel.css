@@ -84,6 +84,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    position: relative;
 }
 
 .control-panel__section-title {
@@ -94,6 +95,88 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Settings button in section title */
+.control-panel__settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    transition: color 0.2s;
+}
+
+.control-panel__settings-btn:hover {
+    color: #6b7280;
+}
+
+.control-panel__settings-btn .material-icons {
+    font-size: 14px;
+}
+
+/* Voting Settings Panel */
+.control-panel__settings-panel {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 100;
+}
+
+.control-panel__setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.control-panel__setting-row label {
+    font-size: 0.8rem;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.control-panel__setting-row input {
+    width: 60px;
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.control-panel__setting-row input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+}
+
+.control-panel__setting-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.control-panel__btn--small {
+    padding: 4px 10px !important;
+    font-size: 0.75rem !important;
 }
 
 /* Divider */
