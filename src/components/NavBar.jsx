@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/use-auth';
 import './NavBar.css';
@@ -11,6 +11,19 @@ function NavBar() {
     const isRetroBoardPage = location.pathname.startsWith('/retro-board');
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+    const userDropdownRef = useRef(null);
+
+    // Close user dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+                setUserDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Add scroll listener for glassmorphism effect
     useEffect(() => {
@@ -77,6 +90,30 @@ function NavBar() {
                     {/* Show Dashboard only when logged in */}
                     {auth?.token && (
                         <li><NavLink to="/dashboard" className="auth-link" onClick={closeMenu}>Dashboard</NavLink></li>
+                    )}
+                    
+                    {/* User profile with dropdown - only when logged in */}
+                    {auth?.token && (
+                        <li className="nav-user-wrapper" ref={userDropdownRef}>
+                            <button 
+                                className="nav-user-profile"
+                                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                            >
+                                <span className="material-icons nav-user-icon">account_circle</span>
+                                <span className="nav-user-name">{auth.user?.username}</span>
+                                <span className="material-icons nav-user-chevron">
+                                    {userDropdownOpen ? 'expand_less' : 'expand_more'}
+                                </span>
+                            </button>
+                            {userDropdownOpen && (
+                                <div className="nav-user-dropdown">
+                                    {/* Dropdown content - to be configured later */}
+                                    <div className="nav-user-dropdown-placeholder">
+                                        Settings coming soon
+                                    </div>
+                                </div>
+                            )}
+                        </li>
                     )}
                     
                     {/* Show Logout only when logged in */}
