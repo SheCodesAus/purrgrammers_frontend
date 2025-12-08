@@ -10,6 +10,7 @@ import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
 import getTags from "../../api/get-tags";
+import patchBoard from "../../api/patch-board";
 import startVoting from "../../api/start-new-round";
 import { useAuth } from "../../hooks/use-auth";
 import { useBoardWebSocket } from "../../hooks/use-board-web-socket";
