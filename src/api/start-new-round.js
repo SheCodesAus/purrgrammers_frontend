@@ -1,5 +1,5 @@
-async function startNewRound(boardId, token) {
-    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards/${boardId}/start_new_round/`;
+async function startVoting(boardId, token) {
+    const url = `${import.meta.env.VITE_API_URL}/api/retro-boards/${boardId}/start_voting/`;
     
     console.log("Starting new round - URL:", url, "Board ID:", boardId);
 
@@ -27,4 +27,4 @@ async function startNewRound(boardId, token) {
     return await response.json();
 }
 
-export default startNewRound;
+export default startVoting;
