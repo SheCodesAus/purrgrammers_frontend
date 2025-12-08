@@ -21,6 +21,15 @@ function BoardHeader({
     onTeamRefreshReady, // function to update team on team member addtion or deletion
     onAddColumn, // function to add a new column (mobile)
     mobileControls, // render prop for mobile controls button
+    // Voting settings props (board creator only)
+    isBoardCreator,
+    maxVotesPerRound,
+    maxVotesPerCard,
+    onVotingSettingsChange,
+    onStartVoting,
+    onStopVoting,
+    onResetRounds,
+    currentVotingRound,
 }) {
     const [editTitle, setEditTitle] = useState(boardData?.title || '');
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -37,6 +46,12 @@ function BoardHeader({
     const [addMemberLoading, setAddMemberLoading] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
     const teamDropdownRef = useRef(null);
+    
+    // Voting settings state
+    const [showVotingSettings, setShowVotingSettings] = useState(false);
+    const [editMaxPerRound, setEditMaxPerRound] = useState(maxVotesPerRound ?? 5);
+    const [editMaxPerCard, setEditMaxPerCard] = useState(maxVotesPerCard ?? '');
+    const votingSettingsRef = useRef(null);
 
     // Sync editTitle when boardData.title changes from WebSocket
     useEffect(() => {
@@ -53,13 +68,29 @@ function BoardHeader({
             ) {
                 setShowTeamSettings(false);
             }
+            if (
+                showVotingSettings &&
+                votingSettingsRef.current &&
+                !votingSettingsRef.current.contains(event.target)
+            ) {
+                setShowVotingSettings(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [showTeamSettings]);
+    }, [showTeamSettings, showVotingSettings]);
+
+    // Sync voting settings when props change
+    useEffect(() => {
+        setEditMaxPerRound(maxVotesPerRound ?? 5);
+    }, [maxVotesPerRound]);
+
+    useEffect(() => {
+        setEditMaxPerCard(maxVotesPerCard ?? '');
+    }, [maxVotesPerCard]);
 
     // Fetch team details when board has a team
     const fetchTeamDetails = useCallback(async () => {
@@ -180,6 +211,15 @@ function BoardHeader({
             console.error('Failed to remove member', error);
             showToast(`Failed to remove member: ${error.message}`, 'error');
         }
+    };
+
+    const handleSaveVotingSettings = () => {
+        const settings = {
+            max_votes_per_round: parseInt(editMaxPerRound, 10) || 5,
+            max_votes_per_card: editMaxPerCard === '' || editMaxPerCard === null ? null : parseInt(editMaxPerCard, 10)
+        };
+        onVotingSettingsChange(settings);
+        setShowVotingSettings(false);
     };
 
     const handleToggleActive = async () => {
@@ -326,6 +366,127 @@ function BoardHeader({
             </div>
 
             <div className="board-header-right">
+                {/* Voting Settings Section - Board Creator Only */}
+                {isBoardCreator && (
+                    <div className="voting-settings-section" ref={votingSettingsRef}>
+                        <button 
+                            className={`voting-settings-btn ${currentVotingRound ? 'voting-active' : ''}`}
+                            onClick={() => setShowVotingSettings(!showVotingSettings)}
+                            title="Voting settings"
+                        >
+                            <span className="material-icons">how_to_vote</span>
+                            <span className="voting-settings-label">Voting</span>
+                            <span className="material-icons voting-settings-arrow">
+                                {showVotingSettings ? 'expand_less' : 'expand_more'}
+                            </span>
+                        </button>
+                        
+                        {showVotingSettings && (
+                            <div className="voting-settings-dropdown">
+                                <button 
+                                    className="voting-dropdown-close"
+                                    onClick={() => setShowVotingSettings(false)}
+                                    title="Close"
+                                >
+                                    <span className="material-icons">close</span>
+                                </button>
+                                <h4>Voting Settings</h4>
+                                <div className="voting-setting-row">
+                                    <label>Votes per round:</label>
+                                    <input 
+                                        type="number" 
+                                        min="1" 
+                                        max="99"
+                                        value={editMaxPerRound}
+                                        onChange={(e) => setEditMaxPerRound(e.target.value)}
+                                    />
+                                </div>
+                                <div className="voting-setting-row">
+                                    <label>Limit per card:</label>
+                                    <button 
+                                        className={`voting-toggle ${editMaxPerCard === '' ? '' : 'active'}`}
+                                        onClick={() => setEditMaxPerCard(editMaxPerCard === '' ? '3' : '')}
+                                    >
+                                        <span className="voting-toggle-slider"></span>
+                                    </button>
+                                </div>
+                                {editMaxPerCard !== '' && (
+                                    <div className="voting-setting-row voting-setting-indent">
+                                        <label>Max votes:</label>
+                                        <input 
+                                            type="number" 
+                                            min="1" 
+                                            max="99"
+                                            value={editMaxPerCard}
+                                            onChange={(e) => setEditMaxPerCard(e.target.value)}
+                                        />
+                                    </div>
+                                )}
+                                <div className="voting-settings-actions">
+                                    <button 
+                                        className="voting-settings-cancel"
+                                        onClick={() => setShowVotingSettings(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        className="voting-settings-save"
+                                        onClick={handleSaveVotingSettings}
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                                <div className="voting-settings-divider"></div>
+                                {currentVotingRound ? (
+                                    <div className="voting-btn-group">
+                                        <button 
+                                            className="voting-stop-btn"
+                                            onClick={() => {
+                                                onStopVoting();
+                                                setShowVotingSettings(false);
+                                            }}
+                                        >
+                                            <span className="material-icons">stop</span>
+                                            Stop Voting
+                                        </button>
+                                        <button 
+                                            className="voting-start-btn"
+                                            onClick={() => {
+                                                onStartVoting();
+                                                setShowVotingSettings(false);
+                                            }}
+                                        >
+                                            <span className="material-icons">restart_alt</span>
+                                            New Round
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button 
+                                        className="voting-start-btn"
+                                        onClick={() => {
+                                            onStartVoting();
+                                            setShowVotingSettings(false);
+                                        }}
+                                    >
+                                        <span className="material-icons">play_arrow</span>
+                                        Start Voting
+                                    </button>
+                                )}
+                                <button 
+                                    className="voting-reset-link"
+                                    onClick={() => {
+                                        onResetRounds();
+                                        setShowVotingSettings(false);
+                                    }}
+                                >
+                                    <span className="material-icons">refresh</span>
+                                    Reset All Votes
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Team Settings Section */}
                 {boardData?.team && (
                     <div className="team-settings-section" ref={teamDropdownRef}>
@@ -342,7 +503,7 @@ function BoardHeader({
                         {showTeamSettings && (
                             <div className="team-settings-dropdown">
                                 <button 
-                                    className="team-dropdown-close mobile-only"
+                                    className="team-dropdown-close"
                                     onClick={() => setShowTeamSettings(false)}
                                     title="Close"
                                 >
@@ -365,8 +526,7 @@ function BoardHeader({
                                                 onClick={() => handleRemoveMember(member.id, member.username)}
                                                 title='Remove member'
                                             >
-                                                <span className='material-icons desktop-only'>close</span>
-                                                <span className='remove-text mobile-only'>Remove</span>
+                                                <span className='remove-text'>Remove</span>
                                             </button>
                                             </li>
                                     ))}

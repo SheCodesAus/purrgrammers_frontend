@@ -12,16 +12,9 @@ function ControlPanel({
     currentVotingRound,
     remainingVotes,
     maxVotesPerRound,
-    maxVotesPerCard,
-    onVotingSettingsChange,
-    onStartVoting,
-    isBoardCreator,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const [showVotingSettings, setShowVotingSettings] = useState(false);
-    const [editMaxPerRound, setEditMaxPerRound] = useState(maxVotesPerRound ?? 5);
-    const [editMaxPerCard, setEditMaxPerCard] = useState(maxVotesPerCard ?? '');
     const { showToast } = useToast();
 
     const handleExport = (format) => {
@@ -32,15 +25,6 @@ function ControlPanel({
     const handleViewReports = () => {
         // Placeholder - will navigate to reports page
         showToast('Reports page coming soon!');
-    };
-
-    const handleSaveVotingSettings = () => {
-        const settings = {
-            max_votes_per_round: parseInt(editMaxPerRound, 10) || 5,
-            max_votes_per_card: editMaxPerCard === '' || editMaxPerCard === null ? null : parseInt(editMaxPerCard, 10)
-        };
-        onVotingSettingsChange(settings);
-        setShowVotingSettings(false);
     };
 
     if (isCollapsed) {
@@ -80,62 +64,12 @@ function ControlPanel({
             <div className="control-panel">
                 {/* Voting Section */}
             <div className="control-panel__section">
-                <h4 className="control-panel__section-title">
-                    Voting
-                    {isBoardCreator && (
-                        <button 
-                            className="control-panel__settings-btn"
-                            onClick={() => setShowVotingSettings(!showVotingSettings)}
-                            title="Voting settings"
-                        >
-                            <span className="material-icons">settings</span>
-                        </button>
-                    )}
-                </h4>
-                
-                {/* Voting Settings Panel - Board Creator Only */}
-                {showVotingSettings && isBoardCreator && (
-                    <div className="control-panel__settings-panel">
-                        <div className="control-panel__setting-row">
-                            <label>Votes per round:</label>
-                            <input 
-                                type="number" 
-                                min="1" 
-                                max="99"
-                                value={editMaxPerRound}
-                                onChange={(e) => setEditMaxPerRound(e.target.value)}
-                            />
-                        </div>
-                        <div className="control-panel__setting-row">
-                            <label>Max per card:</label>
-                            <input 
-                                type="number" 
-                                min="1" 
-                                max="99"
-                                placeholder="∞"
-                                value={editMaxPerCard}
-                                onChange={(e) => setEditMaxPerCard(e.target.value)}
-                            />
-                        </div>
-                        <div className="control-panel__setting-actions">
-                            <button 
-                                className="control-panel__btn control-panel__btn--small"
-                                onClick={() => setShowVotingSettings(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                className="control-panel__btn control-panel__btn--small control-panel__btn--accent"
-                                onClick={handleSaveVotingSettings}
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                )}
-                
                 {currentVotingRound ? (
-                    <div className="control-panel__voting-info">
+                    <div className="control-panel__voting-info control-panel__voting-info--active">
+                        <div className="control-panel__voting-indicator">
+                            <span className="voting-pulse"></span>
+                            <span className="voting-live-text">LIVE</span>
+                        </div>
                         <div className="control-panel__voting-round">
                             <span className="material-icons">how_to_vote</span>
                             <span>Round {currentVotingRound?.round_number ?? (typeof currentVotingRound === 'number' ? currentVotingRound : 1)}</span>
@@ -148,20 +82,9 @@ function ControlPanel({
                 ) : (
                     <div className="control-panel__voting-info">
                         <div className="control-panel__voting-status">
-                            <span className="material-icons">how_to_vote</span>
                             <span>Voting not started</span>
                         </div>
                     </div>
-                )}
-                {isBoardCreator && (
-                    <button 
-                        className="control-panel__btn control-panel__btn--accent"
-                        onClick={onStartVoting}
-                        title={currentVotingRound ? "Start a new voting round - everyone gets fresh votes!" : "Start voting for this board"}
-                    >
-                        <span className="material-icons">{currentVotingRound ? 'restart_alt' : 'play_arrow'}</span>
-                        {currentVotingRound ? `Start Round ${(currentVotingRound?.round_number ?? (typeof currentVotingRound === 'number' ? currentVotingRound : 1)) + 1}` : 'Start Voting'}
-                    </button>
                 )}
             </div>
 

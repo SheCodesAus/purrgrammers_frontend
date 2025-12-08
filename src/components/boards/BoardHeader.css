@@ -16,6 +16,8 @@
     0 -4px 8px rgba(0, 0, 0, 0.04),
     -4px 0 8px rgba(0, 0, 0, 0.04),
     4px 0 8px rgba(0, 0, 0, 0.04);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Left side - Back button */
@@ -173,6 +175,382 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ------------------------------------
+   ADMIN VOTING CONTROL
+   ------------------------------------ */
+
+/* Voting Settings Section */
+.voting-settings-section {
+  position: relative;
+}
+
+.voting-settings-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px dashed rgba(124, 58, 237, 0.6);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--primary-color-dark);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.voting-settings-btn:hover {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(124, 58, 237, 0.6);
+}
+
+.voting-settings-btn.voting-active {
+  background: rgba(34, 197, 94, 0.15);
+  border: 2px solid rgba(34, 197, 94, 0.5);
+  animation: votingButtonGlow 2s ease-in-out infinite;
+}
+
+@keyframes votingButtonGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px 2px rgba(34, 197, 94, 0.3);
+  }
+}
+
+.voting-settings-btn .material-icons {
+  font-size: 1.25rem;
+  color: var(--primary-color-dark);
+}
+
+.voting-settings-btn.voting-active .material-icons:first-child {
+  color: #16a34a;
+}
+
+.voting-settings-btn.voting-active .voting-settings-arrow {
+  color: #16a34a;
+}
+
+.voting-settings-arrow {
+  font-size: 1rem !important;
+  margin-left: -2px;
+}
+
+.voting-settings-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
+  border: 1px solid #e9d5ff;
+  padding: 16px;
+  min-width: 240px;
+  z-index: 200;
+  color: #333;
+}
+
+/* Close button for voting dropdown */
+.voting-dropdown-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.voting-dropdown-close:hover {
+  background: rgba(139, 92, 246, 0.1);
+  color: #7c3aed;
+}
+
+.voting-dropdown-close .material-icons {
+  font-size: 1.25rem;
+}
+
+.voting-settings-dropdown h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #7c3aed;
+}
+
+.voting-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.voting-setting-row label {
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.voting-setting-row.voting-setting-indent {
+  padding-left: 12px;
+  margin-top: -4px;
+}
+
+.voting-setting-row.voting-setting-indent label {
+  font-size: 0.85rem;
+  color: #9333ea;
+}
+
+/* Toggle Switch */
+.voting-toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #e9d5ff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.voting-toggle.active {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.voting-toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.voting-toggle.active .voting-toggle-slider {
+  transform: translateX(20px);
+}
+
+.voting-input-with-clear {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.voting-input-with-clear input {
+  width: 70px;
+  padding: 8px 10px;
+  padding-right: 28px;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: white;
+  transition: all 0.2s;
+}
+
+.voting-input-clear {
+  position: absolute;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: #e9d5ff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.voting-input-clear:hover {
+  background: #d8b4fe;
+}
+
+.voting-input-clear .material-icons {
+  font-size: 14px;
+  color: #7c3aed;
+}
+
+.voting-setting-row input {
+  width: 70px;
+  padding: 8px 10px;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: white;
+  transition: all 0.2s;
+}
+
+.voting-setting-row input:hover {
+  border-color: #d8b4fe;
+}
+
+.voting-setting-row input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.voting-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.voting-settings-cancel,
+.voting-settings-save {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.voting-settings-cancel {
+  background: transparent;
+  border: 1px solid #e9d5ff;
+  color: #7c3aed;
+}
+
+.voting-settings-cancel:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #d8b4fe;
+}
+
+.voting-settings-save {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+}
+
+.voting-settings-save:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.voting-settings-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
+  margin: 16px 0;
+}
+
+.voting-start-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #22c55a 0%, #16a34a 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.3);
+}
+
+.voting-start-btn:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.4);
+  transform: translateY(-1px);
+}
+
+.voting-start-btn .material-icons {
+  font-size: 20px;
+}
+
+/* Button group for Stop/New Round */
+.voting-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.voting-btn-group .voting-start-btn,
+.voting-btn-group .voting-stop-btn {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+}
+
+.voting-stop-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.voting-stop-btn:hover {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+.voting-stop-btn .material-icons {
+  font-size: 20px;
+}
+
+/* Reset rounds link */
+.voting-reset-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: #a78bfa;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 6px;
+}
+
+.voting-reset-link:hover {
+  color: #7c3aed;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.voting-reset-link .material-icons {
+  font-size: 16px;
 }
 
 .board-metadata {
@@ -278,9 +656,30 @@
     color: #333;
 }
 
-/* Close button for team dropdown - hidden on desktop */
-.team-dropdown-close.mobile-only {
-    display: none;
+/* Close button for team dropdown */
+.team-dropdown-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.team-dropdown-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #6b7280;
+}
+
+.team-dropdown-close .material-icons {
+    font-size: 1.25rem;
 }
 
 .team-settings-dropdown h4 {
@@ -369,22 +768,21 @@
     border: none;
     color: #9ca3af;
     cursor: pointer;
-    padding: 0.25rem;
+    padding: 0.25rem 0.5rem;
     display: flex;
     align-items: center;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    transition: all 0.15s;
 }
 
 .remove-member-btn:hover {
     color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
 }
 
-.remove-member-btn .material-icons {
-    font-size: 1rem;
-}
-
-/* Hide mobile-only text on desktop */
-.remove-member-btn .remove-text.mobile-only {
-    display: none;
+.remove-member-btn .remove-text {
+    font-size: 0.8rem;
 }
 
 /* ====================================
@@ -450,6 +848,51 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+  }
+
+  /* Voting settings - compact for mobile */
+  .voting-settings-section {
+    position: static;
+  }
+
+  .voting-settings-btn {
+    gap: 0.3rem;
+    padding: 0.45rem 0.675rem;
+    font-size: 0.825rem;
+  }
+
+  .voting-settings-btn .material-icons {
+    font-size: 1rem;
+  }
+
+  .voting-settings-label {
+    display: none; /* Hide text on mobile, show only icon */
+  }
+
+  .voting-settings-arrow {
+    display: none; /* Hide arrow on mobile */
+  }
+
+  .voting-settings-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: auto;
+    left: 12px;
+    right: 12px;
+    margin-top: 8px;
+    max-width: calc(100vw - 24px);
+  }
+
+  /* Subtle divider after Voting button on mobile */
+  .voting-settings-section::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.1);
   }
 
   /* Subtle divider after Team button on mobile */
@@ -647,50 +1090,7 @@
     overflow-y: auto;
   }
 
-  /* Show close button on mobile */
-  .team-dropdown-close.mobile-only {
-    display: flex;
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: rgba(124, 58, 237, 0.1);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    color: #7c3aed;
-    transition: all 0.15s;
-  }
-
-  .team-dropdown-close.mobile-only:hover {
-    background: rgba(124, 58, 237, 0.2);
-  }
-
-  .team-dropdown-close.mobile-only .material-icons {
-    font-size: 1.1rem;
-  }
-
-  /* Remove member button - show text instead of icon on mobile */
-  .remove-member-btn .material-icons.desktop-only {
-    display: none;
-  }
-
-  .remove-member-btn .remove-text.mobile-only {
-    display: inline;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #ef4444;
-    padding: 4px 8px;
-    background: rgba(239, 68, 68, 0.1);
-    border-radius: 4px;
-  }
-
-  .remove-member-btn:hover .remove-text.mobile-only {
-    background: rgba(239, 68, 68, 0.2);
-  }
+  /* Mobile-only overrides removed - these styles now apply to all screen sizes */
 
   /* Hide delete/lock buttons in metadata section on mobile - they're in Controls panel */
   .delete-board-btn,

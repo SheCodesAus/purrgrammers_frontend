@@ -620,9 +620,18 @@
 /* Tablet */
 @media (max-width: 1024px) {
   .retro-column {
-    width: 340px;
-    min-width: 340px;
+    width: 300px;
+    min-width: 280px;
     max-width: 100%;
+    flex-shrink: 1;
+  }
+}
+
+/* Small tablet / large phone */
+@media (max-width: 900px) {
+  .retro-column {
+    width: 260px;
+    min-width: 240px;
   }
 }
 

@@ -2,15 +2,15 @@
 .action-bar {
     position: relative;
     width: 280px;
-    background: white;
-    border-left: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-left: 1px solid #e9d5ff;
     display: flex;
     flex-direction: column;
     transition: width 0.3s ease;
     flex-shrink: 0;
     overflow: visible;
     border-radius: 0 12px 0px 12px;
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.08);
+    box-shadow: -4px 0 12px rgba(139, 92, 246, 0.15);
 }
 
 .action-bar.collapsed {
@@ -29,31 +29,33 @@
     top: 20px;
     width: 32px;
     height: 32px;
-    background: white;
-    border: 1px solid #d1d5db;
+    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+    border: none;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 10;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
 }
 
 .action-bar-toggle:hover {
-    background: #f3f4f6;
+    background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+    transform: scale(1.05);
 }
 
 .action-bar-toggle .material-icons {
     font-size: 1.25rem;
-    color: #6b7280;
+    color: white;
 }
 
 .action-bar-badge {
     position: absolute;
     top: -6px;
     right: -6px;
-    background: #667eea;
+    background: linear-gradient(135deg, #db2777 0%, #ec4899 100%);
     color: white;
     font-size: 0.65rem;
     font-weight: 600;
@@ -64,6 +66,7 @@
     align-items: center;
     justify-content: center;
     padding: 0 4px;
+    box-shadow: 0 2px 4px rgba(219, 39, 119, 0.3);
 }
 
 /* Content Area */
@@ -79,8 +82,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-    background: white;
+    border-bottom: 1px solid #e9d5ff;
+    background: transparent;
 }
 
 .action-bar-header h3 {
@@ -90,20 +93,20 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: #374151;
+    color: #7c3aed;
 }
 
 .action-bar-header .material-icons {
     font-size: 1.25rem;
-    color: #667eea;
+    color: #9333ea;
 }
 
 .action-count {
-    background: #e5e7eb;
-    color: #374151;
+    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+    color: white;
     font-size: 0.75rem;
     font-weight: 600;
-    padding: 2px 8px;
+    padding: 2px 10px;
     border-radius: 12px;
 }
 
@@ -112,28 +115,30 @@
     display: flex;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
+    background: transparent;
+    border-bottom: 1px solid #e9d5ff;
 }
 
 .action-bar__input {
     flex: 1;
     min-width: 0;
     padding: 0.5rem 0.6rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e9d5ff;
     border-radius: 6px;
     font-size: 0.8rem;
     color: #374151;
-    transition: border-color 0.2s;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .action-bar__input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .action-bar__input::placeholder {
-    color: #9ca3af;
+    color: #a78bfa;
 }
 
 .action-bar__input:disabled {
@@ -146,20 +151,21 @@
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
-    background: #667eea;
+    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
     border: none;
     border-radius: 6px;
     color: white;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
 .action-bar__submit-btn:hover:not(:disabled) {
-    background: #5a67d8;
+    background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+    transform: scale(1.05);
 }
 
 .action-bar__submit-btn:disabled {
-    background: #d1d5db;
+    background: #d8b4fe;
     cursor: not-allowed;
 }
 
@@ -175,7 +181,7 @@
 }
 
 .action-bar__empty {
-    color: #9ca3af;
+    color: #a78bfa;
     font-size: 0.85rem;
     text-align: center;
     padding: 1rem;
@@ -185,15 +191,17 @@
 /* Individual Action Item */
 .action-bar__item {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
+    border: 1px solid #e9d5ff;
+    border-radius: 8px;
     padding: 0.75rem;
     margin-bottom: 0.5rem;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.05);
 }
 
 .action-bar__item:hover {
-    border-color: #d1d5db;
+    border-color: #c4b5fd;
+    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.1);
 }
 
 .action-bar__item--loading {
@@ -245,7 +253,7 @@
 
 .action-bar__assignee-btn {
     background: transparent;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e9d5ff;
     border-radius: 50%;
     width: 28px;
     height: 28px;
@@ -258,18 +266,18 @@
 }
 
 .action-bar__assignee-btn:hover {
-    background: #f3f4f6;
-    border-color: #d1d5db;
+    background: rgba(124, 58, 237, 0.1);
+    border-color: #c4b5fd;
 }
 
 .action-bar__assignee-btn .material-icons {
     font-size: 1rem;
-    color: #9ca3af;
+    color: #a78bfa;
 }
 
 .action-bar__assignee-select {
     padding: 4px 8px;
-    border: 1px solid #d1d5db;
+    border: 1px solid #e9d5ff;
     border-radius: 4px;
     font-size: 0.8rem;
     background: white;
@@ -278,7 +286,8 @@
 
 .action-bar__assignee-select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 /* Action Buttons */
@@ -287,7 +296,7 @@
     gap: 0.25rem;
     justify-content: flex-end;
     padding-top: 0.5rem;
-    border-top: 1px solid #f3f4f6;
+    border-top: 1px solid #f3e8ff;
 }
 
 .action-bar__delete-btn {
@@ -300,11 +309,11 @@
     align-items: center;
     justify-content: center;
     transition: background 0.2s, color 0.2s;
-    color: #9ca3af;
+    color: #c4b5fd;
 }
 
 .action-bar__delete-btn:hover {
-    background: #fee2e2;
+    background: #fecaca;
     color: #ef4444;
 }
 
@@ -331,7 +340,8 @@
         top: 0;
         bottom: 0;
         z-index: 100;
-        border-left: 1px solid #d1d5db;
+        border-left: 1px solid #e9d5ff;
+        box-shadow: -4px 0 20px rgba(139, 92, 246, 0.2);
     }
 
     .action-bar.collapsed {

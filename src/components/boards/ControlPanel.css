@@ -23,10 +23,11 @@
     backdrop-filter: blur(10px);
     border: 1px solid #e5e7eb;
     width: auto;
-    max-width: 90vw;
+    max-width: calc(100vw - 40px);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     flex-wrap: nowrap;
+    box-sizing: border-box;
 }
 
 /* Expand Tab (collapsed state) */
@@ -314,6 +315,55 @@
     gap: 1rem;
 }
 
+.control-panel__voting-info--active {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin: -0.5rem -0.75rem;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+/* Voting Indicator with Pulse */
+.control-panel__voting-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.voting-pulse {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: votingPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+}
+
+@keyframes votingPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
+.voting-live-text {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #16a34a;
+    letter-spacing: 0.05em;
+}
+
+.control-panel__voting-status {
+    font-size: 0.85rem;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
 .control-panel__voting-round {
     display: flex;
     align-items: center;
@@ -357,12 +407,25 @@
    RESPONSIVE
    ==================================== */
 
+@media (max-width: 1100px) {
+    .control-panel {
+        gap: 1.5rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .control-panel__section-title {
+        display: none;
+    }
+
+    .control-panel__card-hint {
+        display: none;
+    }
+}
+
 @media (max-width: 900px) {
     .control-panel {
-        flex-wrap: wrap;
-        justify-content: center;
         gap: 1rem;
-        padding: 1rem;
+        padding: 0.75rem 1rem;
     }
 
     .control-panel__divider {
@@ -370,25 +433,67 @@
     }
 
     .control-panel__section {
-        flex-direction: column;
         gap: 0.5rem;
     }
 
-    .control-panel__card-area {
-        flex-direction: column;
+    .control-panel__btn-group {
+        gap: 0.35rem;
     }
 
-    .control-panel__card-hint {
-        text-align: center;
-        max-width: none;
+    .control-panel__btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .control-panel__btn .material-icons {
+        font-size: 1rem;
+    }
+
+    /* Hide button text, show only icons */
+    .control-panel__btn span:not(.material-icons) {
+        display: none;
+    }
+
+    /* Compact card area */
+    .control-panel__card-area {
+        gap: 0.5rem;
+    }
+
+    .control-panel__draggable-card {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        min-height: 40px;
+    }
+
+    /* Compact voting info */
+    .control-panel__voting-info--active {
+        padding: 0.35rem 0.5rem;
+        margin: -0.35rem -0.5rem;
+        gap: 0.5rem;
+    }
+
+    .voting-live-text {
+        display: none;
+    }
+
+    .control-panel__voting-round span:not(.material-icons) {
+        display: none;
+    }
+
+    .control-panel__votes-remaining .votes-label {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    /* Hide drag card section on very small screens */
+    .control-panel__section:has(.control-panel__card-area) {
+        display: none;
     }
 }
 
 @media (max-width: 600px) {
-    .control-panel__section-title {
-        display: none;
-    }
-
     .control-panel__btn-group {
         flex-wrap: wrap;
         justify-content: center;

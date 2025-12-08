@@ -6,6 +6,8 @@
   overflow: visible;
   position: relative;
   padding: 30px 20px 0 20px; /* Gradient shows on top and sides */
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 /* Main wrapper - holds content and panel side by side */
@@ -25,12 +27,13 @@
   display: flex;
   flex-direction: row;
   gap: 0;
-  overflow: visible;
+  overflow: hidden;
   min-height: 0;
   background: white;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
 }
 
 /* Columns container - no scroll, expands with content */
@@ -41,6 +44,8 @@
   padding: 20px;
   background: white;
   border-radius: 0 0 12px 12px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Inner wrapper for centering columns */
@@ -199,10 +204,20 @@
 @media (max-width: 1024px) {
   .board {
     padding: 20px 12px 0 12px;
+    overflow-x: hidden;
+  }
+
+  .board-main {
+    max-width: 100%;
+  }
+
+  .board-content {
+    max-width: 100%;
   }
 
   .columns-container {
     padding: 16px;
+    max-width: 100%;
   }
 
   .columns-inner {
@@ -220,15 +235,17 @@
   .board {
     padding: 12px 8px 0 8px;
     min-height: auto;
-    overflow: visible;
+    overflow-x: hidden;
   }
 
   .board-main {
     flex-direction: column;
+    max-width: 100%;
   }
 
   .board-content {
     border-radius: 0 0 10px 10px;
+    max-width: 100%;
   }
 
   .columns-container {
@@ -237,6 +254,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     border-radius: 0 0 12px 12px;
+    max-width: 100%;
   }
 
   .columns-inner {

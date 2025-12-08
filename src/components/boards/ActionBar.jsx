@@ -19,7 +19,7 @@ function ActionBar({
     const { auth } = useAuth();
     const { showToast } = useToast(); 
     const { confirm } = useConfirm();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState({});
     const [newItemText, setNewItemText] = useState('');

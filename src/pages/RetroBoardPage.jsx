@@ -63,7 +63,14 @@ function RetroBoardPage() {
         return (
             <div className="retro-board-page">
                 <div className="loading-container">
-                    <p>Loading board...</p>
+                    <div className="wave-loader">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <p className="loading-text">Loading...</p>
                 </div>
             </div>
         );

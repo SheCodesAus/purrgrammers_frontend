@@ -472,7 +472,16 @@ function Dashboard() {
         {/* Teams and Boards */}
         <div className="dashboard-content">
           {teamsWithBoards.isLoading ? (
-            <p className="loading-text">Loading...</p>
+            <div className="loading-container">
+              <div className="wave-loader">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <p className="loading-text">Loading...</p>
+            </div>
           ) : teamsWithBoards.error ? (
             <p className="error-text">Error: {teamsWithBoards.error}</p>
           ) : teamsWithBoards.data.length === 0 ? (
