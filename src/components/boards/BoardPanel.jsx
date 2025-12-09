@@ -81,9 +81,9 @@ function BoardPanel({
     }, [isMobileOpen, onMobileClose]);
 
     const statusOptions = [
-        { value: 'todo', label: 'To Do', color: '#6b7280' },
-        { value: 'in_progress', label: 'In Progress', color: '#f59e0b' },
-        { value: 'completed', label: 'Completed', color: '#22c55e' }
+        { value: 'todo', label: 'To Do', color: '#d8b4fe' },
+        { value: 'in_progress', label: 'In Progress', color: '#c4b5fd' },
+        { value: 'completed', label: 'Completed', color: '#a78bfa' }
     ];
 
     // Action Item handlers
@@ -465,7 +465,7 @@ function BoardPanel({
                             </h4>
                             <div className="board-panel__btn-group">
                                 <button 
-                                    className="board-panel__btn board-panel__btn--secondary"
+                                    className="board-panel__btn board-panel__btn--accent"
                                     onClick={handleViewReports}
                                     title="View detailed reports"
                                 >
@@ -492,7 +492,7 @@ function BoardPanel({
                                 </span>
                             </div>
                             <button 
-                                className={`board-panel__btn ${isActive ? 'board-panel__btn--secondary' : 'board-panel__btn--primary'}`}
+                                className={`board-panel__btn ${isActive ? 'board-panel__btn--primary' : 'board-panel__btn--primary'}`}
                                 onClick={handleToggleStatus}
                             >
                                 <span className="material-icons">{isActive ? 'lock' : 'lock_open'}</span>
@@ -551,6 +551,13 @@ function BoardPanel({
                 <div className="board-panel--mobile" ref={panelRef}>
                     <div className="board-panel__mobile-dropdown">
                         {panelContent}
+                        <button 
+                            className="board-panel__mobile-close"
+                            onClick={onMobileClose}
+                            title="Close panel"
+                        >
+                            <span className="material-icons">close</span>
+                        </button>
                     </div>
                 </div>
             )}

@@ -674,9 +674,10 @@
         top: 120px;
         left: 12px;
         right: 12px;
-        background: white;
+        background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+        border: 1px solid #e9d5ff;
         border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
         z-index: 1000;
         max-height: calc(100vh - 150px);
         overflow: hidden;
@@ -695,6 +696,56 @@
     .board-panel__mobile-dropdown .board-panel__body {
         overflow-y: auto;
         flex: 1;
+    }
+
+    .board-panel__mobile-dropdown .board-panel__header {
+        background: transparent;
+        border-bottom: 1px solid #e9d5ff;
+        position: relative;
+        padding-right: 48px;
+    }
+
+    .board-panel__mobile-dropdown .board-panel__tab {
+        background: transparent;
+    }
+
+    .board-panel__mobile-dropdown .board-panel__tab:hover {
+        background: rgba(139, 92, 246, 0.1);
+    }
+
+    .board-panel__mobile-dropdown .board-panel__form {
+        background: transparent;
+        border-bottom: 1px solid #e9d5ff;
+    }
+
+    .board-panel__mobile-dropdown .board-panel__section {
+        background: transparent;
+    }
+
+    /* Mobile close button */
+    .board-panel__mobile-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: transparent;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        z-index: 10;
+    }
+
+    .board-panel__mobile-close:hover {
+        background: rgba(139, 92, 246, 0.1);
+        color: #7c3aed;
+    }
+
+    .board-panel__mobile-close .material-icons {
+        font-size: 1.25rem;
     }
 
     /* Hide drag card section on mobile */

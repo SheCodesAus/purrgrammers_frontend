@@ -130,16 +130,21 @@ function Column({
                 {/* Column Title - Click to Edit */}
                 {isEditingTitle ? (
                     <>
-                        <input
-                            type="text"
+                        <textarea
                             value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
+                            onChange={(e) => {
+                                setEditTitle(e.target.value);
+                                // Auto-resize textarea
+                                e.target.style.height = 'auto';
+                                e.target.style.height = e.target.scrollHeight + 'px';
+                            }}
                             onBlur={() => {
                                 handleTitleSave();
                                 setIsEditingTitle(false);
                             }}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
                                     handleTitleSave();
                                     setIsEditingTitle(false);
                                 } else if (e.key === 'Escape') {
@@ -148,8 +153,14 @@ function Column({
                                 }
                             }}
                             className="column-title-input"
-                            maxLength={50}
                             autoFocus
+                            rows={1}
+                            ref={(el) => {
+                                if (el) {
+                                    el.style.height = 'auto';
+                                    el.style.height = el.scrollHeight + 'px';
+                                }
+                            }}
                         />
                         <button
                             className="column-cancel-title-btn mobile-only"

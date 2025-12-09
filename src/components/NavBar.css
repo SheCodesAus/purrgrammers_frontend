@@ -36,9 +36,9 @@
 }
 
 .nav-logo-img {
-  height: 80px;
+  height: 60px;
   width: auto;
-  padding-top: 30px;
+  padding-top: 10px;
 }
 
 
@@ -115,7 +115,7 @@
   position: relative;
 }
 
-.nav-user-profile {
+.nav-user-display {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -123,16 +123,9 @@
   border: 1px solid rgba(167, 139, 250, 0.3);
   border-radius: 24px;
   padding: 0.4rem 0.8rem;
-  cursor: pointer;
   font-family: inherit;
   font-size: 0.9rem;
   color: #24127b;
-  transition: all 0.2s ease;
-}
-
-.nav-user-profile:hover {
-  background: rgba(255, 255, 255, 0.5);
-  border-color: rgba(167, 139, 250, 0.5);
 }
 
 .nav-user-icon {

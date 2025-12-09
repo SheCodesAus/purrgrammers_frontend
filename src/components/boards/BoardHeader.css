@@ -461,12 +461,12 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 10px 16px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, #22c55a 0%, #16a34a 100%);
   border: none;
   border-radius: 8px;
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -492,8 +492,8 @@
 .voting-btn-group .voting-start-btn,
 .voting-btn-group .voting-stop-btn {
   flex: 1;
-  padding: 10px 12px;
-  font-size: 0.85rem;
+  padding: 8px 10px;
+  font-size: 0.75rem;
 }
 
 .voting-stop-btn {
@@ -502,12 +502,12 @@
   justify-content: center;
   gap: 6px;
   width: 100%;
-  padding: 10px 16px;
+  padding: 8px 12px;
   background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
   border: none;
   border-radius: 8px;
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;

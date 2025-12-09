@@ -33,7 +33,7 @@ function ReportModal({ boardId, token, onClose }) {
     <div className="report-modal-overlay" onClick={handleOverlayClick}>
       <div className="report-modal">
         <div className="report-modal-header">
-          <h2>📊 Board Report</h2>
+          <h2>Board Report</h2>
           <button className="report-modal-close" onClick={onClose}>
             <span className="material-icons">close</span>
           </button>
@@ -80,7 +80,7 @@ function ReportModal({ boardId, token, onClose }) {
             {/* Columns & Tags */}
             <div className="report-grid">
               <div className="report-section">
-                <h3>📋 Columns</h3>
+                <h3>Columns</h3>
                 {report.board_summary?.columns?.length > 0 ? (
                   <ul className="report-list">
                     {report.board_summary.columns.map((col, idx) => (
@@ -96,7 +96,7 @@ function ReportModal({ boardId, token, onClose }) {
               </div>
 
               <div className="report-section">
-                <h3>🏷️ Tags</h3>
+                <h3>Tags</h3>
                 {report.tag_summary?.length > 0 ? (
                   <ul className="report-list">
                     {report.tag_summary.map((tag, idx) => (
@@ -114,7 +114,7 @@ function ReportModal({ boardId, token, onClose }) {
 
             {/* Top Voted Cards */}
             <div className="report-section">
-              <h3>🔥 Top Voted Cards</h3>
+              <h3>Top Voted Cards</h3>
               {report.top_voted_cards?.length > 0 ? (
                 <ul className="top-voted-list">
                   {report.top_voted_cards.map((card, idx) => (
@@ -129,9 +129,6 @@ function ReportModal({ boardId, token, onClose }) {
                           ))}
                         </div>
                       </div>
-                      <span className="top-voted-votes">
-                        👍 {card.votes}
-                      </span>
                     </li>
                   ))}
                 </ul>
@@ -142,7 +139,7 @@ function ReportModal({ boardId, token, onClose }) {
 
             {/* User Engagement */}
             <div className="report-section">
-              <h3>👥 User Engagement</h3>
+              <h3>User Engagement</h3>
               {report.user_engagement?.length > 0 ? (
                 <ul className="engagement-list">
                   {report.user_engagement.map((user, idx) => (
@@ -166,7 +163,7 @@ function ReportModal({ boardId, token, onClose }) {
 
             {/* Action Items */}
             <div className="report-section">
-              <h3>✅ Action Items</h3>
+              <h3>Action Items</h3>
               {report.action_items?.total > 0 ? (
                 <>
                   <div className="action-items-summary">

@@ -20,11 +20,15 @@
   width: 100%;
   max-width: 700px;
   max-height: 85vh;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Modal Header */
+.report-modal-content {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(85vh - 70px);
+}
 .report-modal-header {
   display: flex;
   justify-content: space-between;
@@ -40,7 +44,7 @@
 
 .report-modal-header h2 {
   margin: 0;
-  color: #1f2937;
+  color: var(--primary-color-dark);
   font-size: 1.35rem;
   font-weight: 600;
   display: flex;
@@ -69,11 +73,6 @@
 
 .report-modal-close .material-icons {
   font-size: 1.25rem;
-}
-
-/* Modal Content */
-.report-modal-content {
-  padding: 24px;
 }
 
 /* Summary Stats */
@@ -109,8 +108,8 @@
 
 /* Report Sections */
 .report-section {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: #f3e8ff;
+  border: 1px solid #e9d5ff;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
@@ -122,7 +121,7 @@
 
 .report-section h3 {
   margin: 0 0 16px 0;
-  color: #374151;
+  color: var(--primary-color-dark);
   font-size: 1rem;
   font-weight: 600;
   display: flex;
@@ -196,7 +195,7 @@
 }
 
 .top-voted-rank {
-  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  background: #7c3aed;
   color: white;
   width: 28px;
   height: 28px;
@@ -318,9 +317,9 @@
 }
 
 .action-stat-value.total { color: #7c3aed; }
-.action-stat-value.pending { color: #f59e0b; }
-.action-stat-value.in-progress { color: #3b82f6; }
-.action-stat-value.completed { color: #10b981; }
+.action-stat-value.pending { color: #d8b4fe; }
+.action-stat-value.in-progress { color: #c4b5fd; }
+.action-stat-value.completed { color: #a78bfa; }
 
 .action-stat-label {
   font-size: 0.7rem;

@@ -26,9 +26,9 @@ function ActionBar({
     const [isCreating, setIsCreating] = useState(false);
 
     const statusOptions = [
-        { value: 'todo', label: 'To Do', color: '#6b7280' },
-        { value: 'in_progress', label: 'In Progress', color: '#f59e0b' },
-        { value: 'completed', label: 'Completed', color: '#22c55e' }
+        { value: 'todo', label: 'To Do', color: '#d8b4fe' },
+        { value: 'in_progress', label: 'In Progress', color: '#c4b5fd' },
+        { value: 'completed', label: 'Completed', color: '#a78bfa' }
     ];
 
     const handleStatusChange = async (actionItemId, newStatus) => {

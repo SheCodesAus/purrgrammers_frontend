@@ -153,7 +153,6 @@ function ControlPanel({
 
             {/* Cards Section */}
             <div className="control-panel__section">
-                <h4 className="control-panel__section-title">Add Cards</h4>
                 <div className="control-panel__card-area">
                     <DraggableCard
                         isDragging={dragState.isDragging}
@@ -178,16 +177,14 @@ function ControlPanel({
 
             {/* Reports Section */}
             <div className="control-panel__section">
-                <div className="control-panel__btn-group">
-                    <button 
-                        className="control-panel__btn control-panel__btn--secondary"
-                        onClick={handleViewReports}
-                        title="View detailed reports"
-                    >
-                        <span className="material-icons">analytics</span>
-                        Reports
-                    </button>
-                </div>
+                <button 
+                    className="control-panel__btn control-panel__btn--secondary"
+                    onClick={handleViewReports}
+                    title="View detailed reports"
+                >
+                    <span className="material-icons">analytics</span>
+                    Reports
+                </button>
             </div>
             </div>
         </div>
