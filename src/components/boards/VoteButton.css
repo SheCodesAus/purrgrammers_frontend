@@ -63,8 +63,7 @@
     padding: 0;
     border: none;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: bold;

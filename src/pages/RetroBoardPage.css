@@ -2,7 +2,7 @@
 .retro-board-page {
   background: transparent;
   min-height: calc(100vh - 60px);
-  max-width: 100vw;
+  max-width: 100%;
   overflow-x: hidden;
 }
 

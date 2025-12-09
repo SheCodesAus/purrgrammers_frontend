@@ -2,18 +2,10 @@
   min-height: 100vh;
 }
 
-/* Hide scrollbar on Dashboard and RetroBoard but allow scrolling */
 .app.dashboard-page,
 .app.retroboard-gradient {
   overflow-y: auto;
   height: 100vh;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-
-.app.dashboard-page::-webkit-scrollbar,
-.app.retroboard-gradient::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
 }
 
 .app.homepage-gradient {

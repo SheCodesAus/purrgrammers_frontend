@@ -3,10 +3,10 @@
   min-height: calc(100vh - 60px); /* At least full height */
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow-x: hidden; /* Prevent horizontal scroll causing layout thrashing */
   position: relative;
   padding: 30px 20px 0 20px; /* Gradient shows on top and sides */
-  max-width: 100vw;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -54,10 +54,8 @@
   flex-wrap: nowrap;
   gap: 20px;
   align-items: stretch;
-  min-width: min-content;
   min-height: 100%;
   margin: 0 auto;
-  width: fit-content;
 }
 
 /* Add column button */

@@ -6,6 +6,7 @@ import BoardPanel from "./BoardPanel";
 import ActionBar from "./ActionBar";
 import ControlPanel from "./ControlPanel";
 import CardModal from "./CardModal";
+import ReportModal from "./ReportModal";
 import createCard from "../../api/create-card";
 import createColumn from "../../api/create-column";
 import deleteColumn from "../../api/delete-column";
@@ -40,6 +41,9 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     
     // Mobile controls panel state
     const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(false);
+    
+    // Report modal state
+    const [showReportModal, setShowReportModal] = useState(false);
     
     // Helper to check if voting round is valid (not null, not empty object)
     const isValidVotingRound = (round) => {
@@ -496,7 +500,11 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
     // Column management
     const handleAddColumn = async () => {
         try {
-            const nextPosition = (boardData?.columns?.length || 0) + 1;
+            // Find the max position among existing columns, then add 1
+            const maxPosition = boardData?.columns?.reduce((max, col) => 
+                Math.max(max, col.position || 0), 0) || 0;
+            const nextPosition = maxPosition + 1;
+            
             const columnData = {
                 retro_board: parseInt(boardData?.id, 10),
                 title: "New Column",
@@ -853,6 +861,9 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onAddColumn={handleAddColumn}
+                        boardId={boardData?.id}
+                        token={auth.token}
+                        onShowReport={() => setShowReportModal(true)}
                         currentVotingRound={currentVotingRound}
                         remainingVotes={remainingVotes}
                         maxVotesPerRound={maxVotesPerRound}
@@ -883,6 +894,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     isActive={boardData?.is_active}
                     onBoardStatusChange={handleBoardStatusChange}
                     onBoardDelete={handleBoardDelete}
+                    onShowReport={() => setShowReportModal(true)}
                     isMobileOpen={isMobileControlsOpen}
                     onMobileClose={() => setIsMobileControlsOpen(false)}
                     mobileOnly={true}
@@ -956,6 +968,16 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 <div className="error-message">
                     {cardError}
                 </div>
+            )}
+
+            {/* Report Modal */}
+            {showReportModal && (
+                <ReportModal
+                    boardId={boardData?.id}
+                    boardTitle={boardData?.title}
+                    token={auth.token}
+                    onClose={() => setShowReportModal(false)}
+                />
             )}
         </div>
     );

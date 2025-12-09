@@ -291,12 +291,15 @@ function Column({
                                 color={column.color || '#e2e8f0'}
                                 onChange={handleColorChange}
                                 colors={[
-                                    '#FCA5A5', '#FDBA74', '#FDE047', '#A7F3D0', 
-                                    '#67E8F9', '#93C5FD', '#C4B5FD', '#F9A8D4', 
-                                    '#FB7185', '#F472B6', '#E879F9', '#C084FC',
-                                    '#A78BFA', '#818CF8', '#60A5FA', '#34D399',
-                                    '#4ADE80', '#84CC16', '#EAB308', '#FB923C',
-                                    '#F87171', '#EC4899', '#D946EF', '#A855F7'
+                                    // Default column colors
+                                    '#d3bdff', '#ffd3a8', '#e2e8f0',
+                                    // Light pastels - easy to read text
+                                    '#FEE2E2', '#FFEDD5', '#FEF9C3', '#DCFCE7', 
+                                    '#CFFAFE', '#DBEAFE', '#EDE9FE', '#FCE7F3',
+                                    '#FED7AA', '#D9F99D', '#A7F3D0', '#BAE6FD',
+                                    '#DDD6FE', '#FBCFE8', '#FDE68A', '#E0E7FF',
+                                    '#F5D0FE', '#FECACA', '#E9D5FF', '#D1FAE5',
+                                    '#CCFBF1', '#C7D2FE', '#FECDD3', '#FEF3C7'
                                 ]}
                                 triangle="top-left"
                             />

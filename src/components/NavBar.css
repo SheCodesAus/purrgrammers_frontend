@@ -4,14 +4,12 @@
   top: 0;
   z-index: 100;
   background-color: transparent;
-  transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Gradient with opacity when scrolled */
 .nav-container.scrolled {
   background: linear-gradient(90deg, rgba(192, 132, 252, 0.95) 0%, rgba(167, 139, 250, 0.95) 50%, rgba(244, 114, 182, 0.95) 100%) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 20px rgba(192, 132, 252, 0.15);
   border-bottom: 1px solid rgba(192, 132, 252, 0.4);
 }
@@ -22,8 +20,6 @@
 
 .nav-container.nav-gradient.scrolled {
   background: linear-gradient(90deg, rgba(192, 132, 252, 0.95) 0%, rgba(167, 139, 250, 0.95) 50%, rgba(244, 114, 182, 0.95) 100%) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .nav-bar {

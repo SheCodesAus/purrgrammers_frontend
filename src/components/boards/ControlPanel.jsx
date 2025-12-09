@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useToast } from '../ToastProvider';
 import './ControlPanel.css';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 function ControlPanel({
     dragState,
     isCreatingCard,
@@ -9,6 +11,8 @@ function ControlPanel({
     onDragEnd,
     onAddColumn,
     boardId,
+    token,
+    onShowReport,
     currentVotingRound,
     remainingVotes,
     maxVotesPerRound,
@@ -17,14 +21,56 @@ function ControlPanel({
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const { showToast } = useToast();
 
-    const handleExport = (format) => {
-        // Placeholder for export functionality
-        showToast(`Export to ${format.toUpperCase()} coming soon!`);
+    const handleExportCSV = async () => {
+        if (!boardId || !token) {
+            showToast('Unable to export - missing board info');
+            return;
+        }
+        
+        const url = `${BASE_URL}/api/retro-boards/${boardId}/report/?format=csv`;
+        console.log('CSV Export - URL:', url);
+        console.log('CSV Export - Token:', token ? 'present' : 'missing');
+        
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: token,
+                },
+            });
+            
+            console.log('CSV Export - Response status:', response.status);
+            console.log('CSV Export - Content-Type:', response.headers.get('content-type'));
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('CSV Export - Error response:', errorText);
+                throw new Error('Failed to download report');
+            }
+            
+            // Get the blob and trigger download
+            const blob = await response.blob();
+            console.log('CSV Export - Blob size:', blob.size, 'type:', blob.type);
+            
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `board_${boardId}_report.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(downloadUrl);
+            a.remove();
+            
+            showToast('CSV report downloaded!', 'success');
+        } catch (error) {
+            console.error('CSV export error:', error);
+            showToast('Failed to download CSV report');
+        }
     };
 
     const handleViewReports = () => {
-        // Placeholder - will navigate to reports page
-        showToast('Reports page coming soon!');
+        if (onShowReport) {
+            onShowReport();
+        }
     };
 
     if (isCollapsed) {
@@ -91,6 +137,20 @@ function ControlPanel({
             {/* Divider */}
             <div className="control-panel__divider" />
 
+            {/* Columns Section */}
+            <div className="control-panel__section">
+                <button 
+                    className="control-panel__btn control-panel__btn--primary"
+                    onClick={onAddColumn}
+                >
+                    <span className="material-icons">add</span>
+                    Add Column
+                </button>
+            </div>
+
+            {/* Divider */}
+            <div className="control-panel__divider" />
+
             {/* Cards Section */}
             <div className="control-panel__section">
                 <h4 className="control-panel__section-title">Add Cards</h4>
@@ -116,41 +176,9 @@ function ControlPanel({
             {/* Divider */}
             <div className="control-panel__divider" />
 
-            {/* Columns Section */}
-            <div className="control-panel__section">
-                <h4 className="control-panel__section-title">Columns</h4>
-                <button 
-                    className="control-panel__btn control-panel__btn--primary"
-                    onClick={onAddColumn}
-                >
-                    <span className="material-icons">add</span>
-                    Add Column
-                </button>
-            </div>
-
-            {/* Divider */}
-            <div className="control-panel__divider" />
-
             {/* Reports Section */}
             <div className="control-panel__section">
-                <h4 className="control-panel__section-title">Reports</h4>
                 <div className="control-panel__btn-group">
-                    <button 
-                        className="control-panel__btn control-panel__btn--secondary"
-                        onClick={() => handleExport('csv')}
-                        title="Export board data as CSV"
-                    >
-                        <span className="material-icons">download</span>
-                        CSV
-                    </button>
-                    <button 
-                        className="control-panel__btn control-panel__btn--secondary"
-                        onClick={() => handleExport('pdf')}
-                        title="Export board as PDF"
-                    >
-                        <span className="material-icons">picture_as_pdf</span>
-                        PDF
-                    </button>
                     <button 
                         className="control-panel__btn control-panel__btn--secondary"
                         onClick={handleViewReports}

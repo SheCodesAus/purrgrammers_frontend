@@ -5,57 +5,11 @@
   padding: 0;
   letter-spacing: 0.5px;
   font-family: var(--font-stack-sans-text);
-  /* Firefox scrollbar */
-  scrollbar-width: auto;
-  scrollbar-color: #8b5cf6 #ec4899;
 }
 
 html, body {
-  max-width: 100vw;
+  max-width: 100%;
   overflow-x: hidden;
-}
-
-/* Hide scrollbar on Dashboard */
-.dashboard-layout {
-  scrollbar-width: none; /* Firefox */
-}
-
-.dashboard-layout::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
-}
-
-/* WebKit scrollbar (Chrome, Safari, Edge) - targeting html specifically */
-html::-webkit-scrollbar,
-body::-webkit-scrollbar,
-*::-webkit-scrollbar {
-  width: 10px !important;
-  height: 10px !important;
-}
-
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track,
-*::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%) !important;
-  border-radius: 4px !important;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb,
-*::-webkit-scrollbar-thumb {
-  background: #c4b5fd !important;
-  border-radius: 4px !important;
-}
-
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover,
-*::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 1) !important;
-}
-
-html::-webkit-scrollbar-corner,
-body::-webkit-scrollbar-corner,
-*::-webkit-scrollbar-corner {
-  background: transparent !important;
 }
 
 /* Root styling goes here*/

@@ -10,6 +10,8 @@ import deleteBoard from '../../api/delete-board';
 import Avatar from '../Avatar';
 import './BoardPanel.css';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 function BoardPanel({ 
     // Action Items props
     actionItems = [], 
@@ -36,6 +38,8 @@ function BoardPanel({
     isActive,
     onBoardStatusChange,
     onBoardDelete,
+    // Report props
+    onShowReport,
     // Mobile state - controlled by parent
     isMobileOpen = false,
     onMobileClose,
@@ -157,12 +161,48 @@ function BoardPanel({
     };
 
     // Settings handlers
-    const handleExport = (format) => {
-        showToast(`Export to ${format.toUpperCase()} coming soon!`);
+    const handleExportCSV = async () => {
+        if (!boardId || !auth.token) {
+            showToast('Unable to export - missing board info');
+            return;
+        }
+        
+        try {
+            const response = await fetch(
+                `${BASE_URL}/api/retro-boards/${boardId}/report/?format=csv`,
+                {
+                    headers: {
+                        Authorization: auth.token,
+                    },
+                }
+            );
+            
+            if (!response.ok) {
+                throw new Error('Failed to download report');
+            }
+            
+            // Get the blob and trigger download
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `board_${boardId}_report.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+            
+            showToast('CSV report downloaded!', 'success');
+        } catch (error) {
+            console.error('CSV export error:', error);
+            showToast('Failed to download CSV report');
+        }
     };
 
     const handleViewReports = () => {
-        showToast('Reports page coming soon!');
+        if (onShowReport) {
+            onShowReport();
+        }
     };
 
     // Board management handlers
@@ -426,19 +466,11 @@ function BoardPanel({
                             <div className="board-panel__btn-group">
                                 <button 
                                     className="board-panel__btn board-panel__btn--secondary"
-                                    onClick={() => handleExport('csv')}
-                                    title="Export board data as CSV"
+                                    onClick={handleViewReports}
+                                    title="View detailed reports"
                                 >
-                                    <span className="material-icons">download</span>
-                                    CSV
-                                </button>
-                                <button 
-                                    className="board-panel__btn board-panel__btn--secondary"
-                                    onClick={() => handleExport('pdf')}
-                                    title="Export board as PDF"
-                                >
-                                    <span className="material-icons">picture_as_pdf</span>
-                                    PDF
+                                    <span className="material-icons">analytics</span>
+                                    Reports
                                 </button>
                             </div>
                         </div>

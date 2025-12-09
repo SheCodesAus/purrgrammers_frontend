@@ -6,8 +6,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   margin-bottom: 0px;
   border-top-left-radius: 10px;
@@ -30,8 +29,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
   padding: 6px 10px;
@@ -880,7 +878,7 @@
     left: 12px;
     right: 12px;
     margin-top: 8px;
-    max-width: calc(100vw - 24px);
+    max-width: calc(100% - 24px);
   }
 
   /* Subtle divider after Voting button on mobile */
@@ -1085,7 +1083,7 @@
     left: 12px;
     right: 12px;
     margin-top: 8px;
-    max-width: calc(100vw - 24px);
+    max-width: calc(100% - 24px);
     max-height: 60vh;
     overflow-y: auto;
   }
