@@ -5,7 +5,6 @@ import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import TeamsPage from "./pages/TeamsPage";
 import RetroBoardPage from "./pages/RetroBoardPage";
-import LoaderTest from "./pages/LoaderTest";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
@@ -16,10 +15,9 @@ const Layout = () => {
   const isGradientPage = location.pathname === "/" || location.pathname === "/dashboard";
   const isRetroBoardPage = location.pathname.startsWith("/retro-board");
   const isDashboard = location.pathname === "/dashboard";
-  const isLoaderTest = location.pathname === "/loader-test";
   
   let appClass = "app";
-  if (isGradientPage || isLoaderTest) appClass += " homepage-gradient";
+  if (isGradientPage) appClass += " homepage-gradient";
   if (isRetroBoardPage) appClass += " retroboard-gradient";
   if (isDashboard) appClass += " dashboard-page";
   
@@ -46,7 +44,6 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       { path: "/teams", element: <ProtectedRoute><TeamsPage /></ProtectedRoute>},
       { path: "/retro-board/:id", element: <ProtectedRoute><RetroBoardPage /></ProtectedRoute>},
-      { path: "/loader-test", element: <LoaderTest />},
     ],
   },
 ]);
