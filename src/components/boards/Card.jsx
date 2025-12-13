@@ -252,6 +252,7 @@ function Card({
                     columnTitle={columnTitle}
                     isOpen={isModalOpen}
                     remainingVotes={remainingVotes}
+                    maxVotesPerCard={maxVotesPerCard}
                     votingEnabled={votingEnabled}
                     availableTags={availableTags}
                     onClose={() => setIsModalOpen(false)}

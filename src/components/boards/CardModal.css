@@ -256,18 +256,26 @@
 }
 
 /* Votes */
-.card-modal__votes {
+.card-modal__voting {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.card-modal__vote-display {
+    display: flex;
+    align-items: baseline;
     gap: 0.5rem;
 }
 
-.card-modal__votes .material-icons {
-    font-size: 1.1rem;
-    color: rgba(0, 0, 0, 0.5);
+.card-modal__vote-count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #7c3aed;
 }
 
-.card-modal__vote-count {
+.card-modal__vote-label {
     font-size: 0.9rem;
     color: rgba(0, 0, 0, 0.6);
 }

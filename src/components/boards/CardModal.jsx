@@ -5,6 +5,7 @@ import { useConfirm } from "../ConfirmProvider";
 import patchCard from "../../api/patch-card";
 import deleteCard from "../../api/delete-card";
 import TagSelector from "./TagSelector";
+import VoteButton from "./VoteButton";
 import "./CardModal.css";
 
 function CardModal({
@@ -13,6 +14,8 @@ function CardModal({
     columnTitle,
     isOpen,
     remainingVotes,
+    maxVotesPerCard,
+    votingEnabled,
     availableTags = [],
     startInEditMode = false,
     onClose,
@@ -244,11 +247,26 @@ function CardModal({
 
                     {/* Votes Section */}
                     <div className="card-modal__section">
-                        <div className="card-modal__votes">
+                        <div className="card-modal__section-header">
                             <span className="material-icons">thumb_up</span>
-                            <span className="card-modal__vote-count">
-                                {card.vote_count || 0} {card.vote_count === 1 ? 'vote' : 'votes'}
-                            </span>
+                            <h3>Votes</h3>
+                        </div>
+                        <div className="card-modal__voting">
+                            <div className="card-modal__vote-display">
+                                <span className="card-modal__vote-count">
+                                    {card.vote_count || 0}
+                                </span>
+                                <span className="card-modal__vote-label">
+                                    {card.vote_count === 1 ? 'vote' : 'votes'}
+                                </span>
+                            </div>
+                            <VoteButton
+                                card={card}
+                                remainingVotes={remainingVotes}
+                                maxVotesPerCard={maxVotesPerCard}
+                                votingEnabled={votingEnabled}
+                                onVoteChange={onVoteChange}
+                            />
                         </div>
                     </div>
                 </div>
