@@ -1,12 +1,12 @@
 /* Main column container */
 .retro-column {
   flex: 1 0 auto; /* Grow to fill height */
-  width: 380px; /* Fixed width for consistent centering */
-  min-width: 380px; /* Keep minimum for readability */
-  max-width: 500px; /* Cap maximum width */
+  width: 320px; /* Fixed width for consistent centering */
+  min-width: 320px; /* Keep minimum for readability */
+  max-width: 420px; /* Cap maximum width */
   background: color-mix(in srgb, var(--column-color, white) 15%, white);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.875rem;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -32,14 +32,14 @@
 
 /* Column header */
 .column-header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
   position: relative;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.625rem;
   border-radius: 10px;
   background-color: color-mix(in srgb, var(--column-color) 40%, transparent);
   border: 2px solid var(--column-color);
@@ -47,7 +47,7 @@
 
 .column-title {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #374151;
   flex: 1;
@@ -75,7 +75,7 @@
   min-width: 0;
   padding: 4px 8px;
   margin: -4px -8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #374151;
   border: none;

@@ -355,12 +355,14 @@ function BoardHeader({
                             <span className="board-closed-badge">CLOSED</span>
                         )}
                     </div>
-                    {/* Mobile only: Created date below title */}
-                    {boardData?.created_at && (
-                        <span className="mobile-date">
-                            Created {formatDate(boardData.created_at)}
-                        </span>
-                    )}
+                    {/* Creator info */}
+                    <div className="board-meta-info">
+                        {boardData?.created_by?.username && (
+                            <span className="board-creator">
+                                by {boardData.created_by.username}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
 

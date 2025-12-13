@@ -74,13 +74,34 @@
 .title-wrapper {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   flex: 1;
+  gap: 0;
 }
 
 .title-input-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* Board meta info - creator */
+.board-meta-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.board-creator {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  color: #9ca3af;
 }
 
 /* Mobile date - hidden on desktop */
@@ -944,12 +965,22 @@
     display: none;
   }
   
-  /* Show mobile date below title */
-  .mobile-date {
-    display: block;
-    font-size: 0.75rem;
-    color: #9ca3af;
-    margin-top: 2px;
+  /* Adjust title wrapper and board meta info for mobile */
+  .title-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .board-meta-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-top: 0.35rem;
+  }
+
+  .board-date::before {
+    display: none;
   }
 
   .board-title-section {

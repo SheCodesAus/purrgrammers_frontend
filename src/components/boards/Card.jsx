@@ -57,12 +57,21 @@ function Card({
         };
     }, [isTagSelectorOpen]);
 
-    // Truncate text to ~120 characters with "... see more"
-    const MAX_LENGTH = 120;
-    const shouldTruncate = card.content && card.content.length > MAX_LENGTH;
-    const displayText = shouldTruncate 
-        ? card.content.slice(0, MAX_LENGTH).trim()
-        : (card.content || "Click to view");
+    // Truncate text to ~100 characters with "... see more"
+    const MAX_LENGTH = 100;
+    // Normalize whitespace: replace multiple spaces/newlines with single space
+    const normalizedContent = card.content?.replace(/\s+/g, ' ').trim() || "";
+    const shouldTruncate = normalizedContent.length > MAX_LENGTH;
+    
+    let displayText;
+    if (shouldTruncate) {
+        // Find the last space before MAX_LENGTH to avoid cutting mid-word
+        const truncated = normalizedContent.slice(0, MAX_LENGTH);
+        const lastSpace = truncated.lastIndexOf(' ');
+        displayText = lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
+    } else {
+        displayText = normalizedContent || "Click to view";
+    }
 
     
     // Check if current user is the card creator
@@ -210,91 +219,12 @@ function Card({
                     </p>
                 </div>
 
-                {/* Tags as pills - above footer */}
-                <div className="card-tags-bar" onClick={(e) => e.stopPropagation()}>
-                    {card.tags?.map(tag => (
-                        <span
-                            key={tag.id}
-                            className="card-tag-pill"
-                            onClick={() => {
-                                if (isOwner) {
-                                    // Remove tag when clicked
-                                    const newTags = card.tags.filter(t => t.id !== tag.id);
-                                    handleTagsChange(newTags);
-                                }
-                            }}
-                            style={{ cursor: isOwner ? 'pointer' : 'default' }}
-                            title={isOwner ? 'Click to remove' : ''}
-                        >
-                            {tag.display_name}
-                        </span>
-                    ))}
-                    {isOwner && (card.tags?.length || 0) < 2 && (
-                        <div className="card-tag-selector-wrapper" ref={tagDropdownRef}>
-                            <button 
-                                ref={addButtonRef}
-                                className={`card-tag-add ${(card.tags?.length || 0) === 0 ? 'card-tag-add--empty' : ''}`}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (!isTagSelectorOpen && addButtonRef.current) {
-                                        const rect = addButtonRef.current.getBoundingClientRect();
-                                        setDropdownPosition({
-                                            top: rect.bottom + 6,
-                                            left: rect.left
-                                        });
-                                    }
-                                    setIsTagSelectorOpen(!isTagSelectorOpen);
-                                }}
-                                title="Add tag"
-                            >
-                                {(card.tags?.length || 0) === 0 ? 'add tags' : '+'}
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                {/* Tag dropdown - rendered via portal */}
-                {isTagSelectorOpen && createPortal(
-                    <div 
-                        ref={dropdownPortalRef}
-                        className="card-tag-dropdown"
-                        style={{ top: dropdownPosition.top, left: dropdownPosition.left }}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {availableTags.length === 0 ? (
-                            <span className="card-tag-dropdown-empty">No tags available</span>
-                        ) : (
-                            availableTags.map(tag => {
-                                const isSelected = card.tags?.some(t => t.id === tag.id);
-                                const canAddMore = (card.tags?.length || 0) < 2;
-                                
-                                return (
-                                    <button
-                                        key={tag.id}
-                                        className={`card-tag-option ${isSelected ? 'selected' : ''}`}
-                                        disabled={!isSelected && !canAddMore}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                            
-                                            if (isSelected) {
-                                                // Remove tag
-                                                const newTags = card.tags.filter(t => t.id !== tag.id);
-                                                handleTagsChange(newTags);
-                                            } else if (canAddMore) {
-                                                // Add tag
-                                                const newTags = [...(card.tags || []), tag];
-                                                handleTagsChange(newTags);
-                                            }
-                                        }}
-                                    >
-                                        {tag.display_name}
-                                    </button>
-                                );
-                            })
-                        )}
-                    </div>,
-                    document.body
+                {/* Tag count badge - compact display */}
+                {card.tags && card.tags.length > 0 && (
+                    <div className="card-tags-badge">
+                        <span className="material-icons">local_offer</span>
+                        <span>{card.tags.length}</span>
+                    </div>
                 )}
 
                 <div className="card-footer" onClick={(e) => e.stopPropagation()}>
