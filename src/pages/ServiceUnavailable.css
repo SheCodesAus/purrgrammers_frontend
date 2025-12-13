@@ -1,0 +1,83 @@
+.service-unavailable-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
+    padding: 2rem;
+}
+
+.service-unavailable-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    max-width: 550px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.service-unavailable-icon {
+    margin-bottom: 1.5rem;
+}
+
+.service-unavailable-icon .material-icons {
+    font-size: 5rem;
+    color: #f59e0b;
+}
+
+.service-unavailable-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color-dark, #24127b);
+    margin: 0 0 1rem 0;
+    font-family: var(--font-stack-sans-headline);
+}
+
+.service-unavailable-message {
+    font-size: 1rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+}
+
+.service-unavailable-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(124, 58, 237, 0.05);
+    border-radius: 12px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.info-item .material-icons {
+    font-size: 1.5rem;
+    color: #7c3aed;
+}
+
+.service-unavailable-content .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.service-unavailable-content .btn .material-icons {
+    font-size: 1.25rem;
+}
+
+.service-unavailable-footer {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin: 0;
+}

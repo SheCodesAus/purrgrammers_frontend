@@ -78,6 +78,9 @@ function NavBar() {
                     {auth?.token && (
                         <li><NavLink to="/dashboard" className="auth-link" onClick={closeMenu}>Dashboard</NavLink></li>
                     )}
+
+                    {/* Help link - always visible */}
+                    <li><NavLink to="/help" className={auth?.token ? 'auth-link' : ''} onClick={closeMenu}>Help</NavLink></li>
                     
                     {/* User display - only when logged in */}
                     {auth?.token && (

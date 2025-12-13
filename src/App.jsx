@@ -5,29 +5,36 @@ import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
 import TeamsPage from "./pages/TeamsPage";
 import RetroBoardPage from "./pages/RetroBoardPage";
+import HelpCenter from "./pages/HelpCenter";
+import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorBoundary from "./components/ErrorBoundary";
 import "./App.css";
 
 // Layout component keeps navigation and page structure consistent across the whole site
 
 const Layout = () => {
   const location = useLocation();
-  const isGradientPage = location.pathname === "/" || location.pathname === "/dashboard";
+  const isGradientPage = location.pathname === "/" || location.pathname === "/dashboard" || location.pathname === "/help";
   const isRetroBoardPage = location.pathname.startsWith("/retro-board");
   const isDashboard = location.pathname === "/dashboard";
+  const isNotFound = !['/', '/login', '/signup', '/dashboard', '/teams', '/help'].includes(location.pathname) && !location.pathname.startsWith('/retro-board');
   
   let appClass = "app";
   if (isGradientPage) appClass += " homepage-gradient";
   if (isRetroBoardPage) appClass += " retroboard-gradient";
   if (isDashboard) appClass += " dashboard-page";
+  if (isNotFound) appClass += " homepage-gradient";
   
   return (
-    <div className={appClass}>
-      <NavBar />
-      <main className="main-content">
-        <Outlet /> {/* child routes render here */}
-      </main>
-    </div>
+    <ErrorBoundary>
+      <div className={appClass}>
+        <NavBar />
+        <main className="main-content">
+          <Outlet /> {/* child routes render here */}
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 };
 
@@ -44,6 +51,8 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       { path: "/teams", element: <ProtectedRoute><TeamsPage /></ProtectedRoute>},
       { path: "/retro-board/:id", element: <ProtectedRoute><RetroBoardPage /></ProtectedRoute>},
+      { path: "/help", element: <HelpCenter />},
+      { path: "*", element: <NotFound />},
     ],
   },
 ]);

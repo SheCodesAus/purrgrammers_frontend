@@ -1,0 +1,56 @@
+.error-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
+    padding: 2rem;
+}
+
+.error-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+    margin-bottom: 1.5rem;
+}
+
+.error-icon .material-icons {
+    font-size: 5rem;
+    color: #ef4444;
+}
+
+.error-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color-dark, #24127b);
+    margin: 0 0 1rem 0;
+    font-family: var(--font-stack-sans-headline);
+}
+
+.error-message {
+    font-size: 1rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.error-footer {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin: 0;
+}
