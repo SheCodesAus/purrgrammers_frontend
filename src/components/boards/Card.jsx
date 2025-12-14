@@ -19,6 +19,7 @@ function Card({
     maxVotesPerCard,
     votingEnabled,
     availableTags = [],
+    canDeleteAnyCard = false,
     onEdit,
     onDelete,
     onVoteChange,
@@ -199,16 +200,19 @@ function Card({
                 }}
                 onClick={() => setIsModalOpen(true)}
             >
-                <button 
-                    className="card-delete-btn"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete();
-                    }}
-                    title="Delete card"
-                >
-                    <span className="material-icons">close</span>
-                </button>
+                {/* Only show delete button if user owns the card or can delete any card */}
+                {(isOwner || canDeleteAnyCard) && (
+                    <button 
+                        className="card-delete-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete();
+                        }}
+                        title="Delete card"
+                    >
+                        <span className="material-icons">close</span>
+                    </button>
+                )}
                 
                 <div className="card-content">
                     <p className="card-text">

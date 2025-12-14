@@ -14,6 +14,8 @@ function Column({
     maxVotesPerCard,
     votingEnabled,
     availableTags,
+    canEditColumns,
+    canDeleteAnyCard,
     onEditCard,
     onDeleteCard,
     onVoteChange,
@@ -188,31 +190,33 @@ function Column({
                 ) : (
                     <>
                         <h3 
-                            className="column-title clickable"
+                            className={`column-title ${canEditColumns ? 'clickable' : ''}`}
                             onClick={() => {
-                                // Only allow click-to-edit on desktop
-                                if (window.innerWidth > 768) {
+                                // Only allow click-to-edit on desktop if user has permission
+                                if (canEditColumns && window.innerWidth > 768) {
                                     setEditTitle(column.title || '');
                                     setIsEditingTitle(true);
                                 }
                             }}
-                            title="Click to edit"
+                            title={canEditColumns ? "Click to edit" : column.title}
                         >
                             {column.title}
                             {isCollapsed && column.cards?.length > 0 && (
                                 <span className="column-card-count">({column.cards.length})</span>
                             )}
                         </h3>
-                        <button
-                            className="column-edit-title-btn mobile-only"
-                            onClick={() => {
-                                setEditTitle(column.title || '');
-                                setIsEditingTitle(true);
-                            }}
-                            title="Edit column title"
-                        >
-                            <span className="material-icons">edit</span>
-                        </button>
+                        {canEditColumns && (
+                            <button
+                                className="column-edit-title-btn mobile-only"
+                                onClick={() => {
+                                    setEditTitle(column.title || '');
+                                    setIsEditingTitle(true);
+                                }}
+                                title="Edit column title"
+                            >
+                                <span className="material-icons">edit</span>
+                            </button>
+                        )}
                     </>
                 )}
 
@@ -225,70 +229,72 @@ function Column({
                     <span className="material-icons">add</span>
                 </button>
                 
-                {/* Edit Menu Button */}
-                <div className="column-menu-wrapper">
-                    <button 
-                        className="column-menu-btn" 
-                        onClick={() => {
-                            if (!showEditOptions) {
-                                setEditTitle(column.title || '');
-                            }
-                            setShowEditOptions(!showEditOptions);
-                        }}
-                        title="Column options"
-                    >
-                        <span className="material-icons">more_vert</span>
-                    </button>
-                    
-                    {/* Dropdown Menu */}
-                    {showEditOptions && (
-                        <>
-                            <div 
-                                className="column-menu-overlay"
-                                onClick={() => {
-                                    setShowEditOptions(false);
-                                    setShowColorPicker(false);
-                                }}
-                            />
-                            <div className="column-menu-dropdown">
-                                {/* Color Option */}
-                                <button 
-                                    className="menu-item"
-                                    onClick={() => setShowColorPicker(!showColorPicker)}
-                                    title="Change Color"
-                                >
-                                    <span className="material-icons">palette</span>
-                                </button>
-                                
-                                {/* Reset Color Option */}
-                                <button 
-                                    className="menu-item"
+                {/* Edit Menu Button - only show if user can edit columns */}
+                {canEditColumns && (
+                    <div className="column-menu-wrapper">
+                        <button 
+                            className="column-menu-btn" 
+                            onClick={() => {
+                                if (!showEditOptions) {
+                                    setEditTitle(column.title || '');
+                                }
+                                setShowEditOptions(!showEditOptions);
+                            }}
+                            title="Column options"
+                        >
+                            <span className="material-icons">more_vert</span>
+                        </button>
+                        
+                        {/* Dropdown Menu */}
+                        {showEditOptions && (
+                            <>
+                                <div 
+                                    className="column-menu-overlay"
                                     onClick={() => {
-                                        handleResetColor();
                                         setShowEditOptions(false);
+                                        setShowColorPicker(false);
                                     }}
-                                    title="Reset Color"
-                                >
-                                    <span className="material-icons">refresh</span>
-                                </button>
-                                
-                                <div className="menu-divider" />
-                                
-                                {/* Delete Option */}
-                                <button 
-                                    className="menu-item menu-item-danger"
-                                    onClick={() => {
-                                        onDeleteColumn(column.id);
-                                        setShowEditOptions(false);
-                                    }}
-                                    title="Delete Column"
-                                >
-                                    <span className="material-icons">delete</span>
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
+                                />
+                                <div className="column-menu-dropdown">
+                                    {/* Color Option */}
+                                    <button 
+                                        className="menu-item"
+                                        onClick={() => setShowColorPicker(!showColorPicker)}
+                                        title="Change Color"
+                                    >
+                                        <span className="material-icons">palette</span>
+                                    </button>
+                                    
+                                    {/* Reset Color Option */}
+                                    <button 
+                                        className="menu-item"
+                                        onClick={() => {
+                                            handleResetColor();
+                                            setShowEditOptions(false);
+                                        }}
+                                        title="Reset Color"
+                                    >
+                                        <span className="material-icons">refresh</span>
+                                    </button>
+                                    
+                                    <div className="menu-divider" />
+                                    
+                                    {/* Delete Option */}
+                                    <button 
+                                        className="menu-item menu-item-danger"
+                                        onClick={() => {
+                                            onDeleteColumn(column.id);
+                                            setShowEditOptions(false);
+                                        }}
+                                        title="Delete Column"
+                                    >
+                                        <span className="material-icons">delete</span>
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
 
                 {/* Color Picker */}
                 {showColorPicker && showEditOptions && (
@@ -342,6 +348,7 @@ function Column({
                                 maxVotesPerCard={maxVotesPerCard}
                                 votingEnabled={votingEnabled}
                                 availableTags={availableTags}
+                                canDeleteAnyCard={canDeleteAnyCard}
                                 onEdit={(newText) => onEditCard(card.id, newText)}
                                 onDelete={() => onDeleteCard(card.id)}
                                 onVoteChange={(voteData) => onVoteChange(card.id, voteData)}

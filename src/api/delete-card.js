@@ -11,6 +11,11 @@ async function deleteCard(cardId, token) {
     if (!response.ok) {
         const fallbackError = "Error deleting card";
 
+        // Handle permission errors with a friendly message
+        if (response.status === 403) {
+            throw new Error("You don't have permission to delete this card");
+        }
+
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
         });

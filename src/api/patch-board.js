@@ -13,6 +13,11 @@ async function patchBoard(boardId, boardData, token) {
     if (!response.ok) {
         const fallbackError = "Error updating board";
 
+        // Handle permission errors with a friendly message
+        if (response.status === 403) {
+            throw new Error("You don't have permission to update this board");
+        }
+
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
         });

@@ -11,6 +11,11 @@ async function deleteColumn(columnId, token) {
     if (!response.ok) {
         const fallbackError = "Error deleting column";
 
+        // Handle permission errors with a friendly message
+        if (response.status === 403) {
+            throw new Error("You don't have permission to delete columns");
+        }
+
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
         });

@@ -13,6 +13,11 @@ async function createColumn(columnData, token) {
     if (!response.ok) {
         const fallbackError = "Error creating column";
 
+        // Handle permission errors with a friendly message
+        if (response.status === 403) {
+            throw new Error("You don't have permission to create columns");
+        }
+
         const data = await response.json().catch(() => {
             throw new Error(fallbackError)
         });

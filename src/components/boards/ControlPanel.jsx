@@ -16,6 +16,7 @@ function ControlPanel({
     currentVotingRound,
     remainingVotes,
     maxVotesPerRound,
+    canEditColumns = false,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -137,19 +138,23 @@ function ControlPanel({
             {/* Divider */}
             <div className="control-panel__divider" />
 
-            {/* Columns Section */}
-            <div className="control-panel__section">
-                <button 
-                    className="control-panel__btn control-panel__btn--primary"
-                    onClick={onAddColumn}
-                >
-                    <span className="material-icons">add</span>
-                    Add Column
-                </button>
-            </div>
+            {/* Columns Section - only show Add Column if user can edit columns */}
+            {canEditColumns && (
+                <>
+                    <div className="control-panel__section">
+                        <button 
+                            className="control-panel__btn control-panel__btn--primary"
+                            onClick={onAddColumn}
+                        >
+                            <span className="material-icons">add</span>
+                            Add Column
+                        </button>
+                    </div>
 
-            {/* Divider */}
-            <div className="control-panel__divider" />
+                    {/* Divider */}
+                    <div className="control-panel__divider" />
+                </>
+            )}
 
             {/* Cards Section */}
             <div className="control-panel__section">

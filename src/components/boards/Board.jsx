@@ -292,6 +292,15 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 }
                 break;
 
+            // Facilitators
+            case 'facilitators_updated':
+                console.log('Facilitators updated:', message.data.action, message.data.user?.username);
+                onBoardUpdate(prevBoard => ({
+                    ...prevBoard,
+                    facilitators: message.data.facilitators
+                }));
+                break;
+
             default:
                 console.log('Unknown WebSocket message:', message);
         }
@@ -376,6 +385,19 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
         if (onNavigateBack) {
             onNavigateBack();
         }
+    };
+
+    // Facilitator and permissions handlers
+    const handleFacilitatorsChange = (newFacilitators) => {
+        const updatedBoard = {
+            ...boardData,
+            facilitators: newFacilitators
+        };
+        onBoardUpdate(updatedBoard);
+    };
+
+    const handlePermissionsChange = (updatedBoard) => {
+        onBoardUpdate(updatedBoard);
     };
 
     // Action bar handlers
@@ -787,7 +809,12 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                 onBoardStatusChange={handleBoardStatusChange}
                 onTeamRefreshReady={handleTeamRefreshReady}
                 onAddColumn={handleAddColumn}
+                onFacilitatorsChange={handleFacilitatorsChange}
+                onPermissionsChange={handlePermissionsChange}
                 isBoardCreator={auth.user?.id === boardData?.created_by?.id}
+                isFacilitator={boardData?.is_facilitator}
+                canEditBoardTitle={boardData?.can_edit_board_title}
+                canEditColumns={boardData?.can_edit_columns}
                 maxVotesPerRound={maxVotesPerRound}
                 maxVotesPerCard={maxVotesPerCard}
                 onVotingSettingsChange={handleVotingSettingsChange}
@@ -824,6 +851,8 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                                     maxVotesPerCard={maxVotesPerCard}
                                     votingEnabled={currentVotingRound !== null}
                                     availableTags={availableTags}
+                                    canEditColumns={boardData?.can_edit_columns}
+                                    canDeleteAnyCard={boardData?.can_delete_any_card}
                                     onEditCard={(cardId, newText) => handleEditCard(column.id, cardId, newText)}
                                     onDeleteCard={(cardId) => handleDeleteCard(column.id, cardId)}
                                     onVoteChange={(cardId, voteData) => handleVoteChange(column.id, cardId, voteData)}
@@ -861,6 +890,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onAddColumn={handleAddColumn}
+                        canEditColumns={boardData?.can_edit_columns}
                         boardId={boardData?.id}
                         token={auth.token}
                         onShowReport={() => setShowReportModal(true)}
@@ -883,6 +913,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     onDragStart={handleDragStart}
                     onDragEnd={handleDragEnd}
                     onAddColumn={handleAddColumn}
+                    canEditColumns={boardData?.can_edit_columns}
                     currentVotingRound={currentVotingRound}
                     remainingVotes={remainingVotes}
                     maxVotesPerRound={maxVotesPerRound}
@@ -890,6 +921,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                     onVotingSettingsChange={handleVotingSettingsChange}
                     onStartVoting={handleStartVoting}
                     isBoardCreator={auth.user?.id === boardData?.created_by?.id}
+                    isFacilitator={boardData?.is_facilitator}
                     boardTitle={boardData?.title}
                     isActive={boardData?.is_active}
                     onBoardStatusChange={handleBoardStatusChange}

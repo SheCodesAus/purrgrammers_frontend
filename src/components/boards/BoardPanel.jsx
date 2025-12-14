@@ -26,6 +26,7 @@ function BoardPanel({
     onDragStart,
     onDragEnd,
     onAddColumn,
+    canEditColumns = false,
     currentVotingRound,
     remainingVotes,
     maxVotesPerRound,
@@ -443,19 +444,21 @@ function BoardPanel({
                         </div>
 
                         {/* Columns Section - Desktop only (Add Column is in header on mobile) */}
-                        <div className="board-panel__section board-panel__section--desktop-only">
-                            <h4 className="board-panel__section-title">
-                                <span className="material-icons">view_column</span>
-                                Columns
-                            </h4>
-                            <button 
-                                className="board-panel__btn board-panel__btn--primary"
-                                onClick={onAddColumn}
-                            >
-                                <span className="material-icons">add</span>
-                                Add Column
-                            </button>
-                        </div>
+                        {canEditColumns && (
+                            <div className="board-panel__section board-panel__section--desktop-only">
+                                <h4 className="board-panel__section-title">
+                                    <span className="material-icons">view_column</span>
+                                    Columns
+                                </h4>
+                                <button 
+                                    className="board-panel__btn board-panel__btn--primary"
+                                    onClick={onAddColumn}
+                                >
+                                    <span className="material-icons">add</span>
+                                    Add Column
+                                </button>
+                            </div>
+                        )}
 
                         {/* Reports Section */}
                         <div className="board-panel__section">
