@@ -79,6 +79,9 @@ function NavBar() {
                         <li><NavLink to="/dashboard" className="auth-link" onClick={closeMenu}>Dashboard</NavLink></li>
                     )}
 
+                    {/* About link - always visible */}
+                    <li><NavLink to="/about" className={auth?.token ? 'auth-link' : ''} onClick={closeMenu}>About</NavLink></li>
+
                     {/* Help link - always visible */}
                     <li><NavLink to="/help" className={auth?.token ? 'auth-link' : ''} onClick={closeMenu}>Help</NavLink></li>
                     

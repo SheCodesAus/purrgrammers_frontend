@@ -1,88 +1,293 @@
-.about-container {
-  min-height: 80vh;
+.about-page-container {
+  min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   text-align: center;
-  padding: var(--spacing-xl);
+  background: transparent;
+  padding-bottom: 3rem;
 }
 
-.about-section {
-  max-width: 800px;
-  margin-bottom: var(--spacing-xl);
+/* Hero Section */
+.about-hero-section {
+  width: 100%;
+  padding: 3rem 2rem;
+  background: transparent;
 }
 
-.about-title {
-  font-size: 3rem;
-  color: var(--gray-900);
-  margin-bottom: var(--spacing-xl);
+.about-hero-title {
+  font-size: 3.5rem;
+  color: #24127b;
+  margin-bottom: 1.5rem;
   font-weight: 700;
-  padding: 50px;
+  font-family: var(--font-heading);
 }
 
-.about-description {
-  font-size: 1.2rem;
-  color: var(--gray-600);
-  margin-bottom: var(--spacing-xl);
-  padding: 25px;
+.about-hero-subtitle {
+  font-size: 1.25rem;
+  color: #24127b;
+  margin-bottom: 0;
+  font-family: var(--font-stack-sans-text);
+}
+
+/* Project Story Section */
+.project-story-section {
+  padding: 2rem 2rem;
+  max-width: 800px;
+  width: 100%;
+}
+
+.story-card {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.story-title {
+  font-size: 1.75rem;
+  color: #24127b;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.story-text {
+  font-size: 1.1rem;
+  color: #374151;
   line-height: 1.8;
-  margin-top: var(--spacing-lg);
+  margin-bottom: 1rem;
 }
 
-.about-content {
+.story-text:last-child {
+  margin-bottom: 0;
+}
+
+/* Tech Stack Section */
+.tech-stack-section {
+  padding: 2rem 2rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+.section-title {
+  font-size: 2rem;
+  color: #24127b;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.tech-grid {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-  text-align: left;
-  padding: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
 }
 
-.about-content section {
-  background-color: var(--white);
-  padding: var(--spacing-lg);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-bottom: 1cm
+.tech-item {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.about-content section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.tech-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
-.about-content h2 {
-  font-size: 1.8rem;
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-md);
-  font-weight: 600;
+.tech-icon {
+  font-size: 1.5rem;
 }
 
-.about-content p {
+.tech-name {
   font-size: 1rem;
-  color: var(--gray-700);
-  line-height: 1.6;
+  font-weight: 600;
+  color: #24127b;
+}
+
+/* Team Section */
+.team-section {
+  padding: 3rem 2rem;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.team-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.team-member-card {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  width: 160px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+}
+
+.team-member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.member-avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-avatar .material-icons {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.member-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #24127b;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-stack-sans-text);
+}
+
+.member-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.social-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.social-link.linkedin {
+  background: rgba(10, 102, 194, 0.1);
+  color: #0a66c2;
+}
+
+.social-link.linkedin:hover {
+  background: #0a66c2;
+  color: white;
+  transform: scale(1.1);
+}
+
+.social-link.github {
+  background: rgba(36, 41, 46, 0.1);
+  color: #24292e;
+}
+
+.social-link.github:hover {
+  background: #24292e;
+  color: white;
+  transform: scale(1.1);
+}
+
+.social-link.portfolio {
+  background: rgba(117, 52, 247, 0.1);
+  color: #7534f7;
+}
+
+.social-link.portfolio:hover {
+  background: #7534f7;
+  color: white;
+  transform: scale(1.1);
+}
+
+.social-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.social-link .material-icons {
+  font-size: 1rem;
+}
+
+/* Footer Section */
+.about-footer-section {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.about-footer-text {
+  font-size: 1.5rem;
+  color: #24127b;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.about-footer-subtext {
+  font-size: 1rem;
+  color: #7534f7;
+  font-weight: 500;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .about-title {
+  .about-hero-title {
     font-size: 2.5rem;
-    padding: 30px 20px;
   }
 
-  .about-description {
-    font-size: 1rem;
-    padding: 15px;
+  .about-hero-section {
+    padding-top: 2rem;
   }
 
-  .about-content {
-    padding: var(--spacing-md);
+  .story-card {
+    padding: 2rem 1.5rem;
   }
 
-  .about-content h2 {
+  .story-title {
     font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .team-member-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .member-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .member-avatar .material-icons {
+    font-size: 2rem;
+  }
+
+  .about-footer-text {
+    font-size: 1.25rem;
   }
 }
