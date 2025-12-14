@@ -305,6 +305,77 @@
   margin: 0;
 }
 
+/* About Section */
+.about-section {
+  padding: 3rem 2rem 4rem 2rem;
+  max-width: 700px;
+  width: 100%;
+  background: transparent;
+}
+
+.about-content {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.about-title {
+  font-size: 1.75rem;
+  color: #24127b;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.about-description {
+  font-size: 1rem;
+  color: #374151;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.team-members {
+  margin-bottom: 2rem;
+}
+
+.team-title {
+  font-size: 1.25rem;
+  color: #24127b;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-family: var(--font-stack-sans-text);
+}
+
+.team-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.team-list li {
+  font-size: 1rem;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  background: rgba(117, 52, 247, 0.1);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.about-footer {
+  font-size: 1.1rem;
+  color: #7534f7;
+  font-weight: 600;
+  margin: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .help-hero-title {
@@ -334,5 +405,18 @@
 
   .contact-title {
     font-size: 1.75rem;
+  }
+
+  .about-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .about-title {
+    font-size: 1.5rem;
+  }
+
+  .team-list {
+    flex-direction: column;
+    align-items: center;
   }
 }
