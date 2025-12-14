@@ -6,11 +6,23 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import posthog from 'posthog-js'
 import App from './App.jsx'
 import { AuthProvider } from './components/AuthProvider.jsx'
 import './index.css'
 import { ToastProvider } from './components/ToastProvider.jsx'
 import { ConfirmProvider } from './components/ConfirmProvider.jsx'
+
+// Initialize PostHog analytics
+posthog.init(import.meta.env.VITE_POSTHOG_KEY, {
+  api_host: 'https://app.posthog.com',
+  capture_pageviews: true,
+  capture_pageleaves: true,
+  autocapture: true,
+  session_recording: {
+    recordCrossDomainIFrames: true,
+  }
+})
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

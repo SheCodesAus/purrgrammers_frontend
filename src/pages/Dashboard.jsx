@@ -7,27 +7,26 @@ import getTeams from "../api/get-teams";
 import getTeamBoards from "../api/get-team-boards";
 import deleteBoard from "../api/delete-board";
 import createTeam from "../api/create-team";
+import patchActionItem from "../api/patch-action-item";
 import CreateBoardForm from "../components/CreateBoardForm";
 import TeamDetailModal from "../components/TeamDetailModal";
 import ProfileModal from "../components/ProfileModal";
 import Avatar from "../components/Avatar";
 import "./Dashboard.css";
 
-// Carousel component for boards
+// Carousel component with smart arrow visibility
 function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
   const carouselRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-
   const checkScrollability = useCallback(() => {
     const container = carouselRef.current;
     if (!container) return;
     
-    setCanScrollLeft(container.scrollLeft > 0);
-    setCanScrollRight(
-      container.scrollLeft < container.scrollWidth - container.clientWidth - 1
-    );
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    setCanScrollLeft(scrollLeft > 5);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
   }, []);
 
   useEffect(() => {
@@ -37,26 +36,23 @@ function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
   }, [checkScrollability, boards]);
 
   const scrollLeft = () => {
-    carouselRef.current?.scrollBy({ left: -220, behavior: 'smooth' });
+    carouselRef.current?.scrollBy({ left: -260, behavior: 'smooth' });
   };
 
   const scrollRight = () => {
-    carouselRef.current?.scrollBy({ left: 220, behavior: 'smooth' });
+    carouselRef.current?.scrollBy({ left: 260, behavior: 'smooth' });
   };
 
   return (
     <div className="boards-carousel-wrapper">
       {canScrollLeft && (
-        <button 
-          className="carousel-arrow carousel-arrow--left"
-          onClick={scrollLeft}
-        >
+        <button className="carousel-arrow carousel-arrow-left" onClick={scrollLeft}>
           <span className="material-icons">chevron_left</span>
         </button>
       )}
       
       <div 
-        className="boards-carousel"
+        className="boards-carousel" 
         ref={carouselRef}
         onScroll={checkScrollability}
       >
@@ -80,7 +76,6 @@ function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
               </button>
             </div>
             
-            {/* Mini board preview */}
             <div className="board-preview">
               {board.columns?.slice(0, 4).map(column => (
                 <div 
@@ -103,10 +98,7 @@ function BoardsCarousel({ boards, navigate, handleDeleteBoard, formatDate }) {
       </div>
       
       {canScrollRight && (
-        <button 
-          className="carousel-arrow carousel-arrow--right"
-          onClick={scrollRight}
-        >
+        <button className="carousel-arrow carousel-arrow-right" onClick={scrollRight}>
           <span className="material-icons">chevron_right</span>
         </button>
       )}
@@ -142,11 +134,23 @@ function Dashboard() {
     return false;
   });
 
-  // Update sidebar on resize
+  // Right sidebar collapse state for mobile/tablet
+  const [rightSidebarCollapsed, setRightSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 1024;
+    }
+    return false;
+  });
+
+  // Update sidebars on resize
   useEffect(() => {
     const checkMobile = () => {
       if (window.innerWidth <= 768) {
         setSidebarCollapsed(true);
+        setRightSidebarCollapsed(true);
+      } else if (window.innerWidth <= 1024) {
+        // Tablet: keep left sidebar, collapse right
+        setRightSidebarCollapsed(true);
       }
     };
     
@@ -297,9 +301,18 @@ function Dashboard() {
   const showExpanded = !sidebarCollapsed && (!isMobile || !teamsWithBoards.isLoading);
 
   return (
-    <div className="dashboard-layout">
-      {/* Sidebar */}
-      <aside className={`dashboard-sidebar ${showExpanded ? 'expanded' : 'collapsed'}`}>
+    <div className="dashboard-wrapper">
+      {/* Welcome Header - Above the columns */}
+      <div className="dashboard-header-section">
+        <h1 className="dashboard-header">
+          Welcome, {auth?.user?.first_name || auth?.user?.username || 'User'}!
+        </h1>
+      </div>
+
+      {/* Three Column Layout */}
+      <div className="dashboard-layout">
+        {/* Sidebar */}
+        <aside className={`dashboard-sidebar ${showExpanded ? 'expanded' : 'collapsed'}`}>
         <div className="sidebar-header-row">
           {showExpanded && <h3 className="sidebar-heading desktop-only">Latest Boards</h3>}
           <button
@@ -386,7 +399,7 @@ function Dashboard() {
 
         <div className={`sidebar-teams ${activeTab === 'teams' ? 'active' : ''}`}>
           <div className="sidebar-teams-header">
-            <h3 className="sidebar-heading">Teams</h3>
+            <h3 className="sidebar-heading"><span className="material-icons">groups</span>Teams</h3>
             <button 
               className="sidebar-add-team-btn"
               onClick={() => setShowCreateTeamForm(!showCreateTeamForm)}
@@ -430,18 +443,20 @@ function Dashboard() {
           {teamsWithBoards.isLoading ? (
             <p className="sidebar-loading">Loading...</p>
           ) : (
-            <ul className="sidebar-team-list">
-              {teamsWithBoards.data.map(({ team }) => (
-                <li key={team.id}>
-                  <button 
-                    className="sidebar-team-btn"
-                    onClick={() => openTeamDetail(team)}
-                  >
-                    {team.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="sidebar-team-list-scroll">
+              <ul className="sidebar-team-list">
+                {teamsWithBoards.data.map(({ team }) => (
+                  <li key={team.id}>
+                    <button 
+                      className="sidebar-team-btn"
+                      onClick={() => openTeamDetail(team)}
+                    >
+                      {team.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
 
@@ -459,15 +474,206 @@ function Dashboard() {
 
       {/* Main Content */}
       <main className="dashboard-main">
-        {/* Welcome Header */}
-        <div className="dashboard-header-section">
-          <h1 className="dashboard-header typewriter">
-            Welcome, {auth?.user?.first_name || auth?.user?.username || 'User'}!
-          </h1>
-        </div>
+        {/* Mobile Widgets Toggle - appears before content on mobile */}
+        <div className="mobile-widgets-toggle-container">
+          <button 
+            className="mobile-widgets-toggle"
+            onClick={() => setRightSidebarCollapsed(!rightSidebarCollapsed)}
+          >
+            <span className="material-icons">
+              {rightSidebarCollapsed ? 'widgets' : 'expand_less'}
+            </span>
+            <span className="toggle-label">
+              {rightSidebarCollapsed ? 'Show Widgets' : 'Hide Widgets'}
+            </span>
+          </button>
+          
+          {/* Mobile Widgets - inline when expanded */}
+          {!rightSidebarCollapsed && (
+            <div className="mobile-widgets-content">
+              {/* Stats summary for mobile */}
+              <div className="mobile-stats-row">
+                <div className="mobile-stat">
+                  <span className="stat-value">{teamsWithBoards.data.length}</span>
+                  <span className="stat-label">Teams</span>
+                </div>
+                <div className="mobile-stat">
+                  <span className="stat-value">
+                    {teamsWithBoards.data.reduce((sum, { boards }) => sum + boards.length, 0)}
+                  </span>
+                  <span className="stat-label">Boards</span>
+                </div>
+                <div className="mobile-stat">
+                  <span className="stat-value">
+                    {teamsWithBoards.data.reduce((sum, { boards }) => 
+                      sum + boards.filter(b => b.is_active).length, 0
+                    )}
+                  </span>
+                  <span className="stat-label">Active</span>
+                </div>
+                <div className="mobile-stat">
+                  <span className="stat-value">
+                    {teamsWithBoards.data.reduce((sum, { boards }) => 
+                      sum + boards.reduce((cardSum, b) => 
+                        cardSum + (b.columns?.reduce((colSum, col) => colSum + (col.cards?.length || 0), 0) || 0), 0
+                      ), 0
+                    )}
+                  </span>
+                  <span className="stat-label">Cards</span>
+                </div>
+              </div>
 
-        {/* Mobile Sidebar - rendered here on small screens */}
-        <div className="mobile-sidebar-placeholder"></div>
+              {/* Action Items for mobile */}
+              <div className="mobile-action-items">
+                <h4 className="mobile-widget-title">
+                  <span className="material-icons">checklist</span>
+                  My Action Items
+                </h4>
+                {(() => {
+                  const myActionItems = teamsWithBoards.data.flatMap(({ team, boards }) =>
+                    boards.flatMap(board =>
+                      (board.action_items || [])
+                        .filter(item => item.assigned_to?.id === auth?.user?.id && !item.is_complete)
+                        .map(item => ({
+                          ...item,
+                          boardTitle: board.title,
+                          boardId: board.id,
+                          teamName: team.name
+                        }))
+                    )
+                  );
+
+                  if (myActionItems.length === 0) {
+                    return (
+                      <div className="mobile-widget-empty">
+                        <span className="material-icons">task_alt</span>
+                        <span>No pending items</span>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="mobile-action-list">
+                      {myActionItems.slice(0, 3).map(item => (
+                        <div key={item.id} className="mobile-action-item">
+                          <button
+                            className="mobile-action-checkbox"
+                            onClick={async () => {
+                              try {
+                                await patchActionItem(item.id, { is_complete: true }, auth.token);
+                                setTeamsWithBoards(prev => ({
+                                  ...prev,
+                                  data: prev.data.map(({ team, boards }) => ({
+                                    team,
+                                    boards: boards.map(board => ({
+                                      ...board,
+                                      action_items: board.action_items?.map(ai =>
+                                        ai.id === item.id ? { ...ai, is_complete: true } : ai
+                                      )
+                                    }))
+                                  }))
+                                }));
+                                showToast('Action item completed!', 'success');
+                              } catch (error) {
+                                showToast('Failed to update action item', 'error');
+                              }
+                            }}
+                          >
+                            <span className="material-icons">radio_button_unchecked</span>
+                          </button>
+                          <span className="mobile-action-text">{item.description}</span>
+                        </div>
+                      ))}
+                      {myActionItems.length > 3 && (
+                        <span className="mobile-action-more">+{myActionItems.length - 3} more</span>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Activity for mobile */}
+              <div className="mobile-activity">
+                <h4 className="mobile-widget-title">
+                  <span className="material-icons">trending_up</span>
+                  This Week
+                </h4>
+                <div className="mobile-activity-row">
+                  {(() => {
+                    const now = new Date();
+                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    const cardsThisWeek = teamsWithBoards.data.flatMap(({ boards }) =>
+                      boards.flatMap(board =>
+                        board.columns?.flatMap(col =>
+                          col.cards?.filter(card => 
+                            card.created_by?.id === auth?.user?.id &&
+                            new Date(card.created_at) >= weekAgo
+                          ) || []
+                        ) || []
+                      )
+                    ).length;
+                    const boardsThisWeek = teamsWithBoards.data.flatMap(({ boards }) => 
+                      boards.filter(b => new Date(b.created_at) >= weekAgo)
+                    ).length;
+
+                    return (
+                      <>
+                        <div className="mobile-activity-stat">
+                          <span className="material-icons">note_add</span>
+                          <strong>{cardsThisWeek}</strong> cards
+                        </div>
+                        <div className="mobile-activity-stat">
+                          <span className="material-icons">dashboard</span>
+                          <strong>{boardsThisWeek}</strong> boards
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Mobile Sidebar Toggle - appears after widgets, before boards */}
+          <button 
+            className="mobile-sidebar-toggle"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          >
+            <span className="material-icons">
+              {sidebarCollapsed ? 'menu' : 'expand_less'}
+            </span>
+            <span className="toggle-label">
+              {sidebarCollapsed ? 'Show Teams & Profile' : 'Hide Teams & Profile'}
+            </span>
+          </button>
+
+          {/* Mobile Sidebar Content - inline when expanded */}
+          {!sidebarCollapsed && (
+            <div className="mobile-sidebar-content">
+              {/* Teams list */}
+              <div className="mobile-teams-list">
+                {teamsWithBoards.data.map(({ team }) => (
+                  <button 
+                    key={team.id}
+                    className="mobile-team-btn"
+                    onClick={() => setSelectedTeam(team)}
+                  >
+                    <span className="team-dot"></span>
+                    {team.name}
+                  </button>
+                ))}
+              </div>
+              {/* Profile button */}
+              <button 
+                className="mobile-profile-btn"
+                onClick={() => setShowProfileModal(true)}
+              >
+                <Avatar initials={auth?.user?.initials} userId={auth?.user?.id} size={32} />
+                <span>{auth?.user?.username || 'Profile'}</span>
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Teams and Boards */}
         <div className="dashboard-content">
@@ -519,6 +725,207 @@ function Dashboard() {
         </div>
       </main>
 
+      {/* Right Sidebar - Stats & Action Items (hidden on mobile, uses inline widgets instead) */}
+      <aside className="dashboard-right-sidebar">
+        {/* Quick Stats */}
+        <div className="stats-widget">
+          <h3 className="widget-title">
+            <span className="material-icons">insights</span>
+            Quick Stats
+          </h3>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <span className="stat-value">{teamsWithBoards.data.length}</span>
+              <span className="stat-label">Teams</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">
+                {teamsWithBoards.data.reduce((sum, { boards }) => sum + boards.length, 0)}
+              </span>
+              <span className="stat-label">Boards</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">
+                {teamsWithBoards.data.reduce((sum, { boards }) => 
+                  sum + boards.filter(b => b.is_active).length, 0
+                )}
+              </span>
+              <span className="stat-label">Active</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-value">
+                {teamsWithBoards.data.reduce((sum, { boards }) => 
+                  sum + boards.reduce((cardSum, b) => 
+                    cardSum + (b.columns?.reduce((colSum, col) => colSum + (col.cards?.length || 0), 0) || 0), 0
+                  ), 0
+                )}
+              </span>
+              <span className="stat-label">Cards</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Items Widget */}
+        <div className="action-items-widget">
+          <h3 className="widget-title">
+            <span className="material-icons">checklist</span>
+            My Action Items
+          </h3>
+          <div className="action-items-list">
+            {(() => {
+              // Collect all action items assigned to current user from all boards
+              const myActionItems = teamsWithBoards.data.flatMap(({ team, boards }) =>
+                boards.flatMap(board =>
+                  (board.action_items || [])
+                    .filter(item => item.assigned_to?.id === auth?.user?.id && !item.is_complete)
+                    .map(item => ({
+                      ...item,
+                      boardTitle: board.title,
+                      boardId: board.id,
+                      teamName: team.name
+                    }))
+                )
+              );
+
+              if (teamsWithBoards.isLoading) {
+                return <p className="widget-loading">Loading...</p>;
+              }
+
+              if (myActionItems.length === 0) {
+                return (
+                  <div className="widget-empty">
+                    <span className="material-icons">task_alt</span>
+                    <p>No pending action items</p>
+                  </div>
+                );
+              }
+
+              return myActionItems.slice(0, 5).map(item => (
+                <div key={item.id} className="action-item-card">
+                  <button
+                    className="action-item-checkbox"
+                    onClick={async () => {
+                      try {
+                        await patchActionItem(item.id, { is_complete: true }, auth.token);
+                        // Refresh the data
+                        setTeamsWithBoards(prev => ({
+                          ...prev,
+                          data: prev.data.map(({ team, boards }) => ({
+                            team,
+                            boards: boards.map(board => ({
+                              ...board,
+                              action_items: board.action_items?.map(ai =>
+                                ai.id === item.id ? { ...ai, is_complete: true } : ai
+                              )
+                            }))
+                          }))
+                        }));
+                        showToast('Action item completed!', 'success');
+                      } catch (error) {
+                        showToast('Failed to update action item', 'error');
+                      }
+                    }}
+                    title="Mark as complete"
+                  >
+                    <span className="material-icons">radio_button_unchecked</span>
+                  </button>
+                  <div className="action-item-content">
+                    <p className="action-item-text">{item.description}</p>
+                    <span 
+                      className="action-item-source"
+                      onClick={() => navigate(`/retro-board/${item.boardId}`)}
+                    >
+                      {item.boardTitle}
+                    </span>
+                  </div>
+                </div>
+              ));
+            })()}
+          </div>
+          {teamsWithBoards.data.flatMap(({ boards }) =>
+            boards.flatMap(board =>
+              (board.action_items || []).filter(item => 
+                item.assigned_to?.id === auth?.user?.id && !item.is_complete
+              )
+            )
+          ).length > 5 && (
+            <p className="widget-more">
+              +{teamsWithBoards.data.flatMap(({ boards }) =>
+                boards.flatMap(board =>
+                  (board.action_items || []).filter(item => 
+                    item.assigned_to?.id === auth?.user?.id && !item.is_complete
+                  )
+                )
+              ).length - 5} more items
+            </p>
+          )}
+        </div>
+
+        {/* Recent Activity Widget */}
+        <div className="activity-widget">
+          <h3 className="widget-title">
+            <span className="material-icons">trending_up</span>
+            Your Activity
+          </h3>
+          <div className="activity-stats">
+            {(() => {
+              const now = new Date();
+              const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+              
+              // Count boards created this week
+              const boardsThisWeek = teamsWithBoards.data.flatMap(({ boards }) => 
+                boards.filter(b => new Date(b.created_at) >= weekAgo)
+              ).length;
+
+              // Count cards created this week (if created_at is available)
+              const cardsThisWeek = teamsWithBoards.data.flatMap(({ boards }) =>
+                boards.flatMap(board =>
+                  board.columns?.flatMap(col =>
+                    col.cards?.filter(card => 
+                      card.created_by?.id === auth?.user?.id &&
+                      new Date(card.created_at) >= weekAgo
+                    ) || []
+                  ) || []
+                )
+              ).length;
+
+              // Count completed action items this week
+              const completedThisWeek = teamsWithBoards.data.flatMap(({ boards }) =>
+                boards.flatMap(board =>
+                  (board.action_items || []).filter(item => 
+                    item.is_complete && 
+                    item.assigned_to?.id === auth?.user?.id
+                  )
+                )
+              ).length;
+
+              return (
+                <>
+                  <div className="activity-stat-row">
+                    <span className="material-icons">note_add</span>
+                    <span className="activity-stat-text">
+                      <strong>{cardsThisWeek}</strong> cards created this week
+                    </span>
+                  </div>
+                  <div className="activity-stat-row">
+                    <span className="material-icons">dashboard</span>
+                    <span className="activity-stat-text">
+                      <strong>{boardsThisWeek}</strong> new boards this week
+                    </span>
+                  </div>
+                  <div className="activity-stat-row">
+                    <span className="material-icons">check_circle</span>
+                    <span className="activity-stat-text">
+                      <strong>{completedThisWeek}</strong> action items completed
+                    </span>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      </aside>
+
       {/* Create Board Modal */}
       {showCreateModal && (
         <div className="modal-overlay" onClick={closeCreateModal}>
@@ -544,6 +951,7 @@ function Dashboard() {
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
       />
+    </div>
     </div>
   );
 }

@@ -221,8 +221,8 @@
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
+/* Tablet & Mobile Responsive */
+@media (max-width: 1024px) {
   .hamburger-btn {
     display: flex;
     position: relative;
@@ -302,44 +302,8 @@
     color: white;
   }
 
-  /* Mobile user profile */
+  /* Hide user display in hamburger menu - not interactive */
   .nav-user-wrapper {
-    width: 200px;
-  }
-
-  .nav-user-profile {
-    width: 100%;
-    justify-content: center;
-    padding: 1rem 2rem;
-    font-size: 1.5rem;
-    font-weight: 500;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    border: none;
-  }
-
-  .nav-user-profile:hover {
-    background: rgba(255, 255, 255, 0.8);
-    transform: scale(1.05);
-  }
-
-  .nav-user-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
-
-  .nav-user-chevron {
     display: none;
-  }
-
-  .nav-user-dropdown {
-    position: static;
-    margin-top: 0.5rem;
-    width: 100%;
-    box-shadow: none;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(8px);
   }
 }
