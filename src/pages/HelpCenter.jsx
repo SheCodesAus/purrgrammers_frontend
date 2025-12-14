@@ -248,29 +248,6 @@ function HelpCenter() {
                     )}
                 </div>
             </section>
-
-            {/* About Section */}
-            <section className='about-section'>
-                <div className='about-content'>
-                    <h2 className='about-title'>About Save Point</h2>
-                    <p className='about-description'>
-                        Save Point was created by <strong>Purrgrammers</strong> as our final group project for the She Codes Plus Perth 2025 Cohort.
-                    </p>
-                    <div className='team-members'>
-                        <h3 className='team-title'>The Team</h3>
-                        <ul className='team-list'>
-                            <li>Emma Spear</li>
-                            <li>Jinfeng Shen</li>
-                            <li>Juliane Gutierrez</li>
-                            <li>Krista Soosaar</li>
-                            <li>Tammy Healy</li>
-                        </ul>
-                    </div>
-                    <p className='about-footer'>
-                        Made with 💜 by Purrgrammers
-                    </p>
-                </div>
-            </section>
         </div>
     );
 }
