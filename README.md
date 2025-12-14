@@ -165,3 +165,15 @@ Save Point is a retrospective app that allows teams to review and discuss team p
 - https://miro.com/
 - https://www.atlassian.com/software/jira
 - https://easyretro.io/
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributors
+
+- Emma Spear
+- Krista Soosaar
+- Tammy Healy
+- Juliane Gutierrez
+- Jinfeng Shan
