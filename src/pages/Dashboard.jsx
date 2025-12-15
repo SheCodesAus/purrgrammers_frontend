@@ -5,6 +5,7 @@ import { useToast } from "../components/ToastProvider";
 import { useConfirm } from "../components/ConfirmProvider";
 import getTeams from "../api/get-teams";
 import getTeamBoards from "../api/get-team-boards";
+import getBoard from "../api/get-board";
 import deleteBoard from "../api/delete-board";
 import createTeam from "../api/create-team";
 import patchActionItem from "../api/patch-action-item";
@@ -230,12 +231,23 @@ function Dashboard() {
         // First! Get all teams user belongs to
         const teams = await getTeams(auth.token);
         
-        // Second! For each team, fetch its boards
+        // Second! For each team, fetch its boards (list)
         const teamsWithBoardsData = await Promise.all(
           teams.map(async (team) => {
             try {
-              const boards = await getTeamBoards(team.id, auth.token);
-              return { team, boards };
+              const boardsList = await getTeamBoards(team.id, auth.token);
+              // Third! Fetch full details for each board (includes action_items)
+              const boardsWithDetails = await Promise.all(
+                boardsList.map(async (board) => {
+                  try {
+                    return await getBoard(board.id, auth.token);
+                  } catch (error) {
+                    console.error(`Failed to fetch details for board ${board.title}:`, error);
+                    return board; // Fall back to list data
+                  }
+                })
+              );
+              return { team, boards: boardsWithDetails };
             } catch (error) {
               console.error(`Failed to fetch boards for team ${team.name}:`, error);
               return { team, boards: [] };
@@ -533,7 +545,7 @@ function Dashboard() {
                   const myActionItems = teamsWithBoards.data.flatMap(({ team, boards }) =>
                     boards.flatMap(board =>
                       (board.action_items || [])
-                        .filter(item => item.assigned_to?.id === auth?.user?.id && !item.is_complete)
+                        .filter(item => item.assignee?.id === auth?.user?.id && item.status !== 'completed')
                         .map(item => ({
                           ...item,
                           boardTitle: board.title,
@@ -560,7 +572,7 @@ function Dashboard() {
                             className="mobile-action-checkbox"
                             onClick={async () => {
                               try {
-                                await patchActionItem(item.id, { is_complete: true }, auth.token);
+                                await patchActionItem(item.id, { status: 'completed' }, auth.token);
                                 setTeamsWithBoards(prev => ({
                                   ...prev,
                                   data: prev.data.map(({ team, boards }) => ({
@@ -568,7 +580,7 @@ function Dashboard() {
                                     boards: boards.map(board => ({
                                       ...board,
                                       action_items: board.action_items?.map(ai =>
-                                        ai.id === item.id ? { ...ai, is_complete: true } : ai
+                                        ai.id === item.id ? { ...ai, status: 'completed' } : ai
                                       )
                                     }))
                                   }))
@@ -581,7 +593,7 @@ function Dashboard() {
                           >
                             <span className="material-icons">radio_button_unchecked</span>
                           </button>
-                          <span className="mobile-action-text">{item.description}</span>
+                          <span className="mobile-action-text">{item.content}</span>
                         </div>
                       ))}
                       {myActionItems.length > 3 && (
@@ -777,7 +789,7 @@ function Dashboard() {
               const myActionItems = teamsWithBoards.data.flatMap(({ team, boards }) =>
                 boards.flatMap(board =>
                   (board.action_items || [])
-                    .filter(item => item.assigned_to?.id === auth?.user?.id && !item.is_complete)
+                    .filter(item => item.assignee?.id === auth?.user?.id && item.status !== 'completed')
                     .map(item => ({
                       ...item,
                       boardTitle: board.title,
@@ -806,7 +818,7 @@ function Dashboard() {
                     className="action-item-checkbox"
                     onClick={async () => {
                       try {
-                        await patchActionItem(item.id, { is_complete: true }, auth.token);
+                        await patchActionItem(item.id, { status: 'completed' }, auth.token);
                         // Refresh the data
                         setTeamsWithBoards(prev => ({
                           ...prev,
@@ -815,7 +827,7 @@ function Dashboard() {
                             boards: boards.map(board => ({
                               ...board,
                               action_items: board.action_items?.map(ai =>
-                                ai.id === item.id ? { ...ai, is_complete: true } : ai
+                                ai.id === item.id ? { ...ai, status: 'completed' } : ai
                               )
                             }))
                           }))
@@ -830,7 +842,7 @@ function Dashboard() {
                     <span className="material-icons">radio_button_unchecked</span>
                   </button>
                   <div className="action-item-content">
-                    <p className="action-item-text">{item.description}</p>
+                    <p className="action-item-text">{item.content}</p>
                     <span 
                       className="action-item-source"
                       onClick={() => navigate(`/retro-board/${item.boardId}`)}
@@ -845,7 +857,7 @@ function Dashboard() {
           {teamsWithBoards.data.flatMap(({ boards }) =>
             boards.flatMap(board =>
               (board.action_items || []).filter(item => 
-                item.assigned_to?.id === auth?.user?.id && !item.is_complete
+                item.assignee?.id === auth?.user?.id && item.status !== 'completed'
               )
             )
           ).length > 5 && (
@@ -853,7 +865,7 @@ function Dashboard() {
               +{teamsWithBoards.data.flatMap(({ boards }) =>
                 boards.flatMap(board =>
                   (board.action_items || []).filter(item => 
-                    item.assigned_to?.id === auth?.user?.id && !item.is_complete
+                    item.assignee?.id === auth?.user?.id && item.status !== 'completed'
                   )
                 )
               ).length - 5} more items
@@ -893,8 +905,8 @@ function Dashboard() {
               const completedThisWeek = teamsWithBoards.data.flatMap(({ boards }) =>
                 boards.flatMap(board =>
                   (board.action_items || []).filter(item => 
-                    item.is_complete && 
-                    item.assigned_to?.id === auth?.user?.id
+                    item.status === 'completed' && 
+                    item.assignee?.id === auth?.user?.id
                   )
                 )
               ).length;

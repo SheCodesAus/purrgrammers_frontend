@@ -34,7 +34,7 @@ function HelpCenter() {
             questions: [
                 {
                     q: "How do I create cards?",
-                    a: "Click the '+ Add Card' button in any column on your retro board. Type your thought, optionally add tags, and submit. Your card will appear instantly for all team members."
+                    a: "On desktop, cards can be created by dragging the card icon located in the control panel. On Mobile click the '+ Add Card' button in any column on your retro board. Type your thought, optionally add tags, and submit. Your card will appear instantly for all team members."
                 },
                 {
                     q: "How does voting work?",

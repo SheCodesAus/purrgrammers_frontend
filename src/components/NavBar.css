@@ -292,14 +292,14 @@
   }
 
   .nav-links a.login-btn {
-    background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #f472b6 100%);
-    color: white;
+    background: rgba(255, 255, 255, 0.5);
+    color: #7c3aed;
     margin-top: 0.5rem;
   }
 
   .nav-links a.login-btn:hover {
-    background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 50%, #ec4899 100%);
-    color: white;
+    background: rgba(255, 255, 255, 0.8);
+    color: #7c3aed;
   }
 
   /* Hide user display in hamburger menu - not interactive */
