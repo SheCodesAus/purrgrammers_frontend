@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import login from "../api/login";
 import postSignup from "../api/create-user";
@@ -7,9 +7,13 @@ import "./AuthPage.css";
 
 function AuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setAuth } = useAuth();
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Get the page user was trying to access (or default to dashboard)
+  const from = location.state?.from || "/dashboard";
 
   // Login form state
   const [loginForm, setLoginForm] = useState({
@@ -42,7 +46,7 @@ function AuthPage() {
       const user = response.user;
       window.localStorage.setItem("user", JSON.stringify(user));
       setAuth({ token, user });
-      navigate("/dashboard");
+      navigate(from, { replace: true });
     } catch (error) {
       setLoginForm(prev => ({ ...prev, error: "Invalid username or password" }));
     } finally {
@@ -79,7 +83,7 @@ function AuthPage() {
       const user = response.user;
       window.localStorage.setItem("user", JSON.stringify(user));
       setAuth({ token, user });
-      navigate("/dashboard");
+      navigate(from, { replace: true });
     } catch (error) {
       setSignupForm(prev => ({ ...prev, error: error.message || "Signup failed" }));
     } finally {

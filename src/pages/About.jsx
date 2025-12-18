@@ -28,7 +28,6 @@ function About() {
         },
         {
             name: "Jinfeng Shan",
-            github: "https://github.com/jincode123",
             linkedin: "https://www.linkedin.com/in/jinfeng-lily-shan-54a59032/",
             portfolio: null
         }

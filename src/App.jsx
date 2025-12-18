@@ -49,6 +49,7 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePage />},
       { path: "/login", element: <AuthPage />},
       { path: "/signup", element: <AuthPage />},
+      { path: "/auth", element: <AuthPage />},
       { path: "/dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       { path: "/teams", element: <ProtectedRoute><TeamsPage /></ProtectedRoute>},
       { path: "/retro-board/:id", element: <ProtectedRoute><RetroBoardPage /></ProtectedRoute>},
