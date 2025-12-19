@@ -6,19 +6,19 @@ function About() {
             name: "Emma Spear",
             github: "https://github.com/elspear",
             linkedin: "https://www.linkedin.com/in/emma-spear-dev/",
-            portfolio: null
+            portfolio: "https://www.emmaspear.dev/"
         },
         {
             name: "Tammy Healy",
             github: "https://github.com/TimTam5566",
             linkedin: "https://www.linkedin.com/in/tamala-healy/",
-            portfolio: null
+            portfolio: "https://tamalahealy.netlify.app/"
         },
         {
             name: "Krista Soosaar",
             github: "https://github.com/kristasoos",
             linkedin: "https://www.linkedin.com/in/krista-soosaar-1850621a7/",
-            portfolio: null
+            portfolio: "https://kristasoos.github.io/index.html"
         },
         {
             name: "Juliane Gutierrez",
