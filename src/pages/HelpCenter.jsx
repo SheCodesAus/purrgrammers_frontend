@@ -9,10 +9,25 @@ function HelpCenter() {
         setOpenFaq(openFaq === index ? null : index);
     };
 
-    const handleSubmit = (e) => {
-        // Netlify will handle the form submission automatically
-        setFormSubmitted(true);
-        setTimeout(() => setFormSubmitted(false), 5000);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        const form = e.target;
+        const formData = new FormData(form);
+        
+        try {
+            await fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString(),
+            });
+            setFormSubmitted(true);
+            form.reset();
+            setTimeout(() => setFormSubmitted(false), 5000);
+        } catch (error) {
+            console.error("Form submission error:", error);
+            alert("There was an error sending your message. Please try again.");
+        }
     };
 
     const faqs = [
@@ -191,10 +206,16 @@ function HelpCenter() {
                             name="contact" 
                             method="POST" 
                             data-netlify="true"
+                            data-netlify-honeypot="bot-field"
                             onSubmit={handleSubmit}
                             className='contact-form'
                         >
                             <input type="hidden" name="form-name" value="contact" />
+                            <p hidden>
+                                <label>
+                                    Don't fill this out: <input name="bot-field" />
+                                </label>
+                            </p>
                             
                             <div className='form-group'>
                                 <label htmlFor='name'>Name</label>
