@@ -22,9 +22,9 @@ function About() {
         },
         {
             name: "Juliane Gutierrez",
-            github: null,
+            github: "https://github.com/juliane-gutierrez",
             linkedin: "https://www.linkedin.com/in/juliane-gutierrez-41718252/",
-            portfolio: null
+            portfolio: "https://juliane-gutierrez.com"
         },
         {
             name: "Jinfeng Shan",
