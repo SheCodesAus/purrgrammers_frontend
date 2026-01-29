@@ -8,7 +8,8 @@
   padding: 10px;
   cursor: pointer;
   aspect-ratio: 1/1;
-  width: 190px;
+  width: calc(50% - 4px);
+  min-width: 130px;
   display: flex;
   flex-direction: column;
   font-family: var(--font-stack-sans-text);
@@ -407,15 +408,13 @@
 
 /* Tablet */
 @media (max-width: 1024px) {
-  .card {
-    width: 165px;
-  }
+  /* Card width inherited from base: calc(50% - 4px) */
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .card {
-    width: 160px;
+    /* Card width inherited from base: calc(50% - 4px) */
     padding: 10px;
   }
 
@@ -458,8 +457,8 @@
 /* Small mobile */
 @media (max-width: 480px) {
   .card {
-    width: 155px;
-    padding: 10px;
+    /* Card width inherited from base: calc(50% - 4px) */
+    padding: 8px;
   }
 
   .card-text {
