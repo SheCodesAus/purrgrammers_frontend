@@ -943,7 +943,7 @@ function Board({ boardData, onBoardUpdate, currentUser, onNavigateBack }) {
                                 className="anon-btn with-name"
                                 onClick={() => handleAnonChoice(false)}
                             >
-                                {auth.user?.username || 'Me'}
+                                {auth.user?.first_name || auth.user?.username || 'Me'}
                             </button>
                             <button 
                                 className="anon-btn anonymous"

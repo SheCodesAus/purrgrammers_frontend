@@ -629,6 +629,33 @@
   color: #495057;
 }
 
+/* Invite Link Button */
+.invite-link-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px dashed rgba(124, 58, 237, 0.6);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--primary-color-dark);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-right: 8px;
+}
+
+.invite-link-btn .material-icons {
+    font-size: 1.25rem;
+    color: var(--primary-color-dark);
+}
+
+.invite-link-btn:hover {
+    background: rgba(124, 58, 237, 0.1);
+    border-color: rgba(124, 58, 237, 0.8);
+}
+
 /* Team Settings Section */
 .team-settings-section {
     position: relative;
@@ -1347,6 +1374,16 @@
 
   .title-input-container {
     width: 100%;
+  }
+
+  .invite-link-btn {
+    padding: 0.45rem 0.675rem;
+    font-size: 0.825rem;
+    margin-right: 4px;
+  }
+
+  .invite-link-text {
+    display: none;
   }
 
   .team-settings-section {

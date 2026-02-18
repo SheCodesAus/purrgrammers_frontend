@@ -132,3 +132,6 @@ dist
 # Test/Dev files
 src/pages/LoaderTest.jsx
 src/pages/LoaderTest.css
+
+# Claude Code
+CLAUDE.md

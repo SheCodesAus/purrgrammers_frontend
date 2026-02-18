@@ -90,7 +90,7 @@ function NavBar() {
                         <li className="nav-user-wrapper">
                             <div className="nav-user-display">
                                 <span className="material-icons nav-user-icon">account_circle</span>
-                                <span className="nav-user-name">{auth.user?.username}</span>
+                                <span className="nav-user-name">{auth.user?.first_name || auth.user?.username}</span>
                             </div>
                         </li>
                     )}

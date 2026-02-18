@@ -8,6 +8,7 @@ import RetroBoardPage from "./pages/RetroBoardPage";
 import HelpCenter from "./pages/HelpCenter";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import JoinPage from "./pages/JoinPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 import "./App.css";
@@ -19,7 +20,7 @@ const Layout = () => {
   const isGradientPage = location.pathname === "/" || location.pathname === "/dashboard" || location.pathname === "/help" || location.pathname === "/about";
   const isRetroBoardPage = location.pathname.startsWith("/retro-board");
   const isDashboard = location.pathname === "/dashboard";
-  const isNotFound = !['/', '/login', '/signup', '/dashboard', '/teams', '/help', '/about'].includes(location.pathname) && !location.pathname.startsWith('/retro-board');
+  const isNotFound = !['/', '/login', '/signup', '/dashboard', '/teams', '/help', '/about'].includes(location.pathname) && !location.pathname.startsWith('/retro-board') && !location.pathname.startsWith('/join');
   
   let appClass = "app";
   if (isGradientPage) appClass += " homepage-gradient";
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
       { path: "/login", element: <AuthPage />},
       { path: "/signup", element: <AuthPage />},
       { path: "/auth", element: <AuthPage />},
+      { path: "/join/:inviteCode", element: <JoinPage /> },
       { path: "/dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       { path: "/teams", element: <ProtectedRoute><TeamsPage /></ProtectedRoute>},
       { path: "/retro-board/:id", element: <ProtectedRoute><RetroBoardPage /></ProtectedRoute>},

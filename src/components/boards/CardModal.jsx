@@ -276,7 +276,7 @@ function CardModal({
                     <div className="card-modal__meta">
                         <span className="card-modal__author">
                             <span className="material-icons">person</span>
-                            {card.is_anonymous ? "Anonymous" : (card.created_by?.username || "Unknown")}
+                            {card.is_anonymous ? "Anonymous" : (card.created_by?.first_name || card.created_by?.username || "Unknown")}
                         </span>
                         {card.created_at && (
                             <span className="card-modal__date">

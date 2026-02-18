@@ -610,6 +610,22 @@ function BoardHeader({
                     </div>
                 )}
 
+                {/* Invite Link Button - Facilitators only */}
+                {isFacilitator && boardData?.invite_code && (
+                    <button
+                        className="invite-link-btn"
+                        onClick={() => {
+                            const link = `${window.location.origin}/join/${boardData.invite_code}`;
+                            navigator.clipboard.writeText(link);
+                            showToast('Invite link copied to clipboard!', 'success');
+                        }}
+                        title="Copy invite link"
+                    >
+                        <span className="material-icons">link</span>
+                        <span className="invite-link-text">Invite</span>
+                    </button>
+                )}
+
                 {/* Team Settings Section */}
                 {boardData?.team && (
                     <div className="team-settings-section" ref={teamDropdownRef}>

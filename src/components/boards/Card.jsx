@@ -234,7 +234,7 @@ function Card({
                 <div className="card-footer" onClick={(e) => e.stopPropagation()}>
                     <div className="card-meta">
                         <span className={`card-author ${card.is_anonymous ? 'anonymous' : ''}`}>
-                            {card.is_anonymous ? "Anonymous" : (card.created_by?.username || card.created_by?.initials || card.author || "Anonymous")}
+                            {card.is_anonymous ? "Anonymous" : (card.created_by?.first_name || card.created_by?.username || card.created_by?.initials || card.author || "Anonymous")}
                         </span>
                     </div>
 
